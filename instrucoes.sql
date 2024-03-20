@@ -61,7 +61,7 @@ CREATE TABLE imoveis(
 )
 
 
-tabela etiquetas
+Tabela etiquetas
 
 CREATE TABLE etiquetas(
 	codigo_etiquetas INT NOT NULL AUTO_INCREMENT,
@@ -69,4 +69,70 @@ CREATE TABLE etiquetas(
     tipo varchar(60) NOT NULL,
     
     CONSTRAINT pk_etiquetas PRIMARY KEY (codigo_etiquetas)
+)
+
+Tabela Passo
+
+CREATE TABLE passo(
+	codigo_passo INT NOT NULL AUTO_INCREMENT,
+    titulo varchar(45) NOT NULL,
+    descricao varchar(60) NOT NULL,
+    codigo_check INT NOT NULL,
+    
+    CONSTRAINT pk_passo PRIMARY KEY (codigo_passo),
+    CONSTRAINT fk_check FOREIGN KEY (codigo_check) REFERENCES checklist (codigo_check)
+)
+
+Tabela Contrato
+
+CREATE TABLE contrato (
+	codigo_contrato INT NOT NULL AUTO_INCREMENT,
+    tipo varchar(45) NOT NULL,
+    titulo varchar(45) NOT NULL,
+    referencia varchar(45) NOT NULL,
+    valor_negociado varchar(11) NOT NULL,
+    honorarios varchar(11) NOT NULL,
+    obs varchar(250),
+    dt_criacao DATETIME NOT NULL,
+    dt_atualizacao DATETIME NOT NULL,
+    status_contrato varchar(45) NOT NULL,
+    desc_status varchar(100) NOT NULL,
+    imoveis_codigo INT NOT NULL,
+    etiquetas_codigo INT NOT NULL,
+    checklist_codigo INT NOT NULL,
+    
+    CONSTRAINT pk_contrato PRIMARY KEY (codigo_contrato),
+    CONSTRAINT fk_imoveis FOREIGN KEY (imoveis_codigo) REFERENCES imoveis(codigo_imovel),
+	CONSTRAINT fk_etiquetas FOREIGN KEY (etiquetas_codigo) REFERENCES etiquetas (codigo_etiquetas),
+    CONSTRAINT fk_checklist FOREIGN KEY (checklist_codigo) REFERENCES checklist(codigo_check)
+)
+
+Grupo compradores
+
+CREATE TABLE grupo_compradores(
+    codigo_contrato INT NOT NULL,
+    codigo_clientes INT NOT NULL,
+    porcentagem INT NOT NULL,
+    
+    CONSTRAINT pk_compradores PRIMARY KEY (codigo_contrato, codigo_clientes),
+    CONSTRAINT fk_contrato FOREIGN KEY (codigo_contrato) REFERENCES contrato(codigo_contrato),
+    CONSTRAINT fk_clientes FOREIGN KEY (codigo_clientes) REFERENCES clientes(codigo_clientes)
+)
+
+Tabela documentos
+
+CREATE TABLE documentos (
+	codigo_documento INT NOT NULL,
+    dt_criacao DATETIME NOT NULL,
+    dt_atualizacao DATETIME NOT NULL,
+    dt_assinatura DATETIME,
+	responsavel_assinatura Varchar(100) NOT NULL,
+    path varchar(150) NOT NULL,
+    descricao varchar(100) NOT NULL,
+    codigo_contrato INT NOT NULL,
+    codigo_clientes INT NOT NULL,
+    
+    CONSTRAINT pk_documentos PRIMARY KEY (codigo_documento),
+    CONSTRAINT fk_codigo_contrato FOREIGN KEY (codigo_contrato) REFERENCES contrato(codigo_contrato),
+    CONSTRAINT fk_codigo_clientes FOREIGN KEY (codigo_clientes) REFERENCES clientes(codigo_clientes)
 )
