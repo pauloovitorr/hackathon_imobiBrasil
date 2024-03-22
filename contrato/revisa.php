@@ -1,6 +1,11 @@
 <?php 
 
+session_start();
+
 include_once('../conexao.php');
+
+$_SESSION['cod'] = 2;
+
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
 
@@ -17,8 +22,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
 
     $result = $acao->get_result();
 
+    
    
-  
 }
 
 
@@ -47,8 +52,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
 
      <!-- Arquivos Gerais -->
 
+     <div class="dash">
+        <h1>Dashboard</h1>
+
+     </div>
+
     <div>
         <h1>Gestão de contrato</h1>
+
+        <a href="./check.php">Criar Checklist</a>
 
         <div class="input_buscar_imovel">
 
@@ -66,7 +78,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
 
         </div>
 
-        <div>
+        <div class="lista_imoveis" >
            <?php 
 
                 if(isset($result)){

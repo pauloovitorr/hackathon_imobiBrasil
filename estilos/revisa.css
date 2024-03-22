@@ -29,3 +29,48 @@ h1{
     padding: 7px;
     border-radius: 8px;
 }
+
+.dash{
+    max-width: 1300px;
+    height: 600px;
+    margin: 0 auto;
+    margin-top: 80px;
+    border: 1px solid black;
+}
+
+.lista_imoveis{
+    max-width: 1300px;
+    height: 150px;
+    margin: 0 auto;
+    margin-bottom: 200px;
+    border: 1px solid black;
+}
+
+.lista_imoveis > div{
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.cad_check{
+    width: 50%;
+    margin: 0 auto;
+    border: 1px solid black;
+}
+
+.passo{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.passo > div{
+    margin: 0 auto;
+    margin-top: 70px;
+    width: 40%;
+}
+
+.passo > div > label,
+.passo > div > input{
+    width: 80%;
+}
