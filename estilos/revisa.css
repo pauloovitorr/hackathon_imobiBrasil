@@ -1,0 +1,31 @@
+
+
+
+h1{
+    text-align: center;
+}
+
+.input_buscar_imovel{
+    max-width: 1000px;
+    margin: 0 auto;  
+}
+
+.input_buscar_imovel > div{
+    width: 40%;
+
+}
+
+.input_buscar_imovel > div > input {
+    width: 70%;
+}
+
+.busca{
+    width: 70%;
+    margin: 0 auto;
+}
+
+.busca input{
+    width: 100%;
+    padding: 7px;
+    border-radius: 8px;
+}
