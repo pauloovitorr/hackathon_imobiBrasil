@@ -21,6 +21,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
     $acao->execute();
 
     $result = $acao->get_result();
+ 
 
 }
 

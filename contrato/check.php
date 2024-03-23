@@ -11,41 +11,71 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 if(!empty($_POST)){
 
     $titulo     = $connexao->escape_string($_POST['check']);
-    $cod_adm    = $connexao->escape_string($_POST['cod']);
     $descricao  = $connexao->escape_string($_POST['descri']);
-
-    //$connexao->begin_transaction();
+    $cod_adm    = $connexao->escape_string($_POST['cod']);
+    
+    $connexao->begin_transaction();
 
      try{
 
-        $sql = "INSERT INTO checklist (tipo, descricao, codigo_adm ) VALUES ('$titulo', '$descricao', $cod_adm)";
-        $dd = $connexao->query($sql);
+        $sql = "INSERT INTO checklist (tipo, descricao, codigo_adm ) VALUES (?, ?, ?)";
+        $stmt = $connexao->prepare($sql);
+        $stmt->bind_param('ssi', $titulo, $descricao, $cod_adm);
 
-        if($dd){
-            $id = $connexao->insert_id;
-            echo $id;
-        }
+        $stmt->execute();
+        $id_check = $connexao->insert_id;
 
-        $connexao->close();
+        if($stmt->affected_rows > 0){
+            $titul = '';
+            $descri = '';
+            $count = 0;
+        
+            foreach ($_POST as $chave => $value) {
+        
+                if($chave !== 'check' && $chave !== 'descri' && $chave !== 'cod'){
+                    
+                    if($count % 2 == 0){
+                        $titul = $value;
+                    }
+                    else if($count % 2 == 1){
+                        $descri = $value;
+                    }
+        
+                    if($titul !== '' && $descri !== ''){
+                        $sql2 = "INSERT INTO passo (titulo, descricao, codigo_check) VALUES (?,?,?)";
+                        $stmt2 = $connexao->prepare($sql2);
 
-        exit;
+                        $stmt2->bind_param('ssi', $titul, $descri, $id_check);
+                        
+                        $stmt2->execute();
+                                                        
+                        $titul = '';
+                        $descri = '';
+                    }
+                    
+                    $count++;  
+        
+                }
+            } 
+            $connexao->commit();
+        }      
+    }
+
+     catch(Exception $err){
+        $connexao->rollback();
+        throw $err;
      }
 
-     catch(Exception){
+    }
 
-     }
 
-    // foreach ($_POST as $chave => $value) {
-    //     // Faça o que desejar com cada variável e seu valor
-    //     echo "Chave: $chave, Valor: $value <br>";
-    // }
-}
+
 
 ?>
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
