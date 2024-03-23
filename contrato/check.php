@@ -2,8 +2,43 @@
 
 session_start();
 
+include_once('../conexao.php');
+
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
    $cod_adm = $_SESSION['cod'];
+}
+
+if(!empty($_POST)){
+
+    $titulo     = $connexao->escape_string($_POST['check']);
+    $cod_adm    = $connexao->escape_string($_POST['cod']);
+    $descricao  = $connexao->escape_string($_POST['descri']);
+
+    //$connexao->begin_transaction();
+
+     try{
+
+        $sql = "INSERT INTO checklist (tipo, descricao, codigo_adm ) VALUES ('$titulo', '$descricao', $cod_adm)";
+        $dd = $connexao->query($sql);
+
+        if($dd){
+            $id = $connexao->insert_id;
+            echo $id;
+        }
+
+        $connexao->close();
+
+        exit;
+     }
+
+     catch(Exception){
+
+     }
+
+    // foreach ($_POST as $chave => $value) {
+    //     // Faça o que desejar com cada variável e seu valor
+    //     echo "Chave: $chave, Valor: $value <br>";
+    // }
 }
 
 ?>
@@ -65,8 +100,8 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                 <select name="check" id="check">
                     <option value=""></option>
                     <option value="venda">Venda</option>
-                    <option value="venda">Desistência</option>
-                    <option value="venda">Destrato</option>
+                    <option value="desistencia">Desistência</option>
+                    <option value="destrato">Destrato</option>
                 </select>
 
                 <input type="hidden" name='cod' value='<?php echo $cod_adm ?>'>
@@ -98,7 +133,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                     <input type="text" id="passo1" name='passo1'> </br>
 
                     <label for="desc1">Descrição do passo</label> </br>
-                    <textarea name="desc0" id="desc1" cols="40" rows="7"></textarea></br>
+                    <textarea name="desc1" id="desc1" cols="40" rows="7"></textarea></br>
 
                 </div>
 
@@ -106,8 +141,13 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
             </div>
 
-            <button id="add_passo">Adicionar Passo</button>
+            <div class="div_btn">
+                <button id="add_passo">Adicionar Passo</button>
+            </div>
 
+            <div class="div_btn">
+                <button type="submit">Adicionar Passo</button>
+            </div>
 
 
         </form>

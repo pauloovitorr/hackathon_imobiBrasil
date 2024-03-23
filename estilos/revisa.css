@@ -53,7 +53,7 @@ h1{
 }
 
 .cad_check{
-    width: 50%;
+    width: 60%;
     margin: 0 auto;
     border: 1px solid black;
 }
@@ -61,16 +61,37 @@ h1{
 .passo{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
+    
 }
 
 .passo > div{
     margin: 0 auto;
     margin-top: 70px;
-    width: 40%;
+    width: 45%;
+}
+
+.passo > div > label{
+    font-weight: 700;
 }
 
 .passo > div > label,
 .passo > div > input{
     width: 80%;
+}
+
+.div_btn{
+    width: 25%;
+    margin: 0 auto;
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+#add_passo{
+    
+    background-color: green;
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 7px;
 }

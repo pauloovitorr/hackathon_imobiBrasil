@@ -22,13 +22,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
 
     $result = $acao->get_result();
 
-    
-   
 }
 
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
