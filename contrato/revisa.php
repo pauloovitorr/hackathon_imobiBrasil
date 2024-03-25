@@ -84,7 +84,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
 
                           echo  '<div>';
                           echo      '<p>'. "$dados[tipo]" . " para " . "$dados[finalidade] ". "em". " $dados[cidade]". "$dados[estado]" . '</p>';
-                          echo      '<p>'. 'Observação: ' . "$dados[obs]" . '</p>' .  "<a href='../conexao.php?cod={$dados['codigo_imovel']}'> <button>Iniciar contrato de venda</button> </a>";
+                          echo      '<p>'. 'Observação: ' . "$dados[obs]" . '</p>' .  "<a href='./inicia.php?cod={$dados['codigo_imovel']}'> <button>Iniciar contrato de venda</button> </a>";
                           echo   '</div>';
 
                         }
