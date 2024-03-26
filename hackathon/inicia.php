@@ -75,6 +75,7 @@ INNER JOIN
     <meta name="robots" content="noindex,nofollow" />
     <meta http-equiv="pragma" content="no-cache" />
     <meta name="language" content="pt-br" />
+    <link rel="stylesheet" href="./styles/hackt.css">
     
     <link
       rel="shortcut icon"
@@ -3743,29 +3744,7 @@ INNER JOIN
 
 <!-- Paulo JQUERY -->
         <script>
-        $(document).ready(function(){
-
-                    let count = 2
-                   
-                    $('#add_passo').click(function(e){
-                        e.preventDefault();
-
-                        let passo = `<div>
-                                        <label for="passo${count}">Título para o passo</label><br>
-                                        <input type="text" id="passo${count}" name="passo${count}"></br>
-
-                                        <label for="desc${count}">Descrição do passo</label> </br>
-                                        <textarea name="desc${count}" id="desc${count}" cols="40" rows="7"></textarea></br>
-
-                                    </div>`;
-
-                        let clonedPasso = $(passo).clone(); 
-                        $('.passo').append(clonedPasso);
-                        
-                        count += 1;
-                    });     
-        })
-
+    
     </script>
 
 
@@ -3785,10 +3764,16 @@ INNER JOIN
     <div>
         <?php 
             while($dados = $results->fetch_assoc()){
-                echo  '<div>';
+                echo  '<div class="revisa_imovel" > ';
+                
+                echo  '<div class="dados_imoveis" > ';
+                echo  '<div class="rev" >' . '</div>';
                 echo      '<p>'. "$dados[tipo]" . " para " . "$dados[finalidade] ". "em". " $dados[cidade] ". "/" ." $dados[estado]" . '</p>';
                 echo      '<p>'. "$dados[rua]" . " num:" . " $dados[num_casa] ". " $dados[bairro] " . '</p>';
                 echo      '<p>'. 'Observação: ' . "$dados[obs]" . '</p>';
+
+                echo   '</div>';
+
                 echo      '<p>'. 'Proprietário: ' . "$dados[nome_proprietario]" . '</p>';
                 echo      '<p>'. 'CPF: ' . "$dados[cpf_proprietario]" . '</p>';
                 echo      '<p>'. 'Email: ' . "$dados[email_proprietario]" . '</p>';

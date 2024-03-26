@@ -1,0 +1,23 @@
+.revisa_imovel{
+  border: 1px solid red;
+  padding: 20px;
+}
+
+.revisa_imovel > p{
+  font-size: 1.1rem;
+  font-weight: 700;
+
+}
+
+.rev{
+  width: 200px;
+  height: 200px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.dados_imoveis{
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid red;
+}
