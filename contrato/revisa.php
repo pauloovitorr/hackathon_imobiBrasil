@@ -7,9 +7,9 @@ include_once('../conexao.php');
 $_SESSION['cod'] = 2;
 
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
+if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
 
-    $buscar = '%' .$connexao->escape_string($_POST['buscar']) . '%' ;
+    $buscar = '%' .$connexao->escape_string($_GET['buscar']) . '%' ;
 
     $sql = "SELECT * FROM imoveis WHERE referencia LIKE ? or rua LIKE ?";
 
@@ -61,7 +61,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' &&  !empty($_POST['buscar'])){
 
         <div class="input_buscar_imovel">
 
-           <form method="post">
+           <form method="get">
 
                 <div class="busca">
                     <label>Selecione o imóvel</label> </br>
