@@ -3763,6 +3763,26 @@ if(!empty($_POST)){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Paulo JQUERY -->
         <script>
         $(document).ready(function(){
@@ -3772,7 +3792,7 @@ if(!empty($_POST)){
                     $('#add_passo').click(function(e){
                         e.preventDefault();
 
-                        let passo = `<div>
+                        let passo = `<div class='input' >
                                         <label for="passo${count}">Título para o passo</label><br>
                                         <input type="text" id="passo${count}" name="passo${count}"></br>
 
@@ -3791,6 +3811,85 @@ if(!empty($_POST)){
     </script>
 
 
+<style>
+  .cad_check{
+    width: 90%;
+    margin: 0 auto;
+    padding: 8px;
+  }
+
+  .cad_check > form{
+    width: 90%;
+    margin: 0 auto;
+    padding: 10px;
+  }
+
+  .cad_check h3{
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .input{
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 25px;
+    padding: 10px;
+  }
+
+  .input > input,
+  .input > textarea,
+  .input > select{
+    width: 100%;
+    padding: 18px;
+    border-radius: 8px;
+    font-size: 1.0rem;
+    outline-color: #18c721 ;
+    margin: 10px;
+  }
+
+  .btnss {
+      padding: 10px;
+      background-color: #18c721 ;
+      color: white;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: .5s;
+    }
+
+    .btnss:hover{
+      background-color: #05630a;
+    }
+
+    .btnn{
+      padding: 10px;
+      background-color: #007FE2;
+      color: white;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: .5s;
+    }
+
+    .addCheck{
+      width: 90%;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: start;
+    }
+
+    .pai_btns{
+      width: 50%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+
+</style>
+
 
 
 
@@ -3801,7 +3900,9 @@ if(!empty($_POST)){
 
           <div class="conteudo">
 
-          <a href="./contratos.php">Voltar</a>
+          <div class="addCheck">
+              <a style="color: #007fe2;" href="./contratos.php">Voltar</a>
+          </div>
 
           <h1 style="text-align: center; margin-top:25px" >Criar Checklist</h1>
           <div class="dash">
@@ -3811,7 +3912,7 @@ if(!empty($_POST)){
         
         <form method="post">
 
-            <div>
+            <div class='input'>
                 <label for="check">Tipo de checklist</label> </br>
 
                 <select name="check" id="check">
@@ -3825,7 +3926,7 @@ if(!empty($_POST)){
 
             </div>
 
-            <div>
+            <div class='input'>
                 <label for="descri">Descrição</label> </br>
                 <textarea name="descri" id="descri" cols="40" rows="5"></textarea>
             </div>
@@ -3834,7 +3935,7 @@ if(!empty($_POST)){
 
             <div class='passo'>
 
-                <div>
+                <div class='input'>
 
                     <label for="passo0">Titulo para o passo</label> </br>
                     <input type="text" id="passo0" name='passo0'> </br>
@@ -3844,7 +3945,7 @@ if(!empty($_POST)){
 
                 </div>
 
-                <div>
+                <div class='input' >
 
                     <label for="passo1">Titulo para o passo</label> </br>
                     <input type="text" id="passo1" name='passo1'> </br>
@@ -3858,13 +3959,17 @@ if(!empty($_POST)){
 
             </div>
 
-            <div class="div_btn">
-                <button id="add_passo">Adicionar Passo</button>
-            </div>  <br><br>
+           <div class='pai_btns'>
 
-            <div class="div_btn">
-                <button type="submit">Salvar</button>
-            </div>
+              <div class="div_btn">
+                    <button id="add_passo" class='btnn'>Adicionar Passo</button>
+                </div>  <br><br>
+
+                <div class="div_btn">
+                    <button type="submit" class='btnss'>Cadastrar</button>
+                </div>
+
+           </div>
 
 
         </form>
