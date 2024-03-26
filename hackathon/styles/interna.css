@@ -1,0 +1,102 @@
+body{color: #464646;}
+section{padding:0px; }
+
+.nav {
+    background-color: #E9E9E9;
+}
+.navbutton{color:#FFF;}
+.navbutton:hover{box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.4);}
+.fundo .navbutton {border: 1px solid #fff; color:#FFF;} 
+.fundo .navbutton i{color:#FFF;}
+
+.internatitle {
+    padding: 40px;
+    background-color: #26262b;
+    color: #fff;
+    background-image: url(/t32/imagens/rodape_bg.jpg);
+    background-position: bottom center;
+    background-repeat: repeat;
+    background-size: cover;
+}
+
+.internatitle h1 {
+    text-align: left;
+    font-weight: 500;
+}
+
+.content {
+    padding: 60px 0;
+    font-weight: 400;
+}
+
+.faleconosco form textarea{font-family:Arial; line-height:1.4;}
+.listaimo_faleconosco form textarea{font-family:Arial;}
+
+/* TOPSEARCH */
+.topsearch {
+    justify-content: center;
+    padding: 0px;
+    color: #fff;
+}
+
+.topsearch .container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topsearch__left {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.topsearch__total {
+    width: 100%;
+}
+
+.topsearch__total span {
+    font-weight: bold;
+}
+
+.topsearch__right {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topsearch__buscar {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.topsearch__buscar input {
+    padding: 8px 40px 8px 16px;
+    border: 1px solid #4a4d65;
+    border-radius: 2px;
+    width: 200px;
+    background-color: #0d1e30;
+    outline: none;
+    color: #fff;
+}
+
+.topsearch__buscar input::placeholder {
+    color: #fff;
+}
+
+.topsearch__buscar button {
+    position: absolute;
+    right: 10px;
+    font-size: 16px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    outline: none;
+    top: calc(50% - 10px);
+}
+/* END TOPSEARCH */

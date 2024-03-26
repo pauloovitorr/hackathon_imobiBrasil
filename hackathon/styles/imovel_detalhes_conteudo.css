@@ -1,0 +1,220 @@
+.frm_corretor__info {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  background-color: #e9e9e9;
+  width: 100%;
+  overflow: hidden;
+}
+
+.content .maincontainer {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.faleconosco {
+  width: 23%;
+  padding-top: 20px;
+  background-color: #fff;
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 0px 0px 20px 20px;
+}
+
+/* Form Proposta Inf */
+
+.info {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  width: 76%;
+  background-color: #fff;
+  padding: 30px;
+}
+
+.info__row {
+  width: 100%;
+  padding-top: 20px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.info__valor {
+  font-size: 40px;
+  color: #fff;
+  text-align: center;
+  width: 30%;
+  padding: 5px 0;
+  position: relative;
+  z-index: 1;
+  margin-right: 3%;
+  margin-bottom: 3%;
+  min-width: 350px;
+}
+
+.info__valor::before {
+  content: "";
+  position: absolute;
+  left: -41%;
+  height: 100%;
+  width: 150%;
+  top: 0;
+  clip-path: polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%);
+  z-index: -1;
+}
+
+.info__tag {
+  padding: 10px 25px;
+  border-right: 1px solid #e9e9e9;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.info__tag:last-child {
+  border-right: none;
+}
+
+.info .info__col h2 {
+  font-weight: normal;
+}
+
+.tags {
+  padding: 30px;
+  background-color: #fff;
+  width: 76%;
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 20px;
+}
+
+.tags p {
+  padding: 5px 10px;
+  border: 1px solid #e9e9e9;
+  margin: 10px;
+  transition: 0.3s ease;
+}
+
+.tags p:hover {
+  background-color: #000;
+  color: #fff;
+  transition: 0.3s ease;
+}
+
+.descricao,
+.pontosfortes {
+  padding: 30px;
+  margin-top: 20px;
+  width: 76%;
+  background-color: #fff;
+}
+
+.descricao h3 {
+  font-weight: normal;
+}
+
+.content__title {
+  text-transform: uppercase;
+  text-align: start;
+  font-size: 20px;
+  position: relative;
+  border-bottom: 3px solid #e9e9e9;
+  width: 100%;
+  margin: 0px 20px 20px 20px;
+  padding: 10px 0px;
+  cursor: default;
+}
+
+.content__title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  height: 3px;
+  width: fit-content;
+  bottom: -3px;
+  width: 7%;
+}
+
+.frm_corretor {
+  display: flex;
+  flex-flow: row wrap;
+  padding: 0px;
+  background-color: #fff;
+  justify-content: center;
+  border-radius: 0px 0px 20px 20px;
+}
+
+.frm_corretor__img {
+  width: 100%;
+  height: auto;
+}
+
+.frm_corretor__img img {
+  margin: 0 auto;
+  display: block;
+  max-width: 67%;
+  border-radius: 50%;
+  border: 5px solid #027839;
+}
+
+.frm_corretor__info {
+  text-align: center;
+}
+
+.frm_corretor__info span {
+  display: block;
+}
+
+.frm_corretor__info .corretor__nome {
+  font-weight: bold;
+  font-size: 20px;
+  cursor: default;
+}
+
+.frm_corretor__info .corretor__creci {
+  font-size: 11px;
+}
+
+@media (max-width: 1024px) {
+  .faleconosco {
+    width: 100%;
+    position: relative;
+  }
+
+  .info {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .info__title {
+    text-align: center;
+    line-height: 1;
+  }
+
+  .tags {
+    width: 100%;
+  }
+
+  .descricao,
+  .pontosfortes {
+    width: 100%;
+  }
+}
+@media (max-width: 440px) {
+  .info__valor {
+    min-width: unset;
+    width: 100%;
+  }
+}
