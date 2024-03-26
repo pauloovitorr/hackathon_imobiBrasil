@@ -40,10 +40,10 @@ h1{
 
 .lista_imoveis{
     max-width: 1300px;
-    height: 150px;
     margin: 0 auto;
     margin-bottom: 200px;
     border: 1px solid black;
+    padding: 10px;
 }
 
 .lista_imoveis > div{
