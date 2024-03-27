@@ -1,6 +1,7 @@
 .revisa_imovel{
-  border: 1px solid red;
-  padding: 20px;
+  display: flex;
+  justify-content:space-around ;
+  flex-wrap: wrap;
 }
 
 .revisa_imovel > p{
@@ -16,8 +17,59 @@
   border-radius: 10px;
 }
 
-.dados_imoveis{
+
+.dados_imovel{
+  width: 75%;
+}
+
+.dados_imovel > div{
+  margin: 15px;
+}
+
+.dados_imovel > div > p,
+.dados_partes > div > p{
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.dados_partes{
   display: flex;
-  justify-content: space-between;
-  border: 1px solid red;
+  width: 96%;
+  gap: 250px;
+}
+
+.revisa{
+  border: 1px solid gray;
+  border-radius: 10px;
+  width: 90%;
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 30px;
+  box-shadow: 1px 1px 8px 2px #a7b0a8;
+}
+
+.btnss {
+  padding: 10px;
+  background-color: #18c721 ;
+  color: white;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .5s;
+}
+
+.btnss:hover{
+  background-color: #05630a;
+}
+
+
+.prox{
+  width: 95%;
+  text-align: end;
+  margin-bottom: 10px;
+}
+
+.prox > a > button{
+  width: 13%;
 }

@@ -8,9 +8,10 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' ){
     $cod_imovel = $_GET['cod'];
     $sql = "SELECT 
     imoveis.codigo_imovel,
+    imoveis.referencia,
     imoveis.tipo,
     imoveis.finalidade,
-	imoveis.cep,
+	  imoveis.cep,
     imoveis.rua,
     imoveis.bairro,
     imoveis.cidade,
@@ -35,13 +36,14 @@ INNER JOIN
 INNER JOIN 
     clientes AS clientes_corretor ON corretor.id_cliente_corretor = clientes_corretor.codigo_clientes
 	
-	WHERE imoveis.codigo_imovel = 2
+	WHERE imoveis.codigo_imovel = $cod_imovel
 
 ";
 
+// Paulo
     $results = $connexao->query($sql);
 
-   // $dados = $results->fetch_assoc();
+    $dados = $results->fetch_assoc();
 
     //print_r($dados);
 }
@@ -1674,7 +1676,7 @@ INNER JOIN
                   </li>
                   <li>
                     <a
-                      href="./contratos.php"
+                      href="./index.php"
                       >Gestão de contratos</a
                     >
                   </li>
@@ -3691,99 +3693,109 @@ INNER JOIN
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
       <script>
-        $(document).ready(function () {
-          $(".mascara_real").mask("000.000.000", { reverse: true });
-          $(".redefinir_opcoes").click(function () {
-            event.preventDefault();
-            $("#title").val("Simulador de financiamento");
-            $("#description").val(
-              "Descubra o financiamento ideal para o lar dos seus sonhos. Experimente diferentes valores de entrada, prazos e taxas de juros para encontrar a melhor opção para você."
-            );
-            $("#taxa_juros").val(9);
-            $("#valor_max").val("2.500.000");
-            $("#periodo_padrao").val(30);
-            $("#valor_min").val("150.000");
-            $("#select_exibicao").val("SAC");
-            $("#entrada_min").val(30);
-          });     
-          if ($('.desliga_modulo').hasClass('ocultar_botao')) {
-            $('.formulario_financiamento input').prop('disabled', true).css('opacity','0.5');
-            $('.formulario_financiamento select').prop('disabled', true).css('opacity','0.5');
-            $('.formulario_financiamento textarea').prop('disabled', true).css('opacity','0.5');
-            $('.buttons_group').css('display','none');
-          } 
-
-        });
-
-
+       
       </script>
       <section class="corpo">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="container">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Paulo JQUERY -->
-        <script>
-    
-    </script>
-
-
-
-
-
-
-
         <!-- Paulo -->
 
 
           <div class="conteudo">
 
-          <a href="./contratos.php">Voltar</a>
-          <h1>Imóvel</h1>
+          <a style="color: #007fe2; font-size: 1rem; font-weight: 700;" href="./index.php">Voltar</a>
+          <h1 style="text-align: center; margin:20px">Revisão do imóvel</h1>
 
-    <div>
-        <?php 
-            while($dados = $results->fetch_assoc()){
-                echo  '<div class="revisa_imovel" > ';
-                
-                echo  '<div class="dados_imoveis" > ';
-                echo  '<div class="rev" >' . '</div>';
-                echo      '<p>'. "$dados[tipo]" . " para " . "$dados[finalidade] ". "em". " $dados[cidade] ". "/" ." $dados[estado]" . '</p>';
-                echo      '<p>'. "$dados[rua]" . " num:" . " $dados[num_casa] ". " $dados[bairro] " . '</p>';
-                echo      '<p>'. 'Observação: ' . "$dados[obs]" . '</p>';
+          <div class='revisa_imovel revisa'>
+            
+                <div class="rev"></div>
 
-                echo   '</div>';
+                <div class="dados_imovel">
 
-                echo      '<p>'. 'Proprietário: ' . "$dados[nome_proprietario]" . '</p>';
-                echo      '<p>'. 'CPF: ' . "$dados[cpf_proprietario]" . '</p>';
-                echo      '<p>'. 'Email: ' . "$dados[email_proprietario]" . '</p>';
-                echo      '<p>'. 'Corretor: ' . "$dados[nome_corretor]" . '</p>';
-                echo      '<p>'. 'CPF: ' . "$dados[cpf_corretor]" . '</p>';
-                echo      '<p>'. 'Email: ' . "$dados[email_corretor]" . '</p>';
-                echo   '</div>';
-            }
-        ?>
-    </div>
+                      <div>
+                            <p> <?php echo "Código do imóvel: " . $dados['referencia'];  ?>  </p>
+                      </div>
+
+                      <div>
+                            <p> <?php echo $dados['tipo'] ." para ". $dados['finalidade'] ;  ?>  </p>
+                      </div>
+
+                      <div>
+                            <p> <?php echo $dados['cidade'] ." / ". $dados['estado'] ;  ?>  </p>
+                      </div>
+
+                      <div>
+                            <p> <?php echo $dados['rua'] ." número ". $dados['num_casa'] . " ". $dados['bairro'] ;  ?>  </p>
+                      </div>
+
+                      <div>
+                            <p>Observação:  <?php echo $dados['obs'] ;  ?>  </p>
+                      </div>
+                </div>
+
+               <div class="dados_partes">
+                    <div>
+                          <p> Proprietário:  <?php echo $dados['nome_proprietario'] ;  ?>  </p>
+                          <p> CPF:  <?php echo $dados['cpf_proprietario'] ;  ?>  </p>
+                          <p> E-mail:  <?php echo $dados['email_proprietario'] ;  ?>  </p>
+                      </div>
+
+                      <div style="border-right: 2px solid #19F657;"></div>
+
+                      <div>
+                          <p> Corretor:  <?php echo $dados['nome_corretor'] ;  ?>  </p>
+                          <p> CPF:  <?php echo $dados['cpf_corretor'] ;  ?>  </p>
+                          <p> E-mail:  <?php echo $dados['email_corretor'] ;  ?>  </p>
+                      </div>
+               </div>
+
+
+
+          </div>
+
+
+          <div class="prox">
+              <a href="./contrato1.php?cod=<?php echo $_GET['cod'] ?>"><button class="btnss">Próximo</button></a>
+          </div>
+
+
+
+
           </div>
 
         <!-- Paulo -->

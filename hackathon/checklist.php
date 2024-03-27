@@ -1696,7 +1696,7 @@ if(!empty($_POST)){
                   </li>
                   <li>
                     <a
-                      href="./contratos.php"
+                      href="./index.php"
                       >Gestão de contratos</a
                     >
                   </li>
@@ -3838,8 +3838,7 @@ if(!empty($_POST)){
   }
 
   .input > input,
-  .input > textarea,
-  .input > select{
+  .input > textarea{
     width: 100%;
     padding: 18px;
     border-radius: 8px;
@@ -3847,6 +3846,15 @@ if(!empty($_POST)){
     outline-color: #18c721 ;
     margin: 10px;
   }
+
+  .input > select{
+    width: 100%;
+    border-radius: 8px;
+    font-size: 1.0rem;
+    outline-color: #18c721;
+    padding: 5px;
+  }
+
 
   .btnss {
       padding: 10px;
@@ -3901,8 +3909,9 @@ if(!empty($_POST)){
 
           <div class="conteudo">
 
+        
           <div class="addCheck">
-              <a style="color: #007fe2;" href="./contratos.php">Voltar</a>
+              <a style="color: #007fe2;" href="./index.php">Voltar</a>
           </div>
 
           <h1 style="text-align: center; margin-top:25px" >Criar Checklist</h1>
@@ -3914,6 +3923,7 @@ if(!empty($_POST)){
         <form method="post">
 
             <div class='input'>
+              
                 <label for="check">Tipo de checklist</label> </br>
 
                 <select name="check" id="check">
@@ -3967,7 +3977,7 @@ if(!empty($_POST)){
                 </div>  <br><br>
 
                 <div class="div_btn">
-                    <button type="submit" class='btnss'>Cadastrar</button>
+                    <button type="submit" class='btnss'>Finalizar cadastro</button>
                 </div>
 
            </div>

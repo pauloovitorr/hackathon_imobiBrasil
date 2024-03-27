@@ -1651,7 +1651,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
                   </li>
                   <li>
                     <a
-                      href="./contratos.php"
+                      href="./index.php"
                       >Gestão de vendas</a
                     >
                   </li>
@@ -3814,6 +3814,19 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
       
     }
 
+    .btnn{
+      padding: 10px;
+      background-color: #007FE2;
+      color: white;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: .5s;
+    }
+
+    .btnn:hover{
+      background-color: #100575;
+    }
    
 
 </style>
@@ -3831,14 +3844,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
 
           <h1 style="text-align: center; margin-top:25px; margin-bottom: 20px;" >Gerenciamento de vendas</h1>
 
-          <h2>Dashboard</h2>
-          <div class="dash">
-
-              
-
-          </div>
-
-    <div class="gcontratos">
+          <div class="gcontratos">
         <h1>Gestão de contrato</h1>
 
        <div class="addCheck">
@@ -3870,9 +3876,10 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
                         while($dados = $result->fetch_assoc()){
 
                           echo  '<div>';
-                          echo      '<p>'. "$dados[tipo]" . " para " . "$dados[finalidade] ". "em". " $dados[cidade] ". "/" ." $dados[estado]" . '</p>';
+                          echo      '<p>'. "Codigo de referência: " . " $dados[referencia] ";
+                          echo      '<p>'. " $dados[tipo]" . " para " . "$dados[finalidade] ". "em". " $dados[cidade] ". "/" ." $dados[estado]" . '</p>';
                           echo      '<p>'. "$dados[rua], " . " $dados[num_casa] ". " $dados[bairro] " . '</p>';
-                          echo      '<p>'. 'Observação: ' . "$dados[obs]" . '</p>' .  "<a href='./inicia.php?cod={$dados['codigo_imovel']}'> <button class='btnss'>Iniciar contrato </button> </a>";
+                          echo      '<p>'. 'Observação: ' . "$dados[obs]" . '</p>' .  "<a href='./inicia.php?cod={$dados['codigo_imovel']}'> <button class='btnn'>Iniciar contrato </button> </a>";
                           echo   '</div>';
 
                         }
@@ -3888,7 +3895,13 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
         </div>
 
     </div>
-          
+
+          <h2>Dashboard</h2>
+          <div class="dash">
+
+              
+
+          </div>
                       
             
           </div>
