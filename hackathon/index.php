@@ -4,7 +4,7 @@ session_start();
 
 include_once('../conexao.php');
 
-$_SESSION['cod'] = 2;
+$_SESSION['codigo_adm'] = 2;
 
 
 if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){

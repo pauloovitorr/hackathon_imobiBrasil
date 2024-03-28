@@ -5,7 +5,7 @@ session_start();
 include_once('../conexao.php');
 
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
-   $cod_adm = $_SESSION['cod'];
+   $cod_adm = $_SESSION['codigo_adm'];
 }
 
 if(!empty($_POST)){
@@ -13,7 +13,7 @@ if(!empty($_POST)){
  
     $titulo     = $connexao->escape_string($_POST['check']);
     $descricao  = $connexao->escape_string($_POST['descri']);
-    $cod_adm    = $connexao->escape_string($_POST['cod']);
+    $cod_adm    = $connexao->escape_string($_POST['codigo_adm']);
     
     $connexao->begin_transaction();
 

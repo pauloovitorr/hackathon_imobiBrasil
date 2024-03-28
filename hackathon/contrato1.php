@@ -4,12 +4,41 @@ session_start();
 
 include_once('../conexao.php');
 
+
+if(empty($_SESSION['codigo_adm'])){
+  header('location:index.php');
+}
+
+if(empty($_GET['cod'])){
+  header('location:index.php');
+}
+
+
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-    // print_r($_POST);
+  $tipo         = $connexao->escape_string($_POST['tipocontrato']);
+  $titulo       = $connexao->escape_string($_POST['titulocontrato']);
+  $cod_contrato = $connexao->escape_string($_POST['codcontrato']);
 
-    // die();
+  $valor_nego   = $connexao->escape_string($_POST['valornegociado']);
+  $honorarios   = $connexao->escape_string($_POST['honorarios']);
+  $etiqueta     = $connexao->escape_string($_POST['etiqueta']);
+  $obscontrato  = $connexao->escape_string($_POST['obscontrato']);
+
+  // inputs hidden
+  $status       = $connexao->escape_string($_POST['status']);
+  $desc_status  = $connexao->escape_string($_POST['desc_status']);
+  $cod_imovel   = $connexao->escape_string($_POST['codigoimovel']);
+  $cod_adm      = $connexao->escape_string($_POST['codigoadm']);
+
+  $sql = "INSERT INTO contrato (tipo,titulo,referencia,valor_negociado,honorarios,etiquetas_codigo,obs,dt_criacao,dt_atualizacao,status_contrato,desc_status,	imoveis_codigo,checklist_codigo,codigo_adm) VALUES ('$tipo','$titulo','$cod_contrato','$valor_nego','$honorarios',1, '$obscontrato', NOW(), NOW(),'$status','$desc_status',$cod_imovel, 1,$cod_adm)";
+
+  $connexao->query($sql);
+
+     
 }
+
+
 
 ?>
 
@@ -3756,7 +3785,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                         <div>
                         <label for="valornegociado">Valor negociado</label> </br>
-                            <input type="valornegociado" id="valornegociado" name="codcontrato" placeholder="100.000" required>
+                            <input type="valornegociado" id="valornegociado" name="valornegociado" placeholder="100.000" required>
                         </div>
                        
                         <div>
@@ -3767,9 +3796,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         <div>
                             <label for="etiqueta">Etiquetas</label> </br>
                             <select name="etiqueta" id="etiqueta" required>
-                                <option value="">Azul</option>
-                                <option value="">Amarelo</option>
-                                <option value="">Verde</option>
+                                <option value=""></option>
+                                <option value="Azul">Azul</option>
+                                <option value="Amarelo">Amarelo</option>
+                                <option value="Verde">Verde</option>
                             </select>
                         </div>
 
@@ -3784,6 +3814,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         <input type="hidden" name="status" value="pendente">
                         <input type="hidden" name="desc_status" value="Contrato pendente de vincular comprador e sua porcentagem">
                         <input type="hidden" name="codigoimovel" value="<?php echo $_GET['cod'] ?>">
+                        <input type="hidden" name="codigoadm" value="<?php echo $_GET['cod'] ?>">
                     </div>
 
                     <div class="prox">

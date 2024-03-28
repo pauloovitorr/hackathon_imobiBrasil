@@ -4,6 +4,10 @@ session_start();
 
 include_once('../conexao.php');
 
+if(empty($_GET['cod'])){
+  header('location:index.php');
+}
+
 if($_SERVER['REQUEST_METHOD'] === 'GET' ){
     $cod_imovel = $_GET['cod'];
     $sql = "SELECT 
