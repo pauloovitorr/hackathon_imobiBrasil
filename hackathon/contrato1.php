@@ -4,6 +4,13 @@ session_start();
 
 include_once('../conexao.php');
 
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+    // print_r($_POST);
+
+    // die();
+}
+
 ?>
 
 
@@ -3708,16 +3715,21 @@ include_once('../conexao.php');
 
           <div class="conteudo">
 
+          <div class="addCheck">
+              <a style="color: #007fe2;" href="./index.php">Voltar</a>
+          </div>
+
           <h1 style="text-align: center;margin:25px">Cadastro de contrato</h1>
 
         <div class="layout_contrato">
 
-                <form action="">
+                <form method="post">
                     <div class="pai_input_linha">
 
                         <div>
                             <label for="tipocontrato">Tipo de contrato</label> </br>
-                            <select name="tipocontrato" id="tipocontrato">
+                            <select name="tipocontrato" id="tipocontrato" required>
+                                <option value=""></option>
                                 <option value="Venda">Venda</option>
                                 <option value="Distrato">Distrato</option>
                                 <option value="Rescisão">Rescisão</option>
@@ -3726,32 +3738,35 @@ include_once('../conexao.php');
 
                         <div>
                             <label for="titulocontrato">Titulo para o contrato</label> </br>
-                            <input type="text" id="titulocontrato" name="titulocontrato" placeholder="Venda APT do Kayque">
+                            <input type="text" id="titulocontrato" name="titulocontrato" placeholder="Venda APT do Kayque" required>
                         </div>
 
 
+                        
                         <div>
-                            <label for="valornegociado">Valor negociado</label> </br>
-                            <input type="valornegociado" id="valornegociado" name="codcontrato" placeholder="100.000">
+                            <label for="codcontrato">Código para o contrato</label> </br>
+                            <input type="text" id="codcontrato" name="codcontrato" placeholder="APT01" required>
                         </div>
+                           
+                    
                     </div>
 
 
                     <div class="pai_input_linha">
 
                         <div>
-                            <label for="codcontrato">Código para o contrato</label> </br>
-                            <input type="text" id="codcontrato" name="codcontrato" placeholder="APT01">
+                        <label for="valornegociado">Valor negociado</label> </br>
+                            <input type="valornegociado" id="valornegociado" name="codcontrato" placeholder="100.000" required>
                         </div>
                        
                         <div>
                             <label for="honorarios">Honorários</label> </br>
-                            <input type="text" id="honorarios" name="honorarios" placeholder="10%">
+                            <input type="text" id="honorarios" name="honorarios" placeholder="10%" required>
                         </div>
 
                         <div>
                             <label for="etiqueta">Etiquetas</label> </br>
-                            <select name="" id="">
+                            <select name="etiqueta" id="etiqueta" required>
                                 <option value="">Azul</option>
                                 <option value="">Amarelo</option>
                                 <option value="">Verde</option>
@@ -3762,15 +3777,21 @@ include_once('../conexao.php');
 
                     <div class="pai_input_text">
                         <label for="obscontrato">Observação</label>  </br>
-                        <textarea name="obscontrato" id="obscontrato" cols="20" rows="10"></textarea>
+                        <textarea name="obscontrato" id="obscontrato" cols="20" rows="10" ></textarea>
+                    </div>
+
+                    <div>
+                        <input type="hidden" name="status" value="pendente">
+                        <input type="hidden" name="desc_status" value="Contrato pendente de vincular comprador e sua porcentagem">
+                        <input type="hidden" name="codigoimovel" value="<?php echo $_GET['cod'] ?>">
                     </div>
 
                     <div class="prox">
-              <a href="./contrato1.php?cod=<?php echo $_GET['cod'] ?>"><button class="btnss">Próximo</button></a>
-          </div>
-
+                        <button type="submit" class="btnss">Próximo</button>
+                    </div>
 
                 </form>
+
         </div>
          
           

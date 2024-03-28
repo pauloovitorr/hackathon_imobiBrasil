@@ -3735,7 +3735,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
     }
 
     .gcontratos{
-      border: 1px solid gray;
+      border: 1px solid transparent;
       border-radius: 10px;
       width: 90%;
       margin: 0 auto;
