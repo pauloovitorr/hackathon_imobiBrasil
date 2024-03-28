@@ -73,3 +73,57 @@
 .prox > a > button{
   width: 13%;
 }
+
+.layout_contrato{
+  width: 90%;
+  height: 500px;
+  margin: 0 auto;
+  padding: 15px;
+  margin-bottom: 50px;
+}
+
+.layout_contrato > form{
+  width: 90%;
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  margin-bottom: 50px;
+  box-shadow: 1px 1px 8px 2px #a7b0a8;
+  }
+
+  .pai_input_linha{
+    width: 80%;
+    margin: 0 auto;
+    padding: 15px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+
+  .pai_input_linha > div > input,
+  .pai_input_linha > div > select{
+    width: 190px;
+    padding: 5px;
+    font-size: 1.0rem;
+    border-radius: 3px;
+    outline-color: #18c721 ;
+  }
+
+  .pai_input_linha > div > label{
+    font-size: 1.0rem;
+    font-weight: 400;
+  }
+
+  .pai_input_text{
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 25px;
+  }
+
+  .pai_input_text > textarea{
+    width: 100%;
+  }
