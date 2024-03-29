@@ -21,9 +21,45 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
     $acao->execute();
 
     $result = $acao->get_result();
- 
 
 }
+
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) && !empty($_POST['cor']) && !empty($_POST['tipo'])){
+  
+  $cor = $connexao->escape_string($_POST['cor']);
+  $tipo = $connexao->escape_string($_POST['tipo']);
+
+  
+  $sql = "INSERT INTO etiquetas (cor, tipo) VALUES (?, ?)";
+
+  
+  $stmt = $connexao->prepare($sql);
+
+  $resposta = array();
+  
+  if($stmt){
+     
+      $stmt->bind_param("ss", $cor, $tipo);
+
+      if($stmt->execute()){
+        array_push($resposta, ['sucesso' => 'Etiqueta cadastrada com sucesso']);
+        
+      } else {
+          
+        array_push($resposta, ['falha' => 'Erro ao cadastrar etiqueta, tente novamente']);
+      }
+
+     
+      $stmt->close();
+  } else {
+    array_push($resposta, ['falha' => "$connexao->error"]);
+  }
+
+  echo json_encode($resposta);
+  exit;
+}
+
 
 ?>
 

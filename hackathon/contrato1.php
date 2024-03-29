@@ -13,7 +13,6 @@ if(empty($_GET['cod'])){
   header('location:index.php');
 }
 
-
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
   $tipo         = $connexao->escape_string($_POST['tipocontrato']);
@@ -37,8 +36,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
      
 }
 if ($_SERVER['REQUEST_METHOD'] === 'GET'){
-    $sql = 'SELECT * FROM etiquetas';
-    $etiquetas = $connexao->query($sql);
+    $sql        = 'SELECT * FROM etiquetas';
+    $etiquetas  = $connexao->query($sql);
 }
 
 
@@ -3781,7 +3780,46 @@ button:hover {
   top: 0;
 }
 
-      </style>
+</style>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    
+    $('#cadastraEtiqueta').submit(function(e){
+
+      e.preventDefault()
+       
+        let corSelecionada = $('input[name=cor]:checked').val();
+        
+       // Envia o valor para o servidor usando AJAX
+
+       let tipoContrato = $('#tipo').val();
+
+       let objEtiqueta = {
+        cor: corSelecionada,
+        tipo: tipoContrato,
+        cadastrarEtiqueta: $('#hidden_cad_eti').val()
+       }
+
+        $.ajax({
+            url: 'index.php', 
+            method: 'POST',
+            data: objEtiqueta,
+            
+            success: function(response){
+                console.log(response);
+            },
+            error: function(xhr, status, error){
+               
+               // console.error(error);
+            }
+        });
+    });
+});
+</script>
+
 
      
 
@@ -3796,41 +3834,53 @@ button:hover {
         <button id="close-modal">Fechar</button>
       </div>
       <div class="modal-body">
-        <form action="">
+
+
+        <form action="" id="cadastraEtiqueta">
 
             <div>
 
             <h3 style="text-align: center;">Selecione uma cor</h3> </br>
               
               <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Azul</label> <div style="width:25px;height:25px; border:1px solid #007fe2; background-color: #007fe2; border-radius: 50%;"></div></div>
-                  <input type="radio" value="#007fe2" name="cor">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Azul">Azul</label> <div style="width:25px;height:25px; border:1px solid #007fe2; background-color: #007fe2; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Azul" id="Azul" name="cor" required>
               </div>
 
               <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Verde</label> <div style="width:25px;height:25px; border:1px solid #2CA62F; background-color: #2CA62F; border-radius: 50%;"></div></div>
-                  <input type="radio" value="#2CA62F" name="cor">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Verde">Verde</label> <div style="width:25px;height:25px; border:1px solid #2CA62F; background-color: #2CA62F; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Verde" id="Verde" name="cor">
               </div>
 
               <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Amarelo</label> <div style="width:25px;height:25px; border:1px solid #ebe834; background-color: #ebe834; border-radius: 50%;"></div></div>
-                  <input type="radio" value="#ebe834" name="cor">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Amarelo">Amarelo</label> <div style="width:25px;height:25px; border:1px solid #ebe834; background-color: #ebe834; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Amarelo" id="Amarelo" name="cor">
               </div>
 
               <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Roxo</label> <div style="width:25px;height:25px; border:1px solid #b434eb; background-color: #b434eb; border-radius: 50%;"></div></div>
-                  <input type="radio" value="#b434eb" name="cor">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Roxo">Roxo</label> <div style="width:25px;height:25px; border:1px solid #b434eb; background-color: #b434eb; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Roxo" id="Roxo" name="cor">
               </div>
 
               <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Vermelho</label> <div style="width:25px;height:25px; border:1px solid #eb3a34; background-color: #eb3a34; border-radius: 50%;"></div></div>
-                  <input type="radio" value="#eb3a34" name="cor">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Vermelho">Vermelho</label> <div style="width:25px;height:25px; border:1px solid #eb3a34; background-color: #eb3a34; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Vermelho" id="Vermelho" name="cor">
               </div>
 
-              <div>
-                <select name="" id="">
-                  
+              <div style="margin-top: 15px; font-size: 0.9rem;">
+                <label for="tipo">Selecione o tipo de contrato</label>
+                <select name="tipo" id="tipo" required>
+                    <option value=""></option>
+                    <option value="venda">Venda</option>
+                    <option value="distrato">Distrato</option>
+                    <option value="recisão">Recisão</option>
                 </select>
+              </div>
+
+              <input type="hidden" id="hidden_cad_eti" value="cadastrarEtiqueta">
+
+              <div style="margin-top: 40px;">
+                  <button type="submit" style="background-color: #007fe2;">Cadastrar etiqueta </button>
               </div>
 
             
@@ -3905,13 +3955,13 @@ button:hover {
                               
                         
 
-                            <div id="etiquetalabel"><label for="etiqueta">Etiquetas</label>  <p id="open-modal" style="color: #007fe2;"><i class="fa-solid fa-circle-plus"></i>  Criar Checklist</p></div>
+                            <div id="etiquetalabel"><label for="etiqueta">Etiquetas</label>  <p id="open-modal" style="color: #007fe2;"><i class="fa-solid fa-circle-plus"></i>  Criar etiqueta</p></div>
                             <select name="etiqueta" id="etiqueta" required>
                               <option value=""></option>
                               <?php 
                                 if($etiquetas->num_rows> 0){
                                   while($etiqueta = $etiquetas->fetch_assoc()){
-                                    echo "<option value='" . $etiqueta['codigo_etiquetas'] . "'>" . $etiqueta['cor'] . "</option>";
+                                    echo "<option value='" . $etiqueta['codigo_etiquetas'] . "'>" . $etiqueta['cor'] . '  ('.$etiqueta['tipo'].')  ' .  "</option>";
 
                                   }
                                 }
@@ -3920,10 +3970,6 @@ button:hover {
                                 }
                               
                               ?>
-                                <!-- <option value=""></option>
-                                <option value="Azul">Azul</option>
-                                <option value="Amarelo">Amarelo</option>
-                                <option value="Verde">Verde</option> -->
                             </select>
                         </div>
 
