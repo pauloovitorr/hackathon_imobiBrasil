@@ -31,12 +31,32 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
   $cod_imovel   = $connexao->escape_string($_POST['codigoimovel']);
   $cod_adm      = $connexao->escape_string($_POST['codigoadm']);
 
-  $sql = "INSERT INTO contrato (tipo,titulo,referencia,valor_negociado,honorarios,etiquetas_codigo,obs,dt_criacao,dt_atualizacao,status_contrato,desc_status,	imoveis_codigo,checklist_codigo,codigo_adm) VALUES ('$tipo','$titulo','$cod_contrato','$valor_nego','$honorarios',1, '$obscontrato', NOW(), NOW(),'$status','$desc_status',$cod_imovel, 1,$cod_adm)";
+  $sql = "INSERT INTO contrato (tipo,titulo,referencia,valor_negociado,honorarios,etiquetas_codigo,obs,dt_criacao,dt_atualizacao,status_contrato,desc_status,	imoveis_codigo,checklist_codigo,codigo_adm) VALUES ('$tipo','$titulo','$cod_contrato','$valor_nego','$honorarios',1, '$obscontrato', NOW(), NOW(),'$status','$desc_status',$cod_imovel, 22,$cod_adm)";
 
-  $connexao->query($sql);
-
+ $connexao->query($sql);
      
 }
+if ($_SERVER['REQUEST_METHOD'] === 'GET'){
+    $sql = 'SELECT * FROM etiquetas';
+    $etiquetas = $connexao->query($sql);
+}
+
+
+// if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+//   $sql = 'SELECT * FROM contrato';
+//   $result = $connexao->query($sql);
+
+//   if ($result->num_rows > 0) {
+//     while ($row = $result->fetch_assoc()) {
+//       print_r($row);
+//     }
+//   } else {
+//     echo "0 resultados encontrados";
+//   }
+
+//   die();
+// }
+
 
 
 
@@ -92,6 +112,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       rel="stylesheet"
       type="text/css"
     />
+
 
     <style>
       .conteudo {
@@ -3680,69 +3701,154 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             width: 100%;
           }
         }
+
+        /* CSS modal Paulo */
+button {
+  padding: 0.6rem 1.2rem;
+  background-color: #888;
+  color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  opacity: 0.9;
+  font-size: 1rem;
+}
+
+
+#open-modal {
+  padding: 5px;
+  color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+#fade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 5;
+}
+
+#modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  max-width: 90%;
+  background-color: #fff;
+  padding: 1.2rem;
+  border-radius: 0.5rem;
+  z-index: 10;
+}
+
+#fade,
+#modal {
+  transition: 0.5s;
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+}
+
+.modal-body p {
+  margin-bottom: 1rem;
+}
+
+#modal.hide,
+#fade.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#modal.hide {
+  top: 0;
+}
+
       </style>
 
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-      <script>
-       
-      </script>
+     
+
       <section class="corpo">
         <div class="container">
 
+        <!-- Modal Paulo -->
+    <div id="fade" class="hide"></div>
+    <div id="modal" class="hide">
+      <div class="modal-header">
+        <h2>Adicionar etiqueta</h2>
+        <button id="close-modal">Fechar</button>
+      </div>
+      <div class="modal-body">
+        <form action="">
 
+            <div>
 
+            <h3 style="text-align: center;">Selecione uma cor</h3> </br>
+              
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Azul</label> <div style="width:25px;height:25px; border:1px solid #007fe2; background-color: #007fe2; border-radius: 50%;"></div></div>
+                  <input type="radio" value="#007fe2" name="cor">
+              </div>
 
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Verde</label> <div style="width:25px;height:25px; border:1px solid #2CA62F; background-color: #2CA62F; border-radius: 50%;"></div></div>
+                  <input type="radio" value="#2CA62F" name="cor">
+              </div>
 
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Amarelo</label> <div style="width:25px;height:25px; border:1px solid #ebe834; background-color: #ebe834; border-radius: 50%;"></div></div>
+                  <input type="radio" value="#ebe834" name="cor">
+              </div>
 
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Roxo</label> <div style="width:25px;height:25px; border:1px solid #b434eb; background-color: #b434eb; border-radius: 50%;"></div></div>
+                  <input type="radio" value="#b434eb" name="cor">
+              </div>
 
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="">Vermelho</label> <div style="width:25px;height:25px; border:1px solid #eb3a34; background-color: #eb3a34; border-radius: 50%;"></div></div>
+                  <input type="radio" value="#eb3a34" name="cor">
+              </div>
 
+              <div>
+                <select name="" id="">
+                  
+                </select>
+              </div>
 
+            
 
+            </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Paulo JQUERY -->
-        <script>
-  
-        </script>
+        </form>
+      </div>
+    </div>
 
 
 
         <!-- Paulo -->
+        
 
 
           <div class="conteudo">
+
 
           <div class="addCheck">
               <a style="color: #007fe2;" href="./index.php">Voltar</a>
@@ -3794,12 +3900,30 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         </div>
 
                         <div>
-                            <label for="etiqueta">Etiquetas</label> </br>
+
+                        
+                              
+                        
+
+                            <div id="etiquetalabel"><label for="etiqueta">Etiquetas</label>  <p id="open-modal" style="color: #007fe2;"><i class="fa-solid fa-circle-plus"></i>  Criar Checklist</p></div>
                             <select name="etiqueta" id="etiqueta" required>
-                                <option value=""></option>
+                              <option value=""></option>
+                              <?php 
+                                if($etiquetas->num_rows> 0){
+                                  while($etiqueta = $etiquetas->fetch_assoc()){
+                                    echo "<option value='" . $etiqueta['codigo_etiquetas'] . "'>" . $etiqueta['cor'] . "</option>";
+
+                                  }
+                                }
+                                else{
+                                  echo "<option value=''>" . 'Nenhuma etiqueta cadastrada' . "</option>";
+                                }
+                              
+                              ?>
+                                <!-- <option value=""></option>
                                 <option value="Azul">Azul</option>
                                 <option value="Amarelo">Amarelo</option>
-                                <option value="Verde">Verde</option>
+                                <option value="Verde">Verde</option> -->
                             </select>
                         </div>
 
@@ -4443,6 +4567,24 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
           500
         );
       });
+
+
+      // Modal Paulo
+
+      const openModalButton = document.querySelector("#open-modal");
+        const closeModalButton = document.querySelector("#close-modal");
+        const modal = document.querySelector("#modal");
+        const fade = document.querySelector("#fade");
+
+        const toggleModal = () => {
+          modal.classList.toggle("hide");
+          fade.classList.toggle("hide");
+        };
+
+        [openModalButton, closeModalButton, fade].forEach((el) => {
+          el.addEventListener("click", () => toggleModal());
+        });
+
     </script>
   </body>
 </html>

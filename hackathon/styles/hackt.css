@@ -134,3 +134,22 @@
     outline-color: #18c721 ;
     padding: 10px;
   }
+
+  #etiquetalabel{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #etiquetalabel > label{
+    font-size: 1.0rem;
+    font-weight: 400;
+  }
+
+  .pai_input_radio{
+    display: flex;
+  }
+
+  .pai_input_radio > input{
+    width: 25%;
+  }
