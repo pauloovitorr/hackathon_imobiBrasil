@@ -94,13 +94,12 @@
   }
 
   .pai_input_linha{
-    width: 80%;
+    width: 85%;
     margin: 0 auto;
     padding: 15px;
     margin-top: 50px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
 
 .addCheck{

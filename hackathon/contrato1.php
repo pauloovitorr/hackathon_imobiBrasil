@@ -13,28 +13,34 @@ if(empty($_GET['cod'])){
   header('location:index.php');
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-  $tipo         = $connexao->escape_string($_POST['tipocontrato']);
-  $titulo       = $connexao->escape_string($_POST['titulocontrato']);
-  $cod_contrato = $connexao->escape_string($_POST['codcontrato']);
+  $tipo = $_POST['tipocontrato'];
+  $titulo = $_POST['titulocontrato'];
+  $cod_contrato = $_POST['codcontrato'];
 
-  $valor_nego   = $connexao->escape_string($_POST['valornegociado']);
-  $honorarios   = $connexao->escape_string($_POST['honorarios']);
-  $etiqueta     = $connexao->escape_string($_POST['etiqueta']);
-  $obscontrato  = $connexao->escape_string($_POST['obscontrato']);
+  $valor_nego = $_POST['valornegociado'];
+  $honorarios = $_POST['honorarios'];
+  $etiqueta = $_POST['etiqueta'];
+  $obscontrato = $_POST['obscontrato'];
 
   // inputs hidden
-  $status       = $connexao->escape_string($_POST['status']);
-  $desc_status  = $connexao->escape_string($_POST['desc_status']);
-  $cod_imovel   = $connexao->escape_string($_POST['codigoimovel']);
-  $cod_adm      = $connexao->escape_string($_POST['codigoadm']);
+  $status = $_POST['status'];
+  $desc_status = $_POST['desc_status'];
+  $cod_imovel = $_POST['codigoimovel'];
+  $cod_adm = $_POST['codigoadm'];
 
-  $sql = "INSERT INTO contrato (tipo,titulo,referencia,valor_negociado,honorarios,etiquetas_codigo,obs,dt_criacao,dt_atualizacao,status_contrato,desc_status,	imoveis_codigo,checklist_codigo,codigo_adm) VALUES ('$tipo','$titulo','$cod_contrato','$valor_nego','$honorarios',1, '$obscontrato', NOW(), NOW(),'$status','$desc_status',$cod_imovel, 22,$cod_adm)";
+  $sql = "INSERT INTO contrato (tipo, titulo, referencia, valor_negociado, honorarios, etiquetas_codigo, obs, dt_criacao, dt_atualizacao, status_contrato, desc_status, imoveis_codigo, checklist_codigo, codigo_adm) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, 22, ?)";
 
- $connexao->query($sql);
-     
+  $stmt = $connexao->prepare($sql);
+
+  $stmt->bind_param("ssssssssssi", $tipo, $titulo, $cod_contrato, $valor_nego, $honorarios, $etiqueta, $obscontrato, $status, $desc_status, $cod_imovel, $cod_adm);
+
+  $stmt->execute();
 }
+
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET'){
     $sql        = 'SELECT * FROM etiquetas';
     $etiquetas  = $connexao->query($sql);
@@ -3932,6 +3938,8 @@ $(document).ready(function(){
                             <label for="codcontrato">Código para o contrato</label> </br>
                             <input type="text" id="codcontrato" name="codcontrato" placeholder="APT01" required>
                         </div>
+
+                        
                            
                     
                     </div>
@@ -3951,10 +3959,6 @@ $(document).ready(function(){
 
                         <div>
 
-                        
-                              
-                        
-
                             <div id="etiquetalabel"><label for="etiqueta">Etiquetas</label>  <p id="open-modal" style="color: #007fe2;"><i class="fa-solid fa-circle-plus"></i>  Criar etiqueta</p></div>
                             <select name="etiqueta" id="etiqueta" required>
                               <option value=""></option>
@@ -3973,7 +3977,20 @@ $(document).ready(function(){
                             </select>
                         </div>
 
+
+                      
+
                     </div>
+
+                    <div style="width: 50%;margin:0 auto;">
+                            <label for="tipocontrato">Checklist para o contrato</label> </br>
+                            <select style="outline-color:#18c721; width: 100%;" name="tipocontrato" id="tipocontrato" required>
+                                <option value=""></option>
+                                <option value="Venda">Venda</option>
+                                <option value="Distrato">Distrato</option>
+                                <option value="Rescisão">Rescisão</option>
+                            </select>
+                        </div>
 
                     <div class="pai_input_text">
                         <label for="obscontrato">Observação</label>  </br>
