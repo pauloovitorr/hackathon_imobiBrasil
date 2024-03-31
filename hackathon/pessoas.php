@@ -10,77 +10,49 @@ if(empty($_SESSION['codigo_adm'])){
   header('location:index.php');
 }
 
-if(empty($_GET['cod'])){
+if(empty($_GET['contrato'])){
   header('location:index.php');
+}else{
+
+  $cod_contrato = $connexao->escape_string($_GET['contrato']);
+
+  $sql = "SELECT 
+	contrato.codigo_contrato,
+    contrato.tipo,
+    contrato.titulo,
+    contrato.imoveis_codigo,
+    imoveis.cidade,
+    imoveis.estado,
+    imoveis.cod_proprietario,
+    imoveis.cod_corretor,
+    imoveis.codigo_imovel,
+    
+    
+    proprietario.codigo_clientes AS cod_proprietario,
+    proprietario.nome  AS nome_proprietario,
+    proprietario.cpf  AS cpf_proprietario,
+     
+    corretorimovel.codigo_clientes AS cod_corretor,
+    corretorimovel.nome AS nome_corretor,
+    corretorimovel.cpf AS cpf_corretor,
+    corretor.creci,
+    corretor.id_cliente_corretor
+    
+FROM 
+    contrato
+INNER JOIN
+	imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
+INNER JOIN
+	clientes AS proprietario ON imoveis.cod_proprietario = proprietario.codigo_clientes
+INNER JOIN
+	corretor ON imoveis.cod_corretor = corretor.codigo_corretor
+INNER JOIN
+	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+WHERE
+	contrato.codigo_contrato = $cod_contrato";
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-
-$tipo         = $connexao->escape_string($_POST['tipocontrato']);
-$titulo       = $connexao->escape_string($_POST['titulocontrato']);
-$cod_contrato = $connexao->escape_string($_POST['codcontrato']);
-$valor_nego   = $connexao->escape_string($_POST['valornegociado']);
-$honorarios   = $connexao->escape_string($_POST['honorarios']);
-$etiqueta     = $connexao->escape_string($_POST['etiqueta']);
-$obscontrato  = $connexao->escape_string($_POST['obscontrato']);
-$tipocheck    = $connexao->escape_string($_POST['tipocheck']);
-
-// inputs hidden
-$status       = $connexao->escape_string($_POST['status']);
-$desc_status  = $connexao->escape_string($_POST['desc_status']);
-$cod_imovel   = $connexao->escape_string($_POST['codigoimovel']);
-$cod_adm      = $connexao->escape_string($_POST['codigoadm']);
-
-
-  $sql = "INSERT INTO contrato (tipo, titulo, referencia, valor_negociado, honorarios, etiquetas_codigo, obs, dt_criacao, dt_atualizacao, status_contrato, desc_status, imoveis_codigo, checklist_codigo, codigo_adm) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?)";
-
-  $stmt = $connexao->prepare($sql);
-
-  $stmt->bind_param("sssssisssiii", $tipo, $titulo, $cod_contrato, $valor_nego, $honorarios, $etiqueta, $obscontrato, $status, $desc_status, $cod_imovel,$tipocheck , $cod_adm);
-
-  $stmt->execute();
-  $cod_contrato = $connexao->insert_id;
-
-  if ($stmt->affected_rows > 0) {
-    header("location:pessoas.php?contrato=$cod_contrato");
-} else {
-    echo "Falha na inserção: " . $connexao->error;
-}
-
-$stmt->close();
-
-}
-
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET'){
-    $sql        = 'SELECT * FROM etiquetas ';
-    $etiquetas  = $connexao->query($sql);
-
-    $cod_adm = $_SESSION['codigo_adm'];
-
-    $sql2 = "SELECT * FROM checklist WHERE codigo_adm = $cod_adm";
-    $check = $connexao->query($sql2);
-}
-
-
-// if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-//   $sql = 'SELECT * FROM contrato';
-//   $result = $connexao->query($sql);
-
-//   if ($result->num_rows > 0) {
-//     while ($row = $result->fetch_assoc()) {
-//       print_r($row);
-//     }
-//   } else {
-//     echo "0 resultados encontrados";
-//   }
-
-//   die();
-// }
-
-
+$dados_contrato = $connexao->query($sql);
 
 
 ?>
@@ -3809,111 +3781,13 @@ button:hover {
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-$(document).ready(function(){
-    
-    $('#cadastraEtiqueta').submit(function(e){
 
-      e.preventDefault()
-       
-        let corSelecionada = $('input[name=cor]:checked').val();
-        
-       // Envia o valor para o servidor usando AJAX
-
-       let tipoContrato = $('#tipo').val();
-
-       let objEtiqueta = {
-        cor: corSelecionada,
-        tipo: tipoContrato,
-        cadastrarEtiqueta: $('#hidden_cad_eti').val()
-       }
-
-        $.ajax({
-            url: 'index.php', 
-            method: 'POST',
-            data: objEtiqueta,
-            
-            success: function(response){
-                console.log(response);
-            },
-            error: function(xhr, status, error){
-               
-               // console.error(error);
-            }
-        });
-    });
-});
 </script>
 
 
      
-
       <section class="corpo">
-        <div class="container">
-
-        <!-- Modal Paulo -->
-    <div id="fade" class="hide"></div>
-    <div id="modal" class="hide">
-      <div class="modal-header">
-        <h2>Adicionar etiqueta</h2>
-        <button id="close-modal">Fechar</button>
-      </div>
-      <div class="modal-body">
-
-
-        <form action="" id="cadastraEtiqueta">
-
-            <div>
-
-            <h3 style="text-align: center;">Selecione uma cor</h3> </br>
-              
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Azul">Azul</label> <div style="width:25px;height:25px; border:1px solid #007fe2; background-color: #007fe2; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Azul" id="Azul" name="cor" required>
-              </div>
-
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Verde">Verde</label> <div style="width:25px;height:25px; border:1px solid #2CA62F; background-color: #2CA62F; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Verde" id="Verde" name="cor">
-              </div>
-
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Amarelo">Amarelo</label> <div style="width:25px;height:25px; border:1px solid #ebe834; background-color: #ebe834; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Amarelo" id="Amarelo" name="cor">
-              </div>
-
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Roxo">Roxo</label> <div style="width:25px;height:25px; border:1px solid #b434eb; background-color: #b434eb; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Roxo" id="Roxo" name="cor">
-              </div>
-
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Vermelho">Vermelho</label> <div style="width:25px;height:25px; border:1px solid #eb3a34; background-color: #eb3a34; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Vermelho" id="Vermelho" name="cor">
-              </div>
-
-              <div style="margin-top: 15px; font-size: 0.9rem;">
-                <label for="tipo">Selecione o tipo de contrato</label>
-                <select name="tipo" id="tipo" required>
-                    <option value=""></option>
-                    <option value="venda">Venda</option>
-                    <option value="distrato">Distrato</option>
-                    <option value="recisão">Recisão</option>
-                </select>
-              </div>
-
-              <input type="hidden" id="hidden_cad_eti" value="cadastrarEtiqueta">
-
-              <div style="margin-top: 40px;">
-                  <button type="submit" style="background-color: #007fe2;">Cadastrar etiqueta </button>
-              </div>
-
-            
-
-            </div>
-
-        </form>
-      </div>
-    </div>
+        
 
 
 
@@ -3921,126 +3795,22 @@ $(document).ready(function(){
         
 
 
-          <div class="conteudo">
-
+        <div class="conteudo">
 
           <div class="addCheck">
               <a style="color: #007fe2;" href="./index.php">Voltar</a>
           </div>
 
-          <h1 style="text-align: center;margin:25px">Cadastro de contrato</h1>
+          <div class="revisa">
 
-        <div class="layout_contrato">
-
-                <form method="post">
-                    <div class="pai_input_linha">
-
-                        <div>
-                            <label for="tipocontrato">Tipo de contrato</label> </br>
-                            <select name="tipocontrato" id="tipocontrato" required>
-                                <option value=""></option>
-                                <option value="Venda">Venda</option>
-                                <option value="Distrato">Distrato</option>
-                                <option value="Rescisão">Rescisão</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="titulocontrato">Titulo para o contrato</label> </br>
-                            <input type="text" id="titulocontrato" name="titulocontrato" placeholder="Venda APT do Kayque" required>
-                        </div>
-
-
-                        
-                        <div>
-                            <label for="codcontrato">Código para o contrato</label> </br>
-                            <input type="text" id="codcontrato" name="codcontrato" placeholder="APT01" required>
-                        </div>
-
-                        
-                           
-                    
-                    </div>
-
-
-                    <div class="pai_input_linha">
-
-                        <div>
-                        <label for="valornegociado">Valor negociado</label> </br>
-                            <input type="valornegociado" id="valornegociado" name="valornegociado" placeholder="100.000" required>
-                        </div>
-                       
-                        <div>
-                            <label for="honorarios">Honorários</label> </br>
-                            <input type="text" id="honorarios" name="honorarios" placeholder="10%" required>
-                        </div>
-
-                        <div>
-
-                            <div id="etiquetalabel"><label for="etiqueta">Etiquetas</label>  <p id="open-modal" style="color: #007fe2;"><i class="fa-solid fa-circle-plus"></i>  Criar etiqueta</p></div>
-                            <select name="etiqueta" id="etiqueta" required>
-                              <option value=""></option>
-                              <?php 
-                                if($etiquetas->num_rows> 0){
-                                  while($etiqueta = $etiquetas->fetch_assoc()){
-                                    echo "<option value='" . $etiqueta['codigo_etiquetas'] . "'>" . $etiqueta['cor'] . '  ('.$etiqueta['tipo'].')  ' .  "</option>";
-
-                                  }
-                                }
-                                else{
-                                  echo "<option value=''>" . 'Nenhuma etiqueta cadastrada' . "</option>";
-                                }
-                              
-                              ?>
-                            </select>
-                        </div>
-
-
-                      
-
-                    </div>
-                    <div style="width: 50%;margin:0 auto;">
-                            <label for="tipocheck">Checklist para o contrato</label> </br>
-                            <select style="outline-color:#18c721; width: 100%;" name="tipocheck" id="tipocheck" required>
-                                <option value=""></option>
-                                <?php
-                                    if($check->num_rows> 0){
-                                      while($checklist = $check->fetch_assoc()){
-                                        echo "<option value='" .$checklist['codigo_check'] . "'>" .  $checklist['tipo']   .'  ('.$checklist['descricao'].')  ' .  "</option>";
-    
-                                      }
-                                    }
-                                    else{
-                                      echo "<option value=''>" . 'Nenhuma etiqueta cadastrada' . "</option>";
-                                    }
-                                ?>
-                            </select>
-                        </div>
-
-                    <div class="pai_input_text">
-                        <label for="obscontrato">Observação</label>  </br>
-                        <textarea name="obscontrato" id="obscontrato" cols="20" rows="10" ></textarea>
-                    </div>
-
-                    <div>
-                        <input type="hidden" name="status" value="pendente">
-                        <input type="hidden" name="desc_status" value="Contrato pendente de vincular comprador e sua porcentagem">
-                        <input type="hidden" name="codigoimovel" value="<?php echo $_GET['cod'] ?>">
-                        <input type="hidden" name="codigoadm" value="<?php echo $_SESSION['codigo_adm']?>">
-                    </div>
-
-                    <div class="prox">
-                        <button type="submit" class="btnss">Próximo</button>
-                    </div>
-
-                </form>
+          </div>
 
         </div>
          
           
                       
             
-          </div>
+    
 
         <!-- Paulo -->
 

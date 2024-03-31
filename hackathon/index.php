@@ -21,7 +21,11 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
     $acao->execute();
 
     $result = $acao->get_result();
+}
 
+if($_SERVER['REQUEST_METHOD'] === 'GET'){
+    $sql = "SELECT * FROM contrato";
+    $lista_contratos = $connexao->query($sql);
 }
 
 
@@ -3932,11 +3936,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
 
     </div>
 
-          <h2>Dashboard</h2>
-          <div class="dash">
+          <h2>Lista de contratos</h2>
 
-              
+          <div>
 
+             
           </div>
                       
             
