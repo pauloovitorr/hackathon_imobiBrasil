@@ -151,3 +151,40 @@
   .pai_input_radio > input{
     width: 25%;
   }
+
+  .tabela_contratos{
+    width: 98%;
+    margin: 0 auto;
+    text-align: center;
+    border-collapse: collapse;
+    padding: 5px;
+  }
+
+  .tabela_contratos th,
+  .tabela_contratos td{
+    border-bottom: 2px solid #a7b0a881;
+    padding: 5px;
+  }
+
+  .pendente{
+    color: #f13c05;
+    font-weight: 600;
+   }
+  .pendente_icon{
+    color: #f13c05;
+    font-size: 1.3rem;
+  }
+
+ .ativo{
+  color:  #18c721;
+  font-weight: 600;
+ }
+
+ .ativo_icon{
+  color:  #18c721;
+  font-size: 1.3rem;
+}
+
+ .esconde{
+  display: none;
+ }

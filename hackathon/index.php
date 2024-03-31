@@ -24,7 +24,10 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
-    $sql = "SELECT * FROM contrato";
+
+  $cod_adm = $_SESSION['codigo_adm'];
+
+    $sql = "SELECT * FROM contrato where codigo_adm = $cod_adm order by status_contrato DESC";
     $lista_contratos = $connexao->query($sql);
 }
 
@@ -93,6 +96,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
     <meta name="robots" content="noindex,nofollow" />
     <meta http-equiv="pragma" content="no-cache" />
     <meta name="language" content="pt-br" />
+
+    <link rel="stylesheet" href="./styles/hackt.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link
       rel="shortcut icon"
@@ -3936,15 +3942,83 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
 
     </div>
 
-          <h2>Lista de contratos</h2>
+          
 
-          <div>
+          <div class="revisa">
 
+          <h2 style="text-align: center;">Lista de contratos</h2> </br>
+          
+
+          <div style="text-align: center;">
+
+          <table class="tabela_contratos <?php echo $lista_contratos->num_rows <= 0  ? 'esconde':'';  ?>">
+
+            <tr>
+              <th>Referência</th>
+              <th>Tipo de contrato</th>
+              <th>Titulo</th>
+              <th>Valor negociado</th>
+              <th>Honorarios</th>
+              <th>Status</th>
+              <th>Descrição status</th>
+              <th>Criação</th>
+            </tr>
+
+          
+                <?php
+                  if($lista_contratos->num_rows > 0){
+                    while($contato = $lista_contratos->fetch_array()){
+
+                    
+                      if($contato['status_contrato'] === 'pendente'){
+
+                        echo '<tr>';
+                            echo '<td>' .$contato["referencia"]. '</td>';
+                            echo '<td>' .$contato["tipo"] .'</td>';
+                            echo '<td>' .$contato["titulo"]  .'</td>';
+                            echo '<td>R$ ' . number_format($contato["valor_negociado"], 2, ',', '.') . '</td>';
+                            echo '<td>' .$contato["honorarios"] . '%'  .'</td>';
+                            echo '<td class="pendente">' .$contato["status_contrato"] .'</td>';
+                            echo '<td>' .$contato["desc_status"] . '</td>';
+                            echo '<td>' . date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
+                            echo '<td>' . '<a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check pendente_icon"></i></a>' .'</td>';
+                        echo '</tr>';
+                      }
+                      else{
+                        echo '<tr>';
+                            echo '<td>' .$contato["referencia"]. '</td>';
+                            echo '<td>' .$contato["tipo"] .'</td>';
+                            echo '<td>' .$contato["titulo"]  .'</td>';
+                            echo '<td>R$ ' . number_format($contato["valor_negociado"], 2, ',', '.') . '</td>';
+                            echo '<td>' .$contato["honorarios"] . '%'  .'</td>';
+                            echo '<td class="ativo">' .$contato["status_contrato"] .'</td>';
+                            echo '<td>' .$contato["desc_status"] . '</td>';
+                            echo '<td>' .date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
+                            echo '<td><a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check ativo_icon"></i></a></td>';
+
+                        echo '</tr>';
+                      }
+
+                    }
+                  }
+                  else{
+                    echo "<h3>Crie um contrato</h3>";
+                    echo "<img style='width: 250px;' src='./img/semcontrato.png' alt='sem contratos'>";
+                  }
+                
+                ?>
+
+              </table>
+          </div>
              
           </div>
-                      
+            
             
           </div>
+
+          
+
+          
 
         <!-- Paulo -->
 
