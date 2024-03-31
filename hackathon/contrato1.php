@@ -5,6 +5,7 @@ session_start();
 include_once('../conexao.php');
 
 
+
 if(empty($_SESSION['codigo_adm'])){
   header('location:index.php');
 }
@@ -15,26 +16,27 @@ if(empty($_GET['cod'])){
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-  $tipo = $_POST['tipocontrato'];
-  $titulo = $_POST['titulocontrato'];
-  $cod_contrato = $_POST['codcontrato'];
+$tipo         = $connexao->escape_string($_POST['tipocontrato']);
+$titulo       = $connexao->escape_string($_POST['titulocontrato']);
+$cod_contrato = $connexao->escape_string($_POST['codcontrato']);
+$valor_nego   = $connexao->escape_string($_POST['valornegociado']);
+$honorarios   = $connexao->escape_string($_POST['honorarios']);
+$etiqueta     = $connexao->escape_string($_POST['etiqueta']);
+$obscontrato  = $connexao->escape_string($_POST['obscontrato']);
+$tipocheck    = $connexao->escape_string($_POST['tipocheck']);
 
-  $valor_nego = $_POST['valornegociado'];
-  $honorarios = $_POST['honorarios'];
-  $etiqueta = $_POST['etiqueta'];
-  $obscontrato = $_POST['obscontrato'];
+// inputs hidden
+$status       = $connexao->escape_string($_POST['status']);
+$desc_status  = $connexao->escape_string($_POST['desc_status']);
+$cod_imovel   = $connexao->escape_string($_POST['codigoimovel']);
+$cod_adm      = $connexao->escape_string($_POST['codigoadm']);
 
-  // inputs hidden
-  $status = $_POST['status'];
-  $desc_status = $_POST['desc_status'];
-  $cod_imovel = $_POST['codigoimovel'];
-  $cod_adm = $_POST['codigoadm'];
 
-  $sql = "INSERT INTO contrato (tipo, titulo, referencia, valor_negociado, honorarios, etiquetas_codigo, obs, dt_criacao, dt_atualizacao, status_contrato, desc_status, imoveis_codigo, checklist_codigo, codigo_adm) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, 22, ?)";
+  $sql = "INSERT INTO contrato (tipo, titulo, referencia, valor_negociado, honorarios, etiquetas_codigo, obs, dt_criacao, dt_atualizacao, status_contrato, desc_status, imoveis_codigo, checklist_codigo, codigo_adm) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?)";
 
   $stmt = $connexao->prepare($sql);
 
-  $stmt->bind_param("ssssssssssi", $tipo, $titulo, $cod_contrato, $valor_nego, $honorarios, $etiqueta, $obscontrato, $status, $desc_status, $cod_imovel, $cod_adm);
+  $stmt->bind_param("sssssisssiii", $tipo, $titulo, $cod_contrato, $valor_nego, $honorarios, $etiqueta, $obscontrato, $status, $desc_status, $cod_imovel,$tipocheck , $cod_adm);
 
   $stmt->execute();
 }
@@ -42,8 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET'){
-    $sql        = 'SELECT * FROM etiquetas';
+    $sql        = 'SELECT * FROM etiquetas ';
     $etiquetas  = $connexao->query($sql);
+
+    $cod_adm = $_SESSION['codigo_adm'];
+
+    $sql2 = "SELECT * FROM checklist WHERE codigo_adm = $cod_adm";
+    $check = $connexao->query($sql2);
 }
 
 
@@ -3981,14 +3988,21 @@ $(document).ready(function(){
                       
 
                     </div>
-
                     <div style="width: 50%;margin:0 auto;">
-                            <label for="tipocontrato">Checklist para o contrato</label> </br>
-                            <select style="outline-color:#18c721; width: 100%;" name="tipocontrato" id="tipocontrato" required>
+                            <label for="tipocheck">Checklist para o contrato</label> </br>
+                            <select style="outline-color:#18c721; width: 100%;" name="tipocheck" id="tipocheck" required>
                                 <option value=""></option>
-                                <option value="Venda">Venda</option>
-                                <option value="Distrato">Distrato</option>
-                                <option value="Rescisão">Rescisão</option>
+                                <?php
+                                    if($check->num_rows> 0){
+                                      while($checklist = $check->fetch_assoc()){
+                                        echo "<option value='" .$checklist['codigo_check'] . "'>" .  $checklist['tipo']   .'  ('.$checklist['descricao'].')  ' .  "</option>";
+    
+                                      }
+                                    }
+                                    else{
+                                      echo "<option value=''>" . 'Nenhuma etiqueta cadastrada' . "</option>";
+                                    }
+                                ?>
                             </select>
                         </div>
 
@@ -4001,7 +4015,7 @@ $(document).ready(function(){
                         <input type="hidden" name="status" value="pendente">
                         <input type="hidden" name="desc_status" value="Contrato pendente de vincular comprador e sua porcentagem">
                         <input type="hidden" name="codigoimovel" value="<?php echo $_GET['cod'] ?>">
-                        <input type="hidden" name="codigoadm" value="<?php echo $_GET['cod'] ?>">
+                        <input type="hidden" name="codigoadm" value="<?php echo $_SESSION['codigo_adm']?>">
                     </div>
 
                     <div class="prox">

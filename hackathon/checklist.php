@@ -13,7 +13,7 @@ if(!empty($_POST)){
  
     $titulo     = $connexao->escape_string($_POST['check']);
     $descricao  = $connexao->escape_string($_POST['descri']);
-    $cod_adm    = $connexao->escape_string($_POST['codigo_adm']);
+    $cod_adm    = $connexao->escape_string($_POST['cod']);
     
     $connexao->begin_transaction();
 
@@ -97,7 +97,7 @@ if(!empty($_POST)){
     <meta name="robots" content="noindex,nofollow" />
     <meta http-equiv="pragma" content="no-cache" />
     <meta name="language" content="pt-br" />
-    <!-- <link rel="stylesheet" href="./styles/hackt.css"> -->
+    <link rel="stylesheet" href="./styles/hackt.css">
     
     <link
       rel="shortcut icon"
@@ -3914,11 +3914,13 @@ if(!empty($_POST)){
               <a style="color: #007fe2;" href="./index.php">Voltar</a>
           </div>
 
-          <h1 style="text-align: center; margin-top:25px" >Criar Checklist</h1>
-          <div class="dash">
+          
+          
   
 
-    <div class='cad_check'>
+    <div class='cad_check revisa '>
+
+    <h1 style="text-align: center; margin-top:25px" >Criar Checklist</h1>
         
         <form method="post">
 
