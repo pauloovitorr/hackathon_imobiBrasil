@@ -214,6 +214,13 @@
  .form_compradores{
   width: 80%;
   margin: 0 auto;
+  margin-top: 25px;
+  padding: 10px;
+  border: 1px solid #a7b0a881;
+ }
+
+ .form_compradores h2{
+  text-align: center;
  }
 
  .form_compradores > form > div{

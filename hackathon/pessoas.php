@@ -3864,7 +3864,7 @@ button:hover {
 
               <form action="">
                 <div>
-                   <div>
+                   <div class="comprador">
                       <label for="comprador1">Selecione o comprador</label> </br>
                         <select name="comprador1" id="comprador1">
                           <option value=""></option>
@@ -3889,6 +3889,19 @@ button:hover {
                    </div>
 
                 </div>
+
+                <div class='pai_btns' style='border:none'>
+
+                    <div class="div_btn">
+                          <button style="background-color: #007FE2;" id="add_passo" class='btnn'>Adicionar Comprador</button>
+                    </div>
+
+                    <div class="div_btn">
+                          <button  type="submit" class='btnss'>Cadastrar</button>
+                    </div>
+
+              </div>
+
               </form>
 
             </div>
