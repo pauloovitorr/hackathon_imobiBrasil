@@ -17,9 +17,10 @@ if(empty($_GET['contrato'])){
   $cod_contrato = $connexao->escape_string($_GET['contrato']);
 
   $sql = "SELECT 
-	contrato.codigo_contrato,
+	  contrato.codigo_contrato,
     contrato.tipo,
     contrato.titulo,
+    contrato.referencia,
     contrato.imoveis_codigo,
     imoveis.cidade,
     imoveis.estado,
@@ -53,6 +54,12 @@ WHERE
 }
 
 $dados_contrato = $connexao->query($sql);
+
+$dados_contrato = $dados_contrato->fetch_assoc();
+
+$sql2 = 'SELECT * FROM clientes WHERE perfil = "comprador" ';
+
+$dados_comprador = $connexao->query($sql2);
 
 
 ?>
@@ -3780,9 +3787,34 @@ button:hover {
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
 
-</script>
+<!-- Paulo JQUERY -->
+        <script>
+        $(document).ready(function(){
+
+                    let count = 2
+                   
+                    $('#add_passo').click(function(e){
+                        e.preventDefault();
+
+                        let passo = `<div class='input' >
+                                        <label for="passo${count}">Título para o passo</label><br>
+                                        <input type="text" id="passo${count}" name="passo${count}"></br>
+
+                                        <label for="desc${count}">Descrição do passo</label> </br>
+                                        <textarea name="desc${count}" id="desc${count}" cols="40" rows="7"></textarea></br>
+
+                                    </div>`;
+
+                        let clonedPasso = $(passo).clone(); 
+                        $('.passo').append(clonedPasso);
+                        
+                        count += 1;
+                    });     
+        })
+
+    </script>
+
 
 
      
@@ -3801,7 +3833,31 @@ button:hover {
               <a style="color: #007fe2;" href="./index.php">Voltar</a>
           </div>
 
+          <h1 style="text-align: center;">Cadastro de comprador</h1>
+
           <div class="revisa">
+
+            <div>
+                <p>Código do contrato: <strong><?php echo $dados_contrato['referencia'] ?></strong></p>
+                <p>Título: <strong><?php echo $dados_contrato['titulo'] ?></strong></p>
+                <p>Tipo de contrato: <strong><?php echo $dados_contrato['tipo'] ?></strong></p>
+            </div>
+
+            <div>
+                <p> <strong><?php echo $dados_contrato['cidade'] ?></strong></p>
+                <p> <strong><?php echo $dados_contrato['estado'] ?></strong></p>
+            </div>
+
+            <div>
+                <p>Proprietário: <strong><?php echo $dados_contrato['nome_proprietario'] ?></strong></p>
+                <p>CPF: <strong><?php echo $dados_contrato['cpf_proprietario'] ?></strong></p>
+            </div>
+
+            <div>
+                <p>Corretor: <strong><?php echo $dados_contrato['nome_corretor'] ?></strong></p>
+                <p>CPF: <strong><?php echo $dados_contrato['cpf_corretor'] ?></strong></p>
+                <p>CRECI: <strong><?php echo $dados_contrato['creci'] ?></strong></p>
+            </div>
 
           </div>
 
@@ -4426,22 +4482,6 @@ button:hover {
         );
       });
 
-
-      // Modal Paulo
-
-      const openModalButton = document.querySelector("#open-modal");
-        const closeModalButton = document.querySelector("#close-modal");
-        const modal = document.querySelector("#modal");
-        const fade = document.querySelector("#fade");
-
-        const toggleModal = () => {
-          modal.classList.toggle("hide");
-          fade.classList.toggle("hide");
-        };
-
-        [openModalButton, closeModalButton, fade].forEach((el) => {
-          el.addEventListener("click", () => toggleModal());
-        });
 
     </script>
   </body>
