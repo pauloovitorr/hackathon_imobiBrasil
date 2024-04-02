@@ -3837,27 +3837,62 @@ button:hover {
 
           <div class="revisa">
 
-            <div>
-                <p>Código do contrato: <strong><?php echo $dados_contrato['referencia'] ?></strong></p>
-                <p>Título: <strong><?php echo $dados_contrato['titulo'] ?></strong></p>
-                <p>Tipo de contrato: <strong><?php echo $dados_contrato['tipo'] ?></strong></p>
+            <div class='pessoas'>
+
+                <div class='dados_contratoo'>
+                    <p>Código do contrato: <strong><?php echo $dados_contrato['referencia'] ?></strong></p>
+                    <p>Título: <strong><?php echo $dados_contrato['titulo'] ?></strong></p>
+                    <p>Tipo de contrato: <strong><?php echo $dados_contrato['tipo'] ?></strong></p>
+                </div>
+
+                <div>
+                    <p>Proprietário: <strong><?php echo $dados_contrato['nome_proprietario'] ?></strong></p>
+                    <p>CPF: <strong><?php echo $dados_contrato['cpf_proprietario'] ?></strong></p>
+                </div>
+
+                <div>
+                    <p>Corretor: <strong><?php echo $dados_contrato['nome_corretor'] ?></strong></p>
+                    <p>CPF: <strong><?php echo $dados_contrato['cpf_corretor'] ?></strong></p>
+                    <p>CRECI: <strong><?php echo $dados_contrato['creci'] ?></strong></p>
+                </div>
+
             </div>
 
-            <div>
-                <p> <strong><?php echo $dados_contrato['cidade'] ?></strong></p>
-                <p> <strong><?php echo $dados_contrato['estado'] ?></strong></p>
+            <div class='form_compradores'>
+
+            <h2>Preencha os dados abaixo</h2>
+
+              <form action="">
+                <div>
+                   <div>
+                      <label for="comprador1">Selecione o comprador</label> </br>
+                        <select name="comprador1" id="comprador1">
+                          <option value=""></option>
+                          <?php 
+                       
+                          
+                          if($dados_comprador->num_rows > 0){
+                            while($comprador = $dados_comprador->fetch_assoc()){
+                                echo '<option value="' . $comprador["codigo_clientes"] . '">' . $comprador['nome'] . ' CPF: ' . $comprador['cpf'] . '</option>';
+                            }
+                          }
+                          else{
+                            echo '<option value="">'. 'Necessário cadastrar cliente com perfil comprador' .'</option>' ;
+                          }
+                          ?>
+                        </select>
+                   </div>
+
+                   <div>
+                      <label for="">Porcentagem (%)</label>
+                      <input type="number" min='1' max='40'>
+                   </div>
+
+                </div>
+              </form>
+
             </div>
 
-            <div>
-                <p>Proprietário: <strong><?php echo $dados_contrato['nome_proprietario'] ?></strong></p>
-                <p>CPF: <strong><?php echo $dados_contrato['cpf_proprietario'] ?></strong></p>
-            </div>
-
-            <div>
-                <p>Corretor: <strong><?php echo $dados_contrato['nome_corretor'] ?></strong></p>
-                <p>CPF: <strong><?php echo $dados_contrato['cpf_corretor'] ?></strong></p>
-                <p>CRECI: <strong><?php echo $dados_contrato['creci'] ?></strong></p>
-            </div>
 
           </div>
 

@@ -188,3 +188,56 @@
  .esconde{
   display: none;
  }
+
+ .pessoas{
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: 1.1rem;
+  gap: 15px;
+ }
+
+ .dados_contratoo{
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #a7b0a881;
+  border-radius: 5px;
+  padding: 5px;
+ }
+
+ .form_compradores{
+  width: 80%;
+  margin: 0 auto;
+ }
+
+ .form_compradores > form > div{
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 25px;
+  display: flex;
+  align-items: center;
+  border: 2px solid #a7b0a881;
+  border-radius: 5px;
+  height: 100px;
+  padding: 10px;
+ }
+
+ .form_compradores > form > div > div:nth-child(1){
+    width: 60%;
+    padding: 5px;
+ }
+
+ .form_compradores > form > div > div > select,
+ .form_compradores > form > div > div > input,
+ .form_compradores > form > div > div > label{
+  outline-color: #18c721 ;
+  font-size: 1.0rem;
+  padding: 3px;
+ }
+
