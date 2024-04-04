@@ -51,7 +51,8 @@ INNER JOIN
 	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
 WHERE
 	contrato.codigo_contrato = $cod_contrato";
-}
+
+
 
 $dados_contrato = $connexao->query($sql);
 
@@ -60,6 +61,48 @@ $dados_contrato = $dados_contrato->fetch_assoc();
 $sql2 = 'SELECT * FROM clientes WHERE perfil = "comprador" ';
 
 $dados_comprador = $connexao->query($sql2);
+}
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores'])){
+
+   // print_r($_POST);
+
+    $cod_contrato = $connexao->escape_string($_POST['codigocontrato']);
+
+    //$connexao->begin_transaction();
+
+    //try{
+
+      $contador = 1;
+      $cod_comprador = '';
+      $porcenagem = '';
+
+      foreach($_POST as $chave => $dados){
+        if($chave !== 'status' && $chave !== 'desc_status' && $chave !== 'codigocontrato' && $chave !== 'cadastrar_compradores'  ){
+
+          if($contador % 2 != 0){
+            $cod_comprador = $dados;
+          }
+          else{
+            $porcenagem = $dados;
+          }
+
+          if($cod_comprador && $porcenagem){
+            $sql = "INSERT INTO grupo_compradores (codigo_contrato, codigo_clientes, porcentagem) VALUES ($cod_contrato,$cod_comprador,$porcenagem) ";
+          }
+
+        }
+      }
+
+    // }
+    // catch(Exception $erro){
+
+    // }
+
+
+}
+
+
 
 
 ?>
@@ -3604,7 +3647,7 @@ $dados_comprador = $connexao->query($sql2);
 
             <h2>Preencha os dados abaixo</h2>
 
-            <form action="">
+            <form action="" method="post">
 
               <?php
 
@@ -3639,11 +3682,18 @@ $dados_comprador = $connexao->query($sql2);
 
                   <div>
                     <label for="">Porcentagem (%)</label> </br>
-                    <input type="number" name="porcentagem1" min='1' max='40'>
+                    <input type="number" name="porcentagem1" min='1' max='100'>
                   </div>
 
                 </div>
               </div>
+
+
+            
+                        <input type="hidden" name="status" value="andamento">
+                        <input type="hidden" name="desc_status" value="Contrato pendente de vincular documentos">
+                        <input type="hidden" name="codigocontrato" value="<?php echo $_GET['contrato'] ?>">
+              
 
 
               <div class='pai_btns' style='border:none'>
@@ -3653,7 +3703,7 @@ $dados_comprador = $connexao->query($sql2);
                 </div>
 
                 <div class="div_btn">
-                  <button type="submit" class='btnss'>Cadastrar</button>
+                  <button type="submit" name="cadastrar_compradores" value="cadastrar_comprador" class='btnss'>Cadastrar</button>
                 </div>
 
               </div>
@@ -4202,7 +4252,7 @@ $dados_comprador = $connexao->query($sql2);
 
       novoCampo2.innerHTML = ` <div >
                 <label for="">Porcentagem (%)</label> </br>
-                <input type="number" min='1' name="porcentagem${contador}" max='40' style='font-size:1.0rem;outline-color: #18c721 ;padding: 3px;'>
+                <input type="number" min='1' name="porcentagem${contador}" max='100' style='font-size:1.0rem;outline-color: #18c721 ;padding: 3px;'>
             </div>`
 
 
