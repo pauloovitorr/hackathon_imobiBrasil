@@ -3985,6 +3985,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
                             echo '<td>' . '<a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check pendente_icon"></i></a>' .'</td>';
                         echo '</tr>';
                       }
+                      else if($contato['status_contrato'] === 'execução'){
+                        echo '<tr>';
+                            echo '<td>' .$contato["referencia"]. '</td>';
+                            echo '<td>' .$contato["tipo"] .'</td>';
+                            echo '<td>' .$contato["titulo"]  .'</td>';
+                            echo '<td>R$ ' . number_format($contato["valor_negociado"], 2, ',', '.') . '</td>';
+                            echo '<td>' .$contato["honorarios"] . '%'  .'</td>';
+                            echo '<td class="documentos">' .$contato["status_contrato"] .'</td>';
+                            echo '<td>' .$contato["desc_status"] . '</td>';
+                            echo '<td>' . date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
+                            echo '<td>' . '<a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check documentos_icon"></i></a>' .'</td>';
+                        echo '</tr>';
+                      }
                       else{
                         echo '<tr>';
                             echo '<td>' .$contato["referencia"]. '</td>';

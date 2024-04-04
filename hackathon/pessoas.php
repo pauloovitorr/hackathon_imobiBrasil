@@ -3711,7 +3711,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
 
 
             
-                        <input type="hidden" name="status" value="andamento">
+                        <input type="hidden" name="status" value="execução">
                         <input type="hidden" name="desc_status" value="Contrato pendente de vincular documentos">
                         <input type="hidden" name="codigocontrato" value="<?php echo $_GET['contrato'] ?>">
               

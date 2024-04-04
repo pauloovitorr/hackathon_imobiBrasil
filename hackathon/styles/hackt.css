@@ -175,6 +175,16 @@
     font-size: 1.3rem;
   }
 
+  .documentos{
+    color: #f5d20a;
+    font-weight: 600;
+  }
+
+  .documentos_icon{
+    color: #f5d20a;
+    font-size: 1.3rem;
+  }
+
  .ativo{
   color:  #18c721;
   font-weight: 600;
