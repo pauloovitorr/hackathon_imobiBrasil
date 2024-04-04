@@ -65,13 +65,15 @@ $dados_comprador = $connexao->query($sql2);
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores'])){
 
-   // print_r($_POST);
+    //print_r($_POST);
 
     $cod_contrato = $connexao->escape_string($_POST['codigocontrato']);
+    $status       = $connexao->escape_string($_POST['status']);
+    $desc_status  = $connexao->escape_string($_POST['desc_status']);
 
-    //$connexao->begin_transaction();
+    $connexao->begin_transaction();
 
-    //try{
+    try{
 
       $contador = 1;
       $cod_comprador = '';
@@ -89,15 +91,34 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
 
           if($cod_comprador && $porcenagem){
             $sql = "INSERT INTO grupo_compradores (codigo_contrato, codigo_clientes, porcentagem) VALUES ($cod_contrato,$cod_comprador,$porcenagem) ";
+            
+            $connexao->query($sql);
+
+            
+            $cod_comprador = '';
+            $porcenagem = '';
           }
+
+          $contador += 1;
 
         }
       }
 
-    // }
-    // catch(Exception $erro){
+    $sql2 = "UPDATE contrato SET status_contrato = '$status', desc_status = '$desc_status', dt_atualizacao = NOW() WHERE codigo_contrato = '$cod_contrato'";
+    $connexao->query($sql2);
 
-    // }
+      print_r($sql2);
+
+      $connexao->commit();
+
+      $connexao->close();
+
+      header('location:index.php');
+    }
+    catch(Exception $err){
+      $connexao->rollback();
+      throw $err;
+   }
 
 
 }
