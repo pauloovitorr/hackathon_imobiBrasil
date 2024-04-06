@@ -56,8 +56,12 @@ WHERE
 $dados_contrato = $connexao->query($sql);
 
 $dados_contrato = $dados_contrato->fetch_assoc();
+}
 
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+  print_r($_POST);
 
+  die();
 }
 
 
@@ -91,6 +95,7 @@ $dados_contrato = $dados_contrato->fetch_assoc();
     <meta http-equiv="pragma" content="no-cache" />
     <meta name="language" content="pt-br" />
     <link rel="stylesheet" href="./styles/hackt.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <link
       rel="shortcut icon"
@@ -3724,6 +3729,18 @@ button {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 
+$(document).ready(function(){
+    $('#formdocumentos').submit(function(e){
+     let file_contrato = $('#fileInput1').val()
+     console.log(file_contrato)
+      if(file_contrato === ''){
+        e.preventDefault()
+        Swal.fire("O campo de adicionar contrato é obrigatório !");
+      }
+
+    })
+})
+
 </script>
 
 
@@ -3766,61 +3783,59 @@ button {
           <div class="revisa">
              <br>
 
-            <form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" id="formdocumentos">
 
-            <div class="inputfile">
-            <div class="pular" style="background-color:#d93b0b;">
-                <p>Adicionar o contrato de <?php echo $dados_contrato['tipo'] ?> </p>
-            </div>
-                
-              <div class="img_documento">
-                  <img src="./img/contratoo.png" alt="documentos clientes">
-              </div>
+<div class="inputfile">
+    <div class="pular" style="background-color:#0b5dd9;">
+        <p >Adicionar o contrato de <?php echo $dados_contrato['tipo'] ?> </p>
+    </div>
+        
+    <div class="img_documento">
+        <img src="./img/contratoo.png" alt="documentos clientes">
+    </div>
 
-              <div class="pai_inputfile">
-                <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput" multiple name="documentos_pessoas[]">
-                <p class="custom-button" style="background-color:#d93b0b;" onclick=" document.getElementById('fileInput').click()">Selecionar Arquivos</p>
-              </div>
+    <div class="pai_inputfile">
+        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput1" multiple name="documentos_pessoas">
+        <p class="custom-button" style="background-color:#0b5dd9;" onclick="document.getElementById('fileInput1').click()">Selecionar Arquivos</p>
+    </div>
+</div>
 
-              
-            </div>
+<div class="inputfile">
+    <div class="pular" style="background-color:#2CA62F;">
+        <p>Adicionar contrato de intermediação </p>
+    </div>
+        
+    <div class="img_documento">
+        <img src="./img/intermedio.png" alt="documentos clientes">
+    </div>
 
-            <div class="inputfile">
-            <div class="pular" style="background-color:#2CA62F;">
-                <p>Adicionar contrato de intermediação </p>
-            </div>
-                
-              <div class="img_documento">
-                  <img src="./img/intermedio.png" alt="documentos clientes">
-              </div>
+    <div class="pai_inputfile">
+        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput2" name="documentos_pessoas2[]" multiple >
+        <p class="custom-button" style="background-color:#2CA62F;" onclick="document.getElementById('fileInput2').click()">Selecionar Arquivos</p>
+    </div>
+</div>
 
-              <div class="pai_inputfile">
-                <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput" multiple name="documentos_pessoas[]">
-                <p class="custom-button" style="background-color:#2CA62F;" onclick=" document.getElementById('fileInput').click()">Selecionar Arquivos</p>
-              </div>
+<div class="inputfile">
+    <div class="pular" style="background-color: #2CA62F;">
+        <p>Adicionar documentos das partes interessadas </p>
+    </div>
+        
+    <div class="img_documento">
+        <img src="./img/imgdocumentos.png" alt="documentos clientes">
+    </div>
 
-            </div>
+    <div class="pai_inputfile">
+        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput3" name="documentos_pessoas3[]" multiple>
+        <p class="custom-button" style="background-color: #2CA62F;" onclick="document.getElementById('fileInput3').click()">Selecionar Arquivos</p>
+    </div>
+</div>
 
-            <div class="inputfile">
-            <div class="pular" style="background-color: #2CA62F;">
-                <p>Adicionar documentos das partes interessadas </p>
-            </div>
-                
-              <div class="img_documento">
-                  <img src="./img/imgdocumentos.png" alt="documentos clientes">
-              </div>
+<div style="width: 15%;margin:auto">
+    <button class="btnss" type="submit">Salvar documentos</button>
+</div>
 
-              <div class="pai_inputfile">
-                <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput" multiple name="documentos_pessoas[]">
-                <p class="custom-button" style="background-color: #2CA62F;" onclick=" document.getElementById('fileInput').click()">Selecionar Arquivos</p>
-              </div>
-            </div>
+</form>
 
-            
-
-
-
-            </form>
             
 
           </div>
