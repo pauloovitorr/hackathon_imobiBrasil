@@ -13,6 +13,54 @@ if(empty($_GET['contrato'])){
   header('location:index.php');
 }
 
+if($_SERVER['REQUEST_METHOD'] === 'GET'){
+    $cod_contrato = $_GET['contrato'];
+
+    $sql = "SELECT 
+	  contrato.codigo_contrato,
+    contrato.tipo,
+    contrato.titulo,
+    contrato.referencia,
+    contrato.imoveis_codigo,
+    imoveis.cidade,
+    imoveis.estado,
+    imoveis.cod_proprietario,
+    imoveis.cod_corretor,
+    imoveis.codigo_imovel,
+    
+    
+    proprietario.codigo_clientes AS cod_proprietario,
+    proprietario.nome  AS nome_proprietario,
+    proprietario.cpf  AS cpf_proprietario,
+     
+    corretorimovel.codigo_clientes AS cod_corretor,
+    corretorimovel.nome AS nome_corretor,
+    corretorimovel.cpf AS cpf_corretor,
+    corretor.creci,
+    corretor.id_cliente_corretor
+    
+FROM 
+    contrato
+INNER JOIN
+	imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
+INNER JOIN
+	clientes AS proprietario ON imoveis.cod_proprietario = proprietario.codigo_clientes
+INNER JOIN
+	corretor ON imoveis.cod_corretor = corretor.codigo_corretor
+INNER JOIN
+	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+WHERE
+	contrato.codigo_contrato = $cod_contrato";
+
+
+$dados_contrato = $connexao->query($sql);
+
+$dados_contrato = $dados_contrato->fetch_assoc();
+
+
+}
+
+
 
 ?>
 
@@ -2965,7 +3013,7 @@ if(empty($_GET['contrato'])){
                     </li>
                     <li>
                       <a href="tel:1140636343" title="Telefone (11) 4063-6343"
-                        >(11) <span> 4063-6343</span> - SÃO PAULO / SP</a
+                        >(11) <span> 4063-6343</span> - SP</a
                       >
                     </li>
                     <li>
@@ -3656,7 +3704,7 @@ if(empty($_GET['contrato'])){
           }
         }
 
-        /* CSS modal Paulo */
+ 
 button {
   padding: 0.6rem 1.2rem;
   background-color: #888;
@@ -3669,110 +3717,13 @@ button {
 }
 
 
-#open-modal {
-  padding: 5px;
-  color: #fff;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  opacity: 0.9;
-}
-
-button:hover {
-  opacity: 1;
-}
-
-#fade {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 5;
-}
-
-#modal {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 500px;
-  max-width: 90%;
-  background-color: #fff;
-  padding: 1.2rem;
-  border-radius: 0.5rem;
-  z-index: 10;
-}
-
-#fade,
-#modal {
-  transition: 0.5s;
-  opacity: 1;
-  pointer-events: all;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-}
-
-.modal-body p {
-  margin-bottom: 1rem;
-}
-
-#modal.hide,
-#fade.hide {
-  opacity: 0;
-  pointer-events: none;
-}
-
-#modal.hide {
-  top: 0;
-}
 
 </style>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-$(document).ready(function(){
-    
-    $('#cadastraEtiqueta').submit(function(e){
 
-      e.preventDefault()
-       
-        let corSelecionada = $('input[name=cor]:checked').val();
-        
-       // Envia o valor para o servidor usando AJAX
-
-       let tipoContrato = $('#tipo').val();
-
-       let objEtiqueta = {
-        cor: corSelecionada,
-        tipo: tipoContrato,
-        cadastrarEtiqueta: $('#hidden_cad_eti').val()
-       }
-
-        $.ajax({
-            url: 'index.php', 
-            method: 'POST',
-            data: objEtiqueta,
-            
-            success: function(response){
-                console.log(response);
-            },
-            error: function(xhr, status, error){
-               
-               // console.error(error);
-            }
-        });
-    });
-});
 </script>
 
 
@@ -3781,97 +3732,96 @@ $(document).ready(function(){
       <section class="corpo">
         <div class="container">
 
-        <!-- Modal Paulo -->
-    <div id="fade" class="hide"></div>
-    <div id="modal" class="hide">
-      <div class="modal-header">
-        <h2>Adicionar etiqueta</h2>
-        <button id="close-modal">Fechar</button>
-      </div>
-      <div class="modal-body">
 
-
-        <form action="" id="cadastraEtiqueta">
-
-            <div>
-
-            <h3 style="text-align: center;">Selecione uma cor</h3> </br>
-              
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Azul">Azul</label> <div style="width:25px;height:25px; border:1px solid #007fe2; background-color: #007fe2; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Azul" id="Azul" name="cor" required>
-              </div>
-
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Verde">Verde</label> <div style="width:25px;height:25px; border:1px solid #2CA62F; background-color: #2CA62F; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Verde" id="Verde" name="cor">
-              </div>
-
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Amarelo">Amarelo</label> <div style="width:25px;height:25px; border:1px solid #ebe834; background-color: #ebe834; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Amarelo" id="Amarelo" name="cor">
-              </div>
-
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Roxo">Roxo</label> <div style="width:25px;height:25px; border:1px solid #b434eb; background-color: #b434eb; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Roxo" id="Roxo" name="cor">
-              </div>
-
-              <div class="pai_input_radio">
-                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Vermelho">Vermelho</label> <div style="width:25px;height:25px; border:1px solid #eb3a34; background-color: #eb3a34; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Vermelho" id="Vermelho" name="cor">
-              </div>
-
-              <div style="margin-top: 15px; font-size: 0.9rem;">
-                <label for="tipo">Selecione o tipo de contrato</label>
-                <select name="tipo" id="tipo" required>
-                    <option value=""></option>
-                    <option value="venda">Venda</option>
-                    <option value="distrato">Distrato</option>
-                    <option value="recisão">Recisão</option>
-                </select>
-              </div>
-
-              <input type="hidden" id="hidden_cad_eti" value="cadastrarEtiqueta">
-
-              <div style="margin-top: 40px;">
-                  <button type="submit" style="background-color: #007fe2;">Cadastrar etiqueta </button>
-              </div>
-
-            
-
-            </div>
-
-        </form>
-      </div>
-    </div>
-
-
+ 
 
         <!-- Paulo -->
         
           <div class="conteudo">
 
+  <div class='pessoas'>
+
+<div class='dados_contratoo'>
+  <p>Código do contrato: <strong><?php echo $dados_contrato['referencia'] ?></strong></p>
+  <p>Título: <strong><?php echo $dados_contrato['titulo'] ?></strong></p>
+  <p>Tipo de contrato: <strong><?php echo $dados_contrato['tipo'] ?></strong></p>
+</div>
+
+<div>
+  <p>Proprietário: <strong><?php echo $dados_contrato['nome_proprietario'] ?></strong></p>
+  <p>CPF: <strong><?php echo $dados_contrato['cpf_proprietario'] ?></strong></p>
+</div>
+
+<div>
+  <p>Corretor: <strong><?php echo $dados_contrato['nome_corretor'] ?></strong></p>
+  <p>CPF: <strong><?php echo $dados_contrato['cpf_corretor'] ?></strong></p>
+  <p>CRECI: <strong><?php echo $dados_contrato['creci'] ?></strong></p>
+</div>
+
+</div>
+
 
           <h1 style="text-align: center;margin-top:50px">Adicionar documentos</h1>
 
           <div class="revisa">
-            <h3>Selecione todos os documentos dos participantes do contrato</h3> <br>
+             <br>
 
-            <form action="">
+            <form method="post" enctype="multipart/form-data">
+
             <div class="inputfile">
-              <input type="file" multiple accept=".jpg,.jpeg,.png" placeholder="Documentos">
+            <div class="pular" style="background-color:#d93b0b;">
+                <p>Adicionar o contrato de <?php echo $dados_contrato['tipo'] ?> </p>
+            </div>
+                
+              <div class="img_documento">
+                  <img src="./img/contratoo.png" alt="documentos clientes">
+              </div>
+
+              <div class="pai_inputfile">
+                <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput" multiple name="documentos_pessoas[]">
+                <p class="custom-button" style="background-color:#d93b0b;" onclick=" document.getElementById('fileInput').click()">Selecionar Arquivos</p>
+              </div>
+
+              
             </div>
 
             <div class="inputfile">
-              <input type="file" accept=".jpg,.jpeg,.png" placeholder="Documentos">
+            <div class="pular" style="background-color:#2CA62F;">
+                <p>Adicionar contrato de intermediação </p>
+            </div>
+                
+              <div class="img_documento">
+                  <img src="./img/intermedio.png" alt="documentos clientes">
+              </div>
+
+              <div class="pai_inputfile">
+                <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput" multiple name="documentos_pessoas[]">
+                <p class="custom-button" style="background-color:#2CA62F;" onclick=" document.getElementById('fileInput').click()">Selecionar Arquivos</p>
+              </div>
+
             </div>
 
             <div class="inputfile">
-              <input type="file" accept=".jpg,.jpeg,.png" placeholder="Documentos">
+            <div class="pular" style="background-color: #2CA62F;">
+                <p>Adicionar documentos das partes interessadas </p>
             </div>
+                
+              <div class="img_documento">
+                  <img src="./img/imgdocumentos.png" alt="documentos clientes">
+              </div>
+
+              <div class="pai_inputfile">
+                <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput" multiple name="documentos_pessoas[]">
+                <p class="custom-button" style="background-color: #2CA62F;" onclick=" document.getElementById('fileInput').click()">Selecionar Arquivos</p>
+              </div>
+            </div>
+
+            
+
+
 
             </form>
+            
 
           </div>
 

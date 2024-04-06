@@ -278,3 +278,60 @@
   justify-content: space-around;
  }
 
+
+ .inputfile{
+  height: 145px;
+  width: 60%;
+  margin:0 auto;
+  border-bottom: 2px solid #a7b0a881;
+  border-left:2px solid #a7b0a881;
+  border-right: 2px solid #a7b0a881;;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+ }
+
+ .img_documento{
+  width: 22%;
+ }
+
+ .img_documento > img{
+  width:140px;
+  height:112px;
+ }
+
+ .pai_inputfile{
+  width: 45%;
+ }
+
+ .pai_inputfile > input{
+  width: 100%;
+  display: none;
+
+ }
+
+ .pai_inputfile > p{
+  /* background-color: #2CA62F; */
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+ }
+
+
+
+ .pular{
+  width: 100%;
+  height: 30px;
+  font-weight: 700;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
