@@ -59,9 +59,7 @@ $dados_contrato = $dados_contrato->fetch_assoc();
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-  print_r($_POST);
-
-  die();
+  print_r($_FILES);
 }
 
 
@@ -3783,7 +3781,7 @@ $(document).ready(function(){
           <div class="revisa">
              <br>
 
-<form method="post" enctype="multipart/form-data" id="formdocumentos">
+             <form method="post" enctype="multipart/form-data" id="formdocumentos">
 
 <div class="inputfile">
     <div class="pular" style="background-color:#0b5dd9;">
@@ -3795,7 +3793,7 @@ $(document).ready(function(){
     </div>
 
     <div class="pai_inputfile">
-        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput1" multiple name="documentos_pessoas">
+        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput1" multiple name="documentos_pessoas[]">
         <p class="custom-button" style="background-color:#0b5dd9;" onclick="document.getElementById('fileInput1').click()">Selecionar Arquivos</p>
     </div>
 </div>
