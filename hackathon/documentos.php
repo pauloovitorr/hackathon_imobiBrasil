@@ -4,69 +4,14 @@ session_start();
 
 include_once('../conexao.php');
 
-$_SESSION['codigo_adm'] = 2;
 
-
-if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
-
-    $buscar = '%' .$connexao->escape_string($_GET['buscar']) . '%' ;
-
-    $sql = "SELECT * FROM imoveis WHERE referencia LIKE ? or rua LIKE ?";
-
-
-    $acao = $connexao->prepare($sql);
-
-    $acao->bind_param('ss', $buscar,$buscar);
-
-    $acao->execute();
-
-    $result = $acao->get_result();
+if(empty($_SESSION['codigo_adm'])){
+  header('location:index.php');
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'GET'){
-
-  $cod_adm = $_SESSION['codigo_adm'];
-
-    $sql = "SELECT * FROM contrato where codigo_adm = $cod_adm order by status_contrato DESC";
-    $lista_contratos = $connexao->query($sql);
+if(empty($_GET['contrato'])){
+  header('location:index.php');
 }
-
-
-if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) && !empty($_POST['cor']) && !empty($_POST['tipo'])){
-  
-  $cor = $connexao->escape_string($_POST['cor']);
-  $tipo = $connexao->escape_string($_POST['tipo']);
-
-  
-  $sql = "INSERT INTO etiquetas (cor, tipo) VALUES (?, ?)";
-
-  
-  $stmt = $connexao->prepare($sql);
-
-  $resposta = array();
-  
-  if($stmt){
-     
-      $stmt->bind_param("ss", $cor, $tipo);
-
-      if($stmt->execute()){
-        array_push($resposta, ['sucesso' => 'Etiqueta cadastrada com sucesso']);
-        
-      } else {
-          
-        array_push($resposta, ['falha' => 'Erro ao cadastrar etiqueta, tente novamente']);
-      }
-
-     
-      $stmt->close();
-  } else {
-    array_push($resposta, ['falha' => "$connexao->error"]);
-  }
-
-  echo json_encode($resposta);
-  exit;
-}
-
 
 
 ?>
@@ -97,9 +42,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
     <meta name="robots" content="noindex,nofollow" />
     <meta http-equiv="pragma" content="no-cache" />
     <meta name="language" content="pt-br" />
-
     <link rel="stylesheet" href="./styles/hackt.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link
       rel="shortcut icon"
@@ -112,6 +55,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
     />
     <link href="./styles/style.css" rel="stylesheet" type="text/css" />
     <link href="./styles/styles.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../hackathon/styles/hackt.css" >
 
     <script language="javascript" src="./scripts/jquery-3.3.1.min.js"></script>
 
@@ -122,6 +66,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
       rel="stylesheet"
       type="text/css"
     />
+
 
     <style>
       .conteudo {
@@ -1699,7 +1644,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
                   <li>
                     <a
                       href="./index.php"
-                      >Gestão de vendas</a
+                      >Gestão de contratos</a
                     >
                   </li>
                   <li>
@@ -3710,329 +3655,233 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
             width: 100%;
           }
         }
-      </style>
 
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-      <script>
-        $(document).ready(function () {
-          $(".mascara_real").mask("000.000.000", { reverse: true });
-          $(".redefinir_opcoes").click(function () {
-            event.preventDefault();
-            $("#title").val("Simulador de financiamento");
-            $("#description").val(
-              "Descubra o financiamento ideal para o lar dos seus sonhos. Experimente diferentes valores de entrada, prazos e taxas de juros para encontrar a melhor opção para você."
-            );
-            $("#taxa_juros").val(9);
-            $("#valor_max").val("2.500.000");
-            $("#periodo_padrao").val(30);
-            $("#valor_min").val("150.000");
-            $("#select_exibicao").val("SAC");
-            $("#entrada_min").val(30);
-          });     
-          if ($('.desliga_modulo').hasClass('ocultar_botao')) {
-            $('.formulario_financiamento input').prop('disabled', true).css('opacity','0.5');
-            $('.formulario_financiamento select').prop('disabled', true).css('opacity','0.5');
-            $('.formulario_financiamento textarea').prop('disabled', true).css('opacity','0.5');
-            $('.buttons_group').css('display','none');
-          } 
-
-        });
+        /* CSS modal Paulo */
+button {
+  padding: 0.6rem 1.2rem;
+  background-color: #888;
+  color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  opacity: 0.9;
+  font-size: 1rem;
+}
 
 
-      </script>
-      <section class="corpo">
-        <div class="container">
+#open-modal {
+  padding: 5px;
+  color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  opacity: 0.9;
+}
 
+button:hover {
+  opacity: 1;
+}
 
+#fade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 5;
+}
 
+#modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  max-width: 90%;
+  background-color: #fff;
+  padding: 1.2rem;
+  border-radius: 0.5rem;
+  z-index: 10;
+}
 
+#fade,
+#modal {
+  transition: 0.5s;
+  opacity: 1;
+  pointer-events: all;
+}
 
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+}
 
+.modal-body p {
+  margin-bottom: 1rem;
+}
 
+#modal.hide,
+#fade.hide {
+  opacity: 0;
+  pointer-events: none;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Paulo CSS -->
-
-<style>
-    .dash{
-      border: 1px solid black;
-      width: 90%;
-      height: 700px;
-      margin: 0 auto;
-    }
-
-    .conteudo > h2{
-      text-align: center;
-    }
-
-    .gcontratos{
-      border: 1px solid transparent;
-      border-radius: 10px;
-      width: 90%;
-      margin: 0 auto;
-      margin-top: 50px;
-      margin-bottom: 50px;
-      padding: 10px;
-      box-shadow: 1px 1px 8px 2px #a7b0a8;
-    }
-
-    .gcontratos > h1{
-      text-align: center;
-    }
-
-    .addCheck{
-      width: 90%;
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      text-align: end;
-    }
-
-    .input_buscar_imovel{
-      width: 60%;
-      padding: 8px;
-      margin: 0 auto;
-      margin-bottom: 10px;
-
-    }
-
-    .input_buscar_imovel > form{
-      width: 80%;
-      margin: 0 auto;
-    }
-
-    .input_buscar_imovel > form > div > div >input{
-      padding: 18px;
-      border-radius: 8px;
-      font-size: 1.0rem;
-      outline-color: #18c721 ;
-    }
-
-    
-    .btnss {
-      padding: 10px;
-      background-color: #18c721 ;
-      color: white;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: .5s;
-    }
-
-    .btnss:hover{
-      background-color: #05630a;
-    }
-
-    .input_buscar_imovel > h3{
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .lista_imoveis{
-      width: 48%;
-      padding: 8px;
-      margin: 0 auto;
-    }
-
-    .lista_imoveis > div{
-      width: 100%;
-      padding: 8px;
-    }
-
-    .lista_imoveis > div > p{
-      font-size: 1.1rem;
-      font-weight: 700;
-      
-    }
-
-    .btnn{
-      padding: 10px;
-      background-color: #007FE2;
-      color: white;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: .5s;
-    }
-
-    .btnn:hover{
-      background-color: #100575;
-    }
-   
+#modal.hide {
+  top: 0;
+}
 
 </style>
 
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    
+    $('#cadastraEtiqueta').submit(function(e){
+
+      e.preventDefault()
+       
+        let corSelecionada = $('input[name=cor]:checked').val();
+        
+       // Envia o valor para o servidor usando AJAX
+
+       let tipoContrato = $('#tipo').val();
+
+       let objEtiqueta = {
+        cor: corSelecionada,
+        tipo: tipoContrato,
+        cadastrarEtiqueta: $('#hidden_cad_eti').val()
+       }
+
+        $.ajax({
+            url: 'index.php', 
+            method: 'POST',
+            data: objEtiqueta,
+            
+            success: function(response){
+                console.log(response);
+            },
+            error: function(xhr, status, error){
+               
+               // console.error(error);
+            }
+        });
+    });
+});
+</script>
 
 
+     
+
+      <section class="corpo">
+        <div class="container">
+
+        <!-- Modal Paulo -->
+    <div id="fade" class="hide"></div>
+    <div id="modal" class="hide">
+      <div class="modal-header">
+        <h2>Adicionar etiqueta</h2>
+        <button id="close-modal">Fechar</button>
+      </div>
+      <div class="modal-body">
+
+
+        <form action="" id="cadastraEtiqueta">
+
+            <div>
+
+            <h3 style="text-align: center;">Selecione uma cor</h3> </br>
+              
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Azul">Azul</label> <div style="width:25px;height:25px; border:1px solid #007fe2; background-color: #007fe2; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Azul" id="Azul" name="cor" required>
+              </div>
+
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Verde">Verde</label> <div style="width:25px;height:25px; border:1px solid #2CA62F; background-color: #2CA62F; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Verde" id="Verde" name="cor">
+              </div>
+
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Amarelo">Amarelo</label> <div style="width:25px;height:25px; border:1px solid #ebe834; background-color: #ebe834; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Amarelo" id="Amarelo" name="cor">
+              </div>
+
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Roxo">Roxo</label> <div style="width:25px;height:25px; border:1px solid #b434eb; background-color: #b434eb; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Roxo" id="Roxo" name="cor">
+              </div>
+
+              <div class="pai_input_radio">
+                  <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Vermelho">Vermelho</label> <div style="width:25px;height:25px; border:1px solid #eb3a34; background-color: #eb3a34; border-radius: 50%;"></div></div>
+                  <input type="radio" value="Vermelho" id="Vermelho" name="cor">
+              </div>
+
+              <div style="margin-top: 15px; font-size: 0.9rem;">
+                <label for="tipo">Selecione o tipo de contrato</label>
+                <select name="tipo" id="tipo" required>
+                    <option value=""></option>
+                    <option value="venda">Venda</option>
+                    <option value="distrato">Distrato</option>
+                    <option value="recisão">Recisão</option>
+                </select>
+              </div>
+
+              <input type="hidden" id="hidden_cad_eti" value="cadastrarEtiqueta">
+
+              <div style="margin-top: 40px;">
+                  <button type="submit" style="background-color: #007fe2;">Cadastrar etiqueta </button>
+              </div>
+
+            
+
+            </div>
+
+        </form>
+      </div>
+    </div>
 
 
 
         <!-- Paulo -->
-
-
+        
           <div class="conteudo">
 
-          <h1 style="text-align: center; margin-top:25px; margin-bottom: 20px;" >Gerenciamento de vendas</h1>
 
-          <div class="gcontratos">
-        <h1>Gestão de contrato</h1>
-
-       <div class="addCheck">
-            <a style="color: #007fe2;" href="./checklist.php"><i class="fa-solid fa-circle-plus"></i>  Criar Checklist</a>
-       </div>
-
-        <div class="input_buscar_imovel">
-          <h3>Busque um imóvel para iniciar um contrato</h3>
-
-           <form method="get">
-
-                <div class="busca">
-                    <label style="font-size: 1.0rem;">Selecione o imóvel</label> </br></br>
-                    <div style="display: flex; align-items: center; justify-content:space-around">
-                      <input type="text" id="input_movel" name="buscar" placeholder="Código ou logradouro do imóvel">
-                      <button class="btnss" type="submit">Buscar</button>
-                    </div>
-                </div>
-
-           </form>
-
-        </div>
-
-        <div class="lista_imoveis" >
-           <?php 
-
-                if(isset($result)){
-                    if($result->num_rows > 0){
-                        while($dados = $result->fetch_assoc()){
-
-                          echo  '<div>';
-                          echo      '<p>'. "Codigo de referência: " . " $dados[referencia] ";
-                          echo      '<p>'. " $dados[tipo]" . " para " . "$dados[finalidade] ". "em". " $dados[cidade] ". "/" ." $dados[estado]" . '</p>';
-                          echo      '<p>'. "$dados[rua], " . " $dados[num_casa] ". " $dados[bairro] " . '</p>';
-                          echo      '<p>'. 'Observação: ' . "$dados[obs]" . '</p>' .  "<a href='./inicia.php?cod={$dados['codigo_imovel']}'> <button class='btnn'>Iniciar contrato </button> </a>";
-                          echo   '</div>';
-
-                        }
-                }
-                else{
-                    echo  '<div>';
-                    echo      '<p>'. 'Nenhum imóvel encontrado' .'</p>';
-                    echo   '</div>';
-                }
-                }
-           
-           ?>
-        </div>
-
-    </div>
-
-          
+          <h1 style="text-align: center;margin-top:50px">Adicionar documentos</h1>
 
           <div class="revisa">
+            <h3>Selecione todos os documentos dos participantes do contrato</h3> <br>
 
-          <h2 style="text-align: center;">Lista de contratos</h2> </br>
-          
+            <form action="">
+            <div class="inputfile">
+              <input type="file" multiple accept=".jpg,.jpeg,.png" placeholder="Documentos">
+            </div>
 
-          <div style="text-align: center;">
+            <div class="inputfile">
+              <input type="file" accept=".jpg,.jpeg,.png" placeholder="Documentos">
+            </div>
 
-          <table class="tabela_contratos <?php echo $lista_contratos->num_rows <= 0  ? 'esconde':'';  ?>">
+            <div class="inputfile">
+              <input type="file" accept=".jpg,.jpeg,.png" placeholder="Documentos">
+            </div>
 
-            <tr>
-              <th>Referência</th>
-              <th>Tipo de contrato</th>
-              <th>Titulo</th>
-              <th>Valor negociado</th>
-              <th>Honorarios</th>
-              <th>Status</th>
-              <th>Descrição status</th>
-              <th>Criação</th>
-            </tr>
+            </form>
 
-          
-                <?php
-                  if($lista_contratos->num_rows > 0){
-                    while($contato = $lista_contratos->fetch_array()){
-
-                    
-                      if($contato['status_contrato'] === 'pendente'){
-
-                        echo '<tr>';
-                            echo '<td>' .$contato["referencia"]. '</td>';
-                            echo '<td>' .$contato["tipo"] .'</td>';
-                            echo '<td>' .$contato["titulo"]  .'</td>';
-                            echo '<td>R$ ' . number_format($contato["valor_negociado"], 2, ',', '.') . '</td>';
-                            echo '<td>' .$contato["honorarios"] . '%'  .'</td>';
-                            echo '<td class="pendente">' .$contato["status_contrato"] .'</td>';
-                            echo '<td>' .$contato["desc_status"] . '</td>';
-                            echo '<td>' . date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
-                            echo '<td>' . '<a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check pendente_icon"></i></a>' .'</td>';
-                        echo '</tr>';
-                      }
-                      else if($contato['status_contrato'] === 'execução'){
-                        echo '<tr>';
-                            echo '<td>' .$contato["referencia"]. '</td>';
-                            echo '<td>' .$contato["tipo"] .'</td>';
-                            echo '<td>' .$contato["titulo"]  .'</td>';
-                            echo '<td>R$ ' . number_format($contato["valor_negociado"], 2, ',', '.') . '</td>';
-                            echo '<td>' .$contato["honorarios"] . '%'  .'</td>';
-                            echo '<td class="documentos">' .$contato["status_contrato"] .'</td>';
-                            echo '<td>' .$contato["desc_status"] . '</td>';
-                            echo '<td>' . date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
-                            echo '<td>' . '<a href="documentos.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check documentos_icon"></i></a>' .'</td>';
-                        echo '</tr>';
-                      }
-                      else{
-                        echo '<tr>';
-                            echo '<td>' .$contato["referencia"]. '</td>';
-                            echo '<td>' .$contato["tipo"] .'</td>';
-                            echo '<td>' .$contato["titulo"]  .'</td>';
-                            echo '<td>R$ ' . number_format($contato["valor_negociado"], 2, ',', '.') . '</td>';
-                            echo '<td>' .$contato["honorarios"] . '%'  .'</td>';
-                            echo '<td class="ativo">' .$contato["status_contrato"] .'</td>';
-                            echo '<td>' .$contato["desc_status"] . '</td>';
-                            echo '<td>' .date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
-                            echo '<td><a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check ativo_icon"></i></a></td>';
-
-                        echo '</tr>';
-                      }
-
-                    }
-                  }
-                  else{
-                    echo "<h3>Crie um contrato</h3>";
-                    echo "<img style='width: 250px;' src='./img/semcontrato.png' alt='sem contratos'>";
-                  }
-                
-                ?>
-
-              </table>
           </div>
-             
-          </div>
+
+
+        </div>
+         
+          
+                      
             
-            
-          </div>
-
-          
-
-          
+        
 
         <!-- Paulo -->
 

@@ -130,9 +130,8 @@ CREATE TABLE documentos (
     path varchar(150) NOT NULL,
     descricao varchar(100) NOT NULL,
     codigo_contrato INT NOT NULL,
-    codigo_clientes INT NOT NULL,
+ 
     
     CONSTRAINT pk_documentos PRIMARY KEY (codigo_documento),
-    CONSTRAINT fk_codigo_contrato FOREIGN KEY (codigo_contrato) REFERENCES contrato(codigo_contrato),
-    CONSTRAINT fk_codigo_clientes FOREIGN KEY (codigo_clientes) REFERENCES clientes(codigo_clientes)
+    CONSTRAINT fk_codigo_contrato FOREIGN KEY (codigo_contrato) REFERENCES contrato(codigo_contrato)
 )
