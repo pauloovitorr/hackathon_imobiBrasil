@@ -113,7 +113,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
 
       $connexao->close();
 
-      header('location:index.php');
+      header("location:ficha.php?contrato=$cod_contrato");
     }
     catch(Exception $err){
       $connexao->rollback();

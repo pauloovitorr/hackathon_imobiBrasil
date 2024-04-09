@@ -3827,15 +3827,45 @@ $(document).ready(function(){
                     </div>
 
                     <div>
-                        <?php 
                         
-                        while($comprador = $dados_compradores->fetch_assoc()){
-                            echo '<p>'. $comprador['nome'] .'</p>';
+                        <?php 
+
+                            $valor_negociado = (float)$dados_contrato["valor_negociado"];
+                            $porcentagem = (int)$dados_contrato['honorarios'];
+
+                            $valorReal = $valor_negociado * ($porcentagem / 100);
+                        
+
+                        if($dados_compradores->num_rows > 1){
+                          echo '<p>'. 'Compradores' .'</p>';
+                          
+                        }else{
+                          echo '<p>'. 'Comprador' .'</p>';
                         }
-
-
+                        
+                        while ($comprador = $dados_compradores->fetch_assoc()) {
+                          echo '<p><strong>' . $comprador['nome'] . ' - CPF: ' . $comprador['cpf'] . ' / ' . $comprador['porcentagem'] .'%' . '</strong></p>';
+                      }
 
                         ?>
+                    </div>
+
+                </div>
+
+                <div class="dadosficha">
+                <div>
+                        <p>Valor negociado</p>
+                        <p> <strong> R$ <?php echo number_format($dados_contrato["valor_negociado"], 2, ',', '.') ?></strong> </p>
+                    </div>
+
+                    <div>
+                        <p>Comissão</p>
+                        <p> <strong> <?php echo $dados_contrato['honorarios'] ?>%</strong> </p>
+                    </div>
+
+                    <div>
+                        <p>Valor real</p>
+                        <p> <strong> <?php echo number_format($valorReal, 2, ',', '.') ?></strong> </p>
                     </div>
 
                 </div>
