@@ -3792,7 +3792,7 @@ $(document).ready(function(){
 
 
             <div class="revisa">
-                <h3 style="text-align: center;margin-bottom: 20px;">Contrato - <?php echo $dados_contrato['referencia']; ?></h3>
+                <h3 style="text-align: center;margin-bottom: 20px;">Contrato - <?php echo $dados_contrato['referencia']; ?> / <?php echo $dados_contrato['titulo']; ?> </h3>
 
                 <div class="dadosficha">
 
