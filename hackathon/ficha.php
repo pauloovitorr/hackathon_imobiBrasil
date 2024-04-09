@@ -20,15 +20,20 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 	
     contrato.codigo_contrato,
     contrato.referencia,
-    contrato.dt_criacao,
+    DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
     contrato.tipo,
     contrato.titulo,
     contrato.imoveis_codigo,
     contrato.valor_negociado,
     contrato.honorarios,
     contrato.obs,
+
+    
+    imoveis.codigo_imovel,
+    imoveis.rua,
     imoveis.cidade,
     imoveis.estado,
+    imoveis.tipo,
     imoveis.cod_proprietario,
     imoveis.cod_corretor,
     imoveis.codigo_imovel,
@@ -43,9 +48,9 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     proprietario.cpf  AS cpf_proprietario,
 
 
-    comprador.codigo_clientes AS cod_comprador,
-    comprador.nome  AS nome_comprador,
-    comprador.cpf  AS cpf_comprador,
+    -- comprador.codigo_clientes AS cod_comprador,
+    -- comprador.nome  AS nome_comprador,
+    -- comprador.cpf  AS cpf_comprador,
      
     corretorimovel.codigo_clientes AS cod_corretor,
     corretorimovel.nome AS nome_corretor,
@@ -65,16 +70,34 @@ INNER JOIN
 	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
 INNER JOIN 
     grupo_compradores ON grupo_compradores.codigo_contrato = grupo_compradores.codigo_contrato
-INNER JOIN
-	clientes AS comprador ON comprador.codigo_clientes = grupo_compradores.codigo_clientes and grupo_compradores.codigo_contrato = $cod_contrato
+-- INNER JOIN
+-- 	clientes AS comprador ON comprador.codigo_clientes = grupo_compradores.codigo_clientes and grupo_compradores.codigo_contrato = $cod_contrato
 WHERE
 	contrato.codigo_contrato = $cod_contrato";
 
+// Paulo
 
 $dados_contrato = $connexao->query($sql);
 
 $dados_contrato = $dados_contrato->fetch_assoc();
+
+
+$sql2 = "SELECT 
+g.codigo_clientes, 
+g.codigo_contrato, 
+g.porcentagem, 
+compradores.codigo_clientes, 
+compradores.nome, 
+compradores.cpf FROM grupo_compradores g 
+INNER JOIN 
+    clientes AS compradores ON compradores.codigo_clientes = g.codigo_clientes and g.codigo_contrato = $cod_contrato
+where g.codigo_contrato = $cod_contrato";
+
+$dados_compradores = $connexao->query($sql2);
+
+
 }
+
 
 
 ?>
@@ -3767,7 +3790,58 @@ $(document).ready(function(){
         
           <div class="conteudo">
 
-            <h1>Ficha</h1>
+
+            <div class="revisa">
+                <h3 style="text-align: center;margin-bottom: 20px;">Contrato - <?php echo $dados_contrato['referencia']; ?></h3>
+
+                <div class="dadosficha">
+
+                    <div>
+                        <p>Imóvel</p>
+                        <p> <strong> <?php echo $dados_contrato['tipo'] ?> - código: <?php echo $dados_contrato['codigo_imovel'] ?> </strong> </p>
+                    </div>
+
+                    <div>
+                        <p>Localização</p>
+                        <p> <strong> <?php echo $dados_contrato['rua'] ?> / <?php echo $dados_contrato['cidade'] ?> </strong> </p>
+                    </div>
+
+                    <div>
+                        <p>Início do contrato</p>
+                        <p> <strong> <?php echo  $dados_contrato['dt_criacao_formatada'] ?> </strong> </p>
+                    </div>
+
+                </div>
+
+
+                <div class="dadosficha">
+
+                    <div>
+                        <p>Proprietário</p>
+                        <p> <strong> <?php echo $dados_contrato['nome_proprietario'] ?> - CPF: <?php echo $dados_contrato['cpf_proprietario'] ?> </strong> </p>
+                    </div>
+
+                    <div>
+                        <p>Corretor</p>
+                        <p> <strong> <?php echo $dados_contrato['nome_corretor'] ?> - CPF: <?php echo $dados_contrato['cpf_corretor'] ?> </strong> </p>
+                    </div>
+
+                    <div>
+                        <?php 
+                        
+                        while($comprador = $dados_compradores->fetch_assoc()){
+                            echo '<p>'. $comprador['nome'] .'</p>';
+                        }
+
+
+
+                        ?>
+                    </div>
+
+                </div>
+
+
+            </div>
 
 
         </div>
