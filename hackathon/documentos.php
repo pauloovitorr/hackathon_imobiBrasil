@@ -3799,7 +3799,7 @@ $(document).ready(function(){
 </div>
 
 <div class="inputfile">
-    <div class="pular" style="background-color:#2CA62F;">
+    <div class="pular" style="background-color:#b9c9be;">
         <p>Adicionar contrato de intermediação </p>
     </div>
         
@@ -3809,12 +3809,12 @@ $(document).ready(function(){
 
     <div class="pai_inputfile">
         <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput2" name="documentos_pessoas2[]" multiple >
-        <p class="custom-button" style="background-color:#2CA62F;" onclick="document.getElementById('fileInput2').click()">Selecionar Arquivos</p>
+        <p class="custom-button" style="background-color:#68a378;" onclick="document.getElementById('fileInput2').click()">Selecionar Arquivos</p>
     </div>
 </div>
 
 <div class="inputfile">
-    <div class="pular" style="background-color: #2CA62F;">
+    <div class="pular" style="background-color: #b9c9be;">
         <p>Adicionar documentos das partes interessadas </p>
     </div>
         
@@ -3824,7 +3824,7 @@ $(document).ready(function(){
 
     <div class="pai_inputfile">
         <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput3" name="documentos_pessoas3[]" multiple>
-        <p class="custom-button" style="background-color: #2CA62F;" onclick="document.getElementById('fileInput3').click()">Selecionar Arquivos</p>
+        <p class="custom-button" style="background-color: #68a378;" onclick="document.getElementById('fileInput3').click()">Selecionar Arquivos</p>
     </div>
 </div>
 
