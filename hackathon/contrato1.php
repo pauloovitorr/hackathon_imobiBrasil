@@ -3745,6 +3745,8 @@ button {
   border-radius: 0.25rem;
   cursor: pointer;
   opacity: 0.9;
+  font-size: 1.0rem;
+  text-align: end;
 }
 
 button:hover {
@@ -3923,6 +3925,8 @@ $(document).ready(function(){
 
           <div class="conteudo">
 
+          
+
 
           <div class="addCheck">
               <a style="color: #007fe2;" href="./index.php">Voltar</a>
@@ -3932,8 +3936,15 @@ $(document).ready(function(){
 
         <div class="layout_contrato">
 
+        
+
                 <form method="post">
+
+                <p id="open-modal" style="color: #007fe2;"><i class="fa-solid fa-circle-plus"></i>  Criar etiqueta</p>
+
                     <div class="pai_input_linha">
+
+
 
                         <div>
                             <label for="tipocontrato">Tipo de contrato</label> </br>
@@ -3977,21 +3988,27 @@ $(document).ready(function(){
 
                         <div>
 
-                            <div id="etiquetalabel"><label for="etiqueta">Etiquetas</label>  <p id="open-modal" style="color: #007fe2;"><i class="fa-solid fa-circle-plus"></i>  Criar etiqueta</p></div>
+                            <div id="etiquetalabel"><label for="etiqueta">Forma de pagamento</label> </div>
                             <select name="etiqueta" id="etiqueta" required>
                               <option value=""></option>
-                              <?php 
-                                if($etiquetas->num_rows> 0){
-                                  while($etiqueta = $etiquetas->fetch_assoc()){
-                                    echo "<option value='" . $etiqueta['codigo_etiquetas'] . "'>" . $etiqueta['cor'] . '  ('.$etiqueta['tipo'].')  ' .  "</option>";
-
-                                  }
-                                }
-                                else{
-                                  echo "<option value=''>" . 'Nenhuma etiqueta cadastrada' . "</option>";
-                                }
+                              <option value="À vista">À vista</option>
+                              <option value="Financiamento">Financiamento</option>
+                              <option value="Consórcio">Consórcio</option>
+                              <option value="Minha casa minha vida">Minha casa minha vida</option>
+                              <option value="Outro">Outro</option>
                               
-                              ?>
+                              <?php 
+                                // if($etiquetas->num_rows> 0){
+                                //   while($etiqueta = $etiquetas->fetch_assoc()){
+                                //     echo "<option value='" . $etiqueta['codigo_etiquetas'] . "'>" . $etiqueta['cor'] . '  ('.$etiqueta['tipo'].')  ' .  "</option>";
+
+                                //   }
+                                // }
+                                // else{
+                                //   echo "<option value=''>" . 'Nenhuma etiqueta cadastrada' . "</option>";
+                                // }
+                              
+                              // ?>
                             </select>
                         </div>
 
@@ -4001,7 +4018,7 @@ $(document).ready(function(){
                     </div>
                     <div style="width: 50%;margin:0 auto;">
                             <label for="tipocheck">Checklist para o contrato</label> </br>
-                            <select style="outline-color:#18c721; width: 100%;" name="tipocheck" id="tipocheck" required>
+                            <select style="outline-color:#18c721; width: 100%; font-size: 1rem;" name="tipocheck" id="tipocheck" required>
                                 <option value=""></option>
                                 <?php
                                     if($check->num_rows> 0){
