@@ -27,6 +27,11 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     contrato.valor_negociado,
     contrato.honorarios,
     contrato.obs,
+    contrato.forma_pagamento,
+    contrato.etiquetas_codigo,
+
+    etiquetas.codigo_etiquetas,
+    etiquetas.cor,
 
     
     imoveis.codigo_imovel,
@@ -70,8 +75,8 @@ INNER JOIN
 	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
 INNER JOIN 
     grupo_compradores ON grupo_compradores.codigo_contrato = grupo_compradores.codigo_contrato
--- INNER JOIN
--- 	clientes AS comprador ON comprador.codigo_clientes = grupo_compradores.codigo_clientes and grupo_compradores.codigo_contrato = $cod_contrato
+INNER JOIN 
+    etiquetas ON etiquetas.codigo_etiquetas = contrato.etiquetas_codigo
 WHERE
 	contrato.codigo_contrato = $cod_contrato";
 
@@ -3764,6 +3769,7 @@ button {
 <script>
 
 $(document).ready(function(){
+
     $('#formdocumentos').submit(function(e){
      let file_contrato = $('#fileInput1').val()
      console.log(file_contrato)
@@ -3793,6 +3799,8 @@ $(document).ready(function(){
 
             <div class="revisa">
                 <h3 style="text-align: center;margin-bottom: 20px;">Contrato - <?php echo $dados_contrato['referencia']; ?> / <?php echo $dados_contrato['titulo']; ?> </h3>
+
+                <p id="etiqueta_fichaa"><i class="fa-solid fa-tag"></i> <?php echo $dados_contrato['cor'] ?> </p>
 
                 <div class="dadosficha">
 
@@ -3853,19 +3861,24 @@ $(document).ready(function(){
                 </div>
 
                 <div class="dadosficha">
-                <div>
+                    <div>
                         <p>Valor negociado</p>
                         <p> <strong> R$ <?php echo number_format($dados_contrato["valor_negociado"], 2, ',', '.') ?></strong> </p>
                     </div>
 
                     <div>
+                        <p>Forma de pagamento</p>
+                        <p> <strong> <?php echo $dados_contrato['forma_pagamento'] ?></strong> </p>
+                    </div>
+
+                    <div>
                         <p>Comissão</p>
-                        <p> <strong> <?php echo $dados_contrato['honorarios'] ?>%</strong> </p>
+                        <p style="text-align: center;"> <strong> <?php echo $dados_contrato['honorarios'] ?>%</strong> </p>
                     </div>
 
                     <div>
                         <p>Valor real</p>
-                        <p> <strong> <?php echo number_format($valorReal, 2, ',', '.') ?></strong> </p>
+                        <p style="text-align: center;"> <strong> <?php echo number_format($valorReal, 2, ',', '.') ?></strong> </p>
                     </div>
 
                 </div>

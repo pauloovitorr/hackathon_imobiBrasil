@@ -3599,25 +3599,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
     <script>
       $(document).ready(function() {
 
-        let count = 2
+        // $('#cadastrarcomprador').on('submit', function(e){
+        //   e.preventDefault()
+        //   let porcentagem = $('.porcentagem').val()
+        //   console.log(porcentagem)
+        // })
 
-        $('#add_passo').click(function(e) {
-          e.preventDefault();
 
-          let passo = `<div class='input' >
-                                        <label for="passo${count}">Título para o passo</label><br>
-                                        <input type="text" id="passo${count}" name="passo${count}"></br>
-
-                                        <label for="desc${count}">Descrição do passo</label> </br>
-                                        <textarea name="desc${count}" id="desc${count}" cols="40" rows="7"></textarea></br>
-
-                                    </div>`;
-
-          let clonedPasso = $(passo).clone();
-          $('.passo').append(clonedPasso);
-
-          count += 1;
-        });
       })
     </script>
 
@@ -3668,7 +3656,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
 
             <h2>Preencha os dados abaixo</h2>
 
-            <form action="" method="post">
+            <form action="" method="post" id="cadastrarcomprador">
 
               <?php
 
@@ -3688,7 +3676,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
 
                   <div class="comprador">
                     <label for="comprador1">Selecione o comprador</label> </br>
-                    <select name="comprador1" id="comprador1">
+                    <select name="comprador1" id="comprador1" required>
                       <option value=""></option>
                       <?php
 
@@ -3703,7 +3691,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
 
                   <div>
                     <label for="">Porcentagem (%)</label> </br>
-                    <input type="number" name="porcentagem1" min='1' max='100'>
+                    <input type="number" class="porcentagem" name="porcentagem1" min='1' max='100' required>
                   </div>
 
                 </div>
@@ -4246,9 +4234,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
   <script>
     let contador = 2;
 
-    function adicionarComprador() {
+    function adicionarComprador(e) {
 
-
+      e.preventDefault()
 
       const pai = document.createElement('div');
 
@@ -4273,7 +4261,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
 
       novoCampo2.innerHTML = ` <div >
                 <label for="">Porcentagem (%)</label> </br>
-                <input type="number" min='1' name="porcentagem${contador}" max='100' style='font-size:1.0rem;outline-color: #18c721 ;padding: 3px;'>
+                <input type="number" class="porcentagem" min='1' name="porcentagem${contador}" max='100' style='font-size:1.0rem;outline-color: #18c721 ;padding: 3px;'>
             </div>`
 
 
