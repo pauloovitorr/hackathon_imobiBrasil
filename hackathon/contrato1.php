@@ -22,9 +22,11 @@ $titulo       = $connexao->escape_string($_POST['titulocontrato']);
 $cod_contrato = $connexao->escape_string($_POST['codcontrato']);
 $valor_nego   = $connexao->escape_string($_POST['valornegociado']);
 $honorarios   = $connexao->escape_string($_POST['honorarios']);
-$etiqueta     = $connexao->escape_string($_POST['etiqueta']);
+$tipopagamento= $connexao->escape_string($_POST['tipopagamento']);
 $obscontrato  = $connexao->escape_string($_POST['obscontrato']);
 $tipocheck    = $connexao->escape_string($_POST['tipocheck']);
+$etiquetas    = $connexao->escape_string($_POST['etiqueta']);
+
 
 // inputs hidden
 $status       = $connexao->escape_string($_POST['status']);
@@ -33,11 +35,11 @@ $cod_imovel   = $connexao->escape_string($_POST['codigoimovel']);
 $cod_adm      = $connexao->escape_string($_POST['codigoadm']);
 
 
-  $sql = "INSERT INTO contrato (tipo, titulo, referencia, valor_negociado, honorarios, etiquetas_codigo, obs, dt_criacao, dt_atualizacao, status_contrato, desc_status, imoveis_codigo, checklist_codigo, codigo_adm) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?)";
+  $sql = "INSERT INTO contrato (tipo, titulo, referencia, valor_negociado, honorarios, forma_pagamento, obs, dt_criacao, dt_atualizacao, status_contrato, desc_status, imoveis_codigo, checklist_codigo, codigo_adm,etiquetas_codigo ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?)";
 
   $stmt = $connexao->prepare($sql);
 
-  $stmt->bind_param("sssssisssiii", $tipo, $titulo, $cod_contrato, $valor_nego, $honorarios, $etiqueta, $obscontrato, $status, $desc_status, $cod_imovel,$tipocheck , $cod_adm);
+  $stmt->bind_param("sssssssssiiii", $tipo, $titulo, $cod_contrato, $valor_nego, $honorarios, $tipopagamento, $obscontrato, $status, $desc_status, $cod_imovel,$tipocheck , $cod_adm, $etiquetas);
 
   $stmt->execute();
   $cod_contrato = $connexao->insert_id;
@@ -58,29 +60,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
     $sql        = 'SELECT * FROM etiquetas ';
     $etiquetas  = $connexao->query($sql);
 
+    $lista_etiquetas = array();
+
+    if($etiquetas->num_rows>0){
+      while($dados = $etiquetas->fetch_assoc()){
+        array_push($lista_etiquetas, $dados );
+      }
+    }
+
+
     $cod_adm = $_SESSION['codigo_adm'];
 
     $sql2 = "SELECT * FROM checklist WHERE codigo_adm = $cod_adm";
     $check = $connexao->query($sql2);
+    
 }
-
-
-// if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-//   $sql = 'SELECT * FROM contrato';
-//   $result = $connexao->query($sql);
-
-//   if ($result->num_rows > 0) {
-//     while ($row = $result->fetch_assoc()) {
-//       print_r($row);
-//     }
-//   } else {
-//     echo "0 resultados encontrados";
-//   }
-
-//   die();
-// }
-
-
 
 
 ?>
@@ -3811,7 +3805,37 @@ button:hover {
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+
+  // Paulo
 $(document).ready(function(){
+
+  $('#tipopagamento').on('input', function(){
+
+    let tipo_pagamento = $('#tipopagamento').val()
+    let input_hidden_etiqueta = $('#etiquetaa')
+    
+    switch(tipo_pagamento){
+      case 'À vista':
+          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[0]['codigo_etiquetas'] ?> )
+          break
+      case 'Financiamento':
+          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[1]['codigo_etiquetas'] ?> )
+          break
+      case 'Consórcio':
+          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[2]['codigo_etiquetas'] ?> )
+          break
+      case 'Minha casa minha vida':
+          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[3]['codigo_etiquetas'] ?> )
+          break
+      case 'Outro':
+          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[4]['codigo_etiquetas'] ?> )
+          break
+    }
+
+  })
+
+
+  // Cadastrar etiquetas
     
     $('#cadastraEtiqueta').submit(function(e){
 
@@ -3835,14 +3859,23 @@ $(document).ready(function(){
             data: objEtiqueta,
             
             success: function(response){
-                console.log(response);
+                window.location.href = "contrato1.php?cod=" + <?php echo $_GET['cod'] ?>
             },
             error: function(xhr, status, error){
                
-               // console.error(error);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Erro ao cadastrar etiqueta!",
+              });
             }
         });
     });
+
+
+
+
+
 });
 </script>
 
@@ -3894,13 +3927,16 @@ $(document).ready(function(){
               </div>
 
               <div style="margin-top: 15px; font-size: 0.9rem;">
-                <label for="tipo">Selecione o tipo de contrato</label>
+                <label for="tipo">Selecione a forma de pagamento</label>
+
                 <select name="tipo" id="tipo" required>
-                    <option value=""></option>
-                    <option value="venda">Venda</option>
-                    <option value="distrato">Distrato</option>
-                    <option value="recisão">Recisão</option>
-                </select>
+                              <option value=""></option>
+                              <option value="À vista">À vista</option>
+                              <option value="Financiamento">Financiamento</option>
+                              <option value="Consórcio">Consórcio</option>
+                              <option value="Minha casa minha vida">Minha casa minha vida</option>
+                              <option value="Outro">Outro</option>
+                  </select>
               </div>
 
               <input type="hidden" id="hidden_cad_eti" value="cadastrarEtiqueta">
@@ -3988,28 +4024,17 @@ $(document).ready(function(){
 
                         <div>
 
-                            <div id="etiquetalabel"><label for="etiqueta">Forma de pagamento</label> </div>
-                            <select name="etiqueta" id="etiqueta" required>
+                            <div id="etiquetalabel"><label for="tipopagamento">Forma de pagamento</label> </div>
+
+                            <select name="tipopagamento" id="tipopagamento" required>
                               <option value=""></option>
                               <option value="À vista">À vista</option>
                               <option value="Financiamento">Financiamento</option>
                               <option value="Consórcio">Consórcio</option>
                               <option value="Minha casa minha vida">Minha casa minha vida</option>
                               <option value="Outro">Outro</option>
-                              
-                              <?php 
-                                // if($etiquetas->num_rows> 0){
-                                //   while($etiqueta = $etiquetas->fetch_assoc()){
-                                //     echo "<option value='" . $etiqueta['codigo_etiquetas'] . "'>" . $etiqueta['cor'] . '  ('.$etiqueta['tipo'].')  ' .  "</option>";
-
-                                //   }
-                                // }
-                                // else{
-                                //   echo "<option value=''>" . 'Nenhuma etiqueta cadastrada' . "</option>";
-                                // }
-                              
-                              // ?>
                             </select>
+
                         </div>
 
 
@@ -4028,7 +4053,7 @@ $(document).ready(function(){
                                       }
                                     }
                                     else{
-                                      echo "<option value=''>" . 'Nenhuma etiqueta cadastrada' . "</option>";
+                                      echo "<option value=''>" . 'Nenhum checklist criado' . "</option>";
                                     }
                                 ?>
                             </select>
@@ -4044,6 +4069,7 @@ $(document).ready(function(){
                         <input type="hidden" name="desc_status" value="Contrato pendente de vincular comprador e sua porcentagem">
                         <input type="hidden" name="codigoimovel" value="<?php echo $_GET['cod'] ?>">
                         <input type="hidden" name="codigoadm" value="<?php echo $_SESSION['codigo_adm']?>">
+                        <input type="hidden" name="etiqueta" id="etiquetaa">
                     </div>
 
                     <div class="prox">

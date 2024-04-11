@@ -3798,7 +3798,7 @@ $(document).ready(function(){
 
                     <div>
                         <p>Imóvel</p>
-                        <p> <strong> <?php echo $dados_contrato['tipo'] ?> - código: <?php echo $dados_contrato['codigo_imovel'] ?> </strong> </p>
+                        <p> <strong> <?php echo $dados_contrato['tipo'] ?> - código: <?php echo $dados_contrato['referencia'] ?> </strong> </p>
                     </div>
 
                     <div>

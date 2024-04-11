@@ -3715,32 +3715,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
       <script>
-        $(document).ready(function () {
-          $(".mascara_real").mask("000.000.000", { reverse: true });
-          $(".redefinir_opcoes").click(function () {
-            event.preventDefault();
-            $("#title").val("Simulador de financiamento");
-            $("#description").val(
-              "Descubra o financiamento ideal para o lar dos seus sonhos. Experimente diferentes valores de entrada, prazos e taxas de juros para encontrar a melhor opção para você."
-            );
-            $("#taxa_juros").val(9);
-            $("#valor_max").val("2.500.000");
-            $("#periodo_padrao").val(30);
-            $("#valor_min").val("150.000");
-            $("#select_exibicao").val("SAC");
-            $("#entrada_min").val(30);
-          });     
-          if ($('.desliga_modulo').hasClass('ocultar_botao')) {
-            $('.formulario_financiamento input').prop('disabled', true).css('opacity','0.5');
-            $('.formulario_financiamento select').prop('disabled', true).css('opacity','0.5');
-            $('.formulario_financiamento textarea').prop('disabled', true).css('opacity','0.5');
-            $('.buttons_group').css('display','none');
-          } 
-
-        });
-
-
+      
       </script>
+      
       <section class="corpo">
         <div class="container">
 
