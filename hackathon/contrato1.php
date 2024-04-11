@@ -3811,30 +3811,32 @@ $(document).ready(function(){
 
   $('#tipopagamento').on('input', function(){
 
-    let tipo_pagamento = $('#tipopagamento').val()
-    let input_hidden_etiqueta = $('#etiquetaa')
-    
-    switch(tipo_pagamento){
-      case 'À vista':
-          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[0]['codigo_etiquetas'] ?> )
-          break
-      case 'Financiamento':
-          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[1]['codigo_etiquetas'] ?> )
-          break
-      case 'Consórcio':
-          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[2]['codigo_etiquetas'] ?> )
-          break
-      case 'Minha casa minha vida':
-          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[3]['codigo_etiquetas'] ?> )
-          break
-      case 'Outro':
-          input_hidden_etiqueta.val(<?php echo $lista_etiquetas[4]['codigo_etiquetas'] ?> )
-          break
-    }
+let tipo_pagamento = $('#tipopagamento').val()
+let input_hidden_etiqueta = $('#etiquetaa')
 
-  })
+console.log(tipo_pagamento)
 
+switch(tipo_pagamento){
+  case 'À vista':
+      input_hidden_etiqueta.val(<?php echo $lista_etiquetas[0]['codigo_etiquetas'] ?> )
+      break
+  case 'Financiamento':
+      input_hidden_etiqueta.val(<?php echo $lista_etiquetas[1]['codigo_etiquetas'] ?> )
+      break
+  case 'Consórcio':
+      input_hidden_etiqueta.val(<?php echo $lista_etiquetas[2]['codigo_etiquetas'] ?> )
+      break
+  case 'Minha casa minha vida':
+      input_hidden_etiqueta.val(<?php echo $lista_etiquetas[3]['codigo_etiquetas'] ?> )
+      break
+  case 'Outro':
+      input_hidden_etiqueta.val(<?php echo $lista_etiquetas[4]['codigo_etiquetas'] ?> )
+      break
+}
 
+})
+
+ 
   // Cadastrar etiquetas
     
     $('#cadastraEtiqueta').submit(function(e){
@@ -3853,6 +3855,8 @@ $(document).ready(function(){
         cadastrarEtiqueta: $('#hidden_cad_eti').val()
        }
 
+       console.log(objEtiqueta)
+
         $.ajax({
             url: 'index.php', 
             method: 'POST',
@@ -3870,6 +3874,12 @@ $(document).ready(function(){
               });
             }
         });
+
+
+
+
+
+
     });
 
 
@@ -3903,27 +3913,27 @@ $(document).ready(function(){
               
               <div class="pai_input_radio">
                   <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Azul">Azul</label> <div style="width:25px;height:25px; border:1px solid #007fe2; background-color: #007fe2; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Azul" id="Azul" name="cor" required>
+                  <input type="radio" value="#007fe2;" id="Azul" name="cor" required>
               </div>
 
               <div class="pai_input_radio">
                   <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Verde">Verde</label> <div style="width:25px;height:25px; border:1px solid #2CA62F; background-color: #2CA62F; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Verde" id="Verde" name="cor">
+                  <input type="radio" value="#2CA62F" id="Verde" name="cor">
               </div>
 
               <div class="pai_input_radio">
                   <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Amarelo">Amarelo</label> <div style="width:25px;height:25px; border:1px solid #ebe834; background-color: #ebe834; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Amarelo" id="Amarelo" name="cor">
+                  <input type="radio" value="#ebe834" id="Amarelo" name="cor">
               </div>
 
               <div class="pai_input_radio">
                   <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Roxo">Roxo</label> <div style="width:25px;height:25px; border:1px solid #b434eb; background-color: #b434eb; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Roxo" id="Roxo" name="cor">
+                  <input type="radio" value="#b434eb" id="Roxo" name="cor">
               </div>
 
               <div class="pai_input_radio">
                   <div style="display: flex; width:20%; justify-content: space-between ; align-items: center;"><label for="Vermelho">Vermelho</label> <div style="width:25px;height:25px; border:1px solid #eb3a34; background-color: #eb3a34; border-radius: 50%;"></div></div>
-                  <input type="radio" value="Vermelho" id="Vermelho" name="cor">
+                  <input type="radio" value="#eb3a34" id="Vermelho" name="cor">
               </div>
 
               <div style="margin-top: 15px; font-size: 0.9rem;">

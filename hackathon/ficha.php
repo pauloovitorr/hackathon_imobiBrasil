@@ -3761,6 +3761,22 @@ button {
 }
 
 
+#etiqueta_fichaa{
+width: 25%;
+position: relative;
+left: 65%;
+font-size: 1.0rem;
+margin-bottom: 30px;
+text-align: center;
+padding: 5px;
+border-radius: 10px;
+color: white;
+background-color: white;
+color: <?php echo $dados_contrato['cor'] ?> ;
+border: 1px solid <?php echo $dados_contrato['cor'] ?> ;
+font-weight: 700;
+}
+
 
 </style>
 
@@ -3770,15 +3786,7 @@ button {
 
 $(document).ready(function(){
 
-    $('#formdocumentos').submit(function(e){
-     let file_contrato = $('#fileInput1').val()
-     console.log(file_contrato)
-      if(file_contrato === ''){
-        e.preventDefault()
-        Swal.fire("O campo de adicionar contrato é obrigatório !");
-      }
-
-    })
+   
 })
 
 </script>
@@ -3800,7 +3808,7 @@ $(document).ready(function(){
             <div class="revisa">
                 <h3 style="text-align: center;margin-bottom: 20px;">Contrato - <?php echo $dados_contrato['referencia']; ?> / <?php echo $dados_contrato['titulo']; ?> </h3>
 
-                <p id="etiqueta_fichaa"><i class="fa-solid fa-tag"></i> <?php echo $dados_contrato['cor'] ?> </p>
+                <div id="etiqueta_fichaa"><i class="fa-solid fa-tag"></i> <?php echo $dados_contrato['forma_pagamento'] ?> </div>
 
                 <div class="dadosficha">
 
