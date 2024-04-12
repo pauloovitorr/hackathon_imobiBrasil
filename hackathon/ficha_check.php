@@ -17,21 +17,45 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     $cod_contrato = $_GET['contrato'];
 
     $sql = "SELECT 
-	  contrato.codigo_contrato,
+	
+    contrato.codigo_contrato,
+    contrato.referencia,
+    DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
     contrato.tipo,
     contrato.titulo,
-    contrato.referencia,
     contrato.imoveis_codigo,
+    contrato.valor_negociado,
+    contrato.honorarios,
+    contrato.obs,
+    contrato.forma_pagamento,
+    contrato.etiquetas_codigo,
+
+    etiquetas.codigo_etiquetas,
+    etiquetas.cor,
+
+    
+    imoveis.codigo_imovel,
+    imoveis.rua,
     imoveis.cidade,
     imoveis.estado,
+    imoveis.tipo,
     imoveis.cod_proprietario,
     imoveis.cod_corretor,
-    imoveis.codigo_imovel,
+
+
+    grupo_compradores.codigo_contrato,
+    grupo_compradores.codigo_clientes,
+    grupo_compradores.porcentagem,
     
     
     proprietario.codigo_clientes AS cod_proprietario,
     proprietario.nome  AS nome_proprietario,
     proprietario.cpf  AS cpf_proprietario,
+
+
+    -- comprador.codigo_clientes AS cod_comprador,
+    -- comprador.nome  AS nome_comprador,
+    -- comprador.cpf  AS cpf_comprador,
      
     corretorimovel.codigo_clientes AS cod_corretor,
     corretorimovel.nome AS nome_corretor,
@@ -49,18 +73,37 @@ INNER JOIN
 	corretor ON imoveis.cod_corretor = corretor.codigo_corretor
 INNER JOIN
 	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+INNER JOIN 
+    grupo_compradores ON grupo_compradores.codigo_contrato = grupo_compradores.codigo_contrato
+INNER JOIN 
+    etiquetas ON etiquetas.codigo_etiquetas = contrato.etiquetas_codigo
 WHERE
 	contrato.codigo_contrato = $cod_contrato";
 
+// Paulo
 
 $dados_contrato = $connexao->query($sql);
 
 $dados_contrato = $dados_contrato->fetch_assoc();
+
+
+$sql2 = "SELECT 
+g.codigo_clientes, 
+g.codigo_contrato, 
+g.porcentagem, 
+compradores.codigo_clientes, 
+compradores.nome, 
+compradores.cpf FROM grupo_compradores g 
+INNER JOIN 
+    clientes AS compradores ON compradores.codigo_clientes = g.codigo_clientes and g.codigo_contrato = $cod_contrato
+where g.codigo_contrato = $cod_contrato";
+
+$dados_compradores = $connexao->query($sql2);
+
+
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-  print_r($_FILES);
-}
+//print_r($dados_contrato)
 
 
 
@@ -3720,6 +3763,22 @@ button {
 }
 
 
+#etiqueta_fichaa{
+width: 25%;
+position: relative;
+left: 65%;
+font-size: 1.0rem;
+margin-bottom: 30px;
+text-align: center;
+padding: 5px;
+border-radius: 10px;
+color: white;
+background-color: white;
+color: <?php echo $dados_contrato['cor'] ?> ;
+border: 1px solid <?php echo $dados_contrato['cor'] ?> ;
+font-weight: 700;
+}
+
 
 </style>
 
@@ -3728,15 +3787,8 @@ button {
 <script>
 
 $(document).ready(function(){
-    $('#formdocumentos').submit(function(e){
-     let file_contrato = $('#fileInput1').val()
-     console.log(file_contrato)
-      if(file_contrato === ''){
-        e.preventDefault()
-        Swal.fire("O campo de adicionar contrato é obrigatório !");
-      }
 
-    })
+   
 })
 
 </script>
@@ -3747,114 +3799,36 @@ $(document).ready(function(){
       <section class="corpo">
         <div class="container">
 
-
- 
-
+        
         <!-- Paulo -->
         
           <div class="conteudo">
 
-  <div class='pessoas'>
-
-  <div class="revisa">
+              <div class="revisa">
                     <div class="menu_ficha">
                         <div>
                             <a href="./ficha.php?contrato=<?php echo $cod_contrato?> ">Ficha</a>
                         </div>
 
                         <div>
-                            <a href="./ficha_check.php?contrato=<?php echo $cod_contrato?>">Checklist</a>
+                            <a style="color:#2CA62F; border-bottom:1px solid #2CA62F" href="./ficha_check.php?php echo $cod_contrato?> ">Checklist</a>
                         </div>
 
                         <div>
-                            <a style="color:#2CA62F; border-bottom:1px solid #2CA62F" href="./documentos.php?contrato=<?php echo $cod_contrato?> ">Documentos</a>
+                            <a href="./documentos.php?contrato=<?php echo $cod_contrato?> ">Documentos</a>
                         </div>
 
 
                     </div>
               </div>
 
-<div class='dados_contratoo'>
-  <p>Código do contrato: <strong><?php echo $dados_contrato['referencia'] ?></strong></p>
-  <p>Título: <strong><?php echo $dados_contrato['titulo'] ?></strong></p>
-  <p>Tipo de contrato: <strong><?php echo $dados_contrato['tipo'] ?></strong></p>
-</div>
 
-<div>
-  <p>Proprietário: <strong><?php echo $dados_contrato['nome_proprietario'] ?></strong></p>
-  <p>CPF: <strong><?php echo $dados_contrato['cpf_proprietario'] ?></strong></p>
-</div>
+            <div class="revisa">
+                <h3 style="text-align: center;margin-bottom: 20px;"> Em construção </h3>
 
-<div>
-  <p>Corretor: <strong><?php echo $dados_contrato['nome_corretor'] ?></strong></p>
-  <p>CPF: <strong><?php echo $dados_contrato['cpf_corretor'] ?></strong></p>
-  <p>CRECI: <strong><?php echo $dados_contrato['creci'] ?></strong></p>
-</div>
+               
 
-</div>
-
-
-          <h1 style="text-align: center;margin-top:50px">Adicionar documentos</h1>
-
-          <div class="revisa">
-             <br>
-
-             <form method="post" enctype="multipart/form-data" id="formdocumentos">
-
-<div class="inputfile">
-    <div class="pular" style="background-color:#0b5dd9;">
-        <p >Adicionar o contrato de <?php echo $dados_contrato['tipo'] ?> </p>
-    </div>
-        
-    <div class="img_documento">
-        <img src="./img/contratoo.png" alt="documentos clientes">
-    </div>
-
-    <div class="pai_inputfile">
-        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput1" multiple name="documentos_pessoas[]">
-        <p class="custom-button" style="background-color:#0b5dd9;" onclick="document.getElementById('fileInput1').click()">Selecionar Arquivos</p>
-    </div>
-</div>
-
-<div class="inputfile">
-    <div class="pular" style="background-color:#b9c9be;">
-        <p>Adicionar contrato de intermediação </p>
-    </div>
-        
-    <div class="img_documento">
-        <img src="./img/intermedio.png" alt="documentos clientes">
-    </div>
-
-    <div class="pai_inputfile">
-        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput2" name="documentos_pessoas2[]" multiple >
-        <p class="custom-button" style="background-color:#68a378;" onclick="document.getElementById('fileInput2').click()">Selecionar Arquivos</p>
-    </div>
-</div>
-
-<div class="inputfile">
-    <div class="pular" style="background-color: #b9c9be;">
-        <p>Adicionar documentos das partes interessadas </p>
-    </div>
-        
-    <div class="img_documento">
-        <img src="./img/imgdocumentos.png" alt="documentos clientes">
-    </div>
-
-    <div class="pai_inputfile">
-        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput3" name="documentos_pessoas3[]" multiple>
-        <p class="custom-button" style="background-color: #68a378;" onclick="document.getElementById('fileInput3').click()">Selecionar Arquivos</p>
-    </div>
-</div>
-
-<div style="width: 15%;margin:auto">
-    <button class="btnss" type="submit">Salvar documentos</button>
-</div>
-
-</form>
-
-            
-
-          </div>
+            </div>
 
 
         </div>

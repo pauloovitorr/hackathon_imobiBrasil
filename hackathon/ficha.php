@@ -41,7 +41,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     imoveis.tipo,
     imoveis.cod_proprietario,
     imoveis.cod_corretor,
-    imoveis.codigo_imovel,
+
 
     grupo_compradores.codigo_contrato,
     grupo_compradores.codigo_clientes,
@@ -102,6 +102,8 @@ $dados_compradores = $connexao->query($sql2);
 
 
 }
+
+//print_r($dados_contrato)
 
 
 
@@ -3797,12 +3799,28 @@ $(document).ready(function(){
       <section class="corpo">
         <div class="container">
 
-
- 
-
+        
         <!-- Paulo -->
         
           <div class="conteudo">
+
+              <div class="revisa">
+                    <div class="menu_ficha">
+                        <div>
+                            <a style="color:#2CA62F; border-bottom:1px solid #2CA62F"  href="./ficha.php?contrato=<?php echo $cod_contrato?> ">Ficha</a>
+                        </div>
+
+                        <div>
+                              <a href="./ficha_check.php?contrato=<?php echo $cod_contrato?>">Checklist</a>
+                        </div>
+
+                        <div>
+                            <a href="./documentos.php?contrato=<?php echo $cod_contrato?> ">Documentos</a>
+                        </div>
+
+
+                    </div>
+              </div>
 
 
             <div class="revisa">
@@ -3814,7 +3832,7 @@ $(document).ready(function(){
 
                     <div>
                         <p>Imóvel</p>
-                        <p> <strong> <?php echo $dados_contrato['tipo'] ?> - código: <?php echo $dados_contrato['referencia'] ?> </strong> </p>
+                        <p> <strong> <?php echo $dados_contrato['tipo'] ?>  </strong> </p>
                     </div>
 
                     <div>
@@ -3886,7 +3904,7 @@ $(document).ready(function(){
 
                     <div>
                         <p>Valor real</p>
-                        <p style="text-align: center;"> <strong> <?php echo number_format($valorReal, 2, ',', '.') ?></strong> </p>
+                        <p style="text-align: center;"> <strong>R$ <?php echo number_format($valorReal, 2, ',', '.') ?></strong> </p>
                     </div>
 
                 </div>
