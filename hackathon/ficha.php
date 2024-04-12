@@ -53,9 +53,6 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     proprietario.cpf  AS cpf_proprietario,
 
 
-    -- comprador.codigo_clientes AS cod_comprador,
-    -- comprador.nome  AS nome_comprador,
-    -- comprador.cpf  AS cpf_comprador,
      
     corretorimovel.codigo_clientes AS cod_corretor,
     corretorimovel.nome AS nome_corretor,
@@ -103,7 +100,7 @@ $dados_compradores = $connexao->query($sql2);
 
 }
 
-//print_r($dados_contrato)
+print_r($dados_contrato)
 
 
 
@@ -3908,6 +3905,22 @@ $(document).ready(function(){
                     </div>
 
                 </div>
+
+                
+                  <?php 
+                  if($dados_contrato['obs'] !== '' ){
+                    echo '<div class="dadosficha">';
+                    echo '<div>';
+                    echo '<p style="text-align: center;" >'. ' Obeservação '  .'</p>';
+                    echo '<p>'. '<strong>'.  $dados_contrato['obs'] . '</strong>'  .'</p>';
+                    echo '</div>';
+                    echo '</div>';
+                  }
+                  
+                  ?>
+
+                
+                
 
 
             </div>
