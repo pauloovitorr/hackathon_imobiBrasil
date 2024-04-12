@@ -21,7 +21,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     contrato.codigo_contrato,
     contrato.referencia,
     DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
-    contrato.tipo,
+    contrato.tipo AS tipo_contrato,
     contrato.titulo,
     contrato.imoveis_codigo,
     contrato.valor_negociado,
@@ -100,7 +100,7 @@ $dados_compradores = $connexao->query($sql2);
 
 }
 
-print_r($dados_contrato)
+//print_r($dados_contrato)
 
 
 
@@ -3821,6 +3821,9 @@ $(document).ready(function(){
 
 
             <div class="revisa">
+
+            <div> <p style="text-align: end;font-size:1.0rem"> Tipo de contrato:  <strong><?php echo $dados_contrato['tipo_contrato'] ?></strong> </p></div>
+
                 <h3 style="text-align: center;margin-bottom: 20px;">Contrato - <?php echo $dados_contrato['referencia']; ?> / <?php echo $dados_contrato['titulo']; ?> </h3>
 
                 <div id="etiqueta_fichaa"><i class="fa-solid fa-tag"></i> <?php echo $dados_contrato['forma_pagamento'] ?> </div>
@@ -3918,10 +3921,7 @@ $(document).ready(function(){
                   }
                   
                   ?>
-
-                
-                
-
+            
 
             </div>
 
