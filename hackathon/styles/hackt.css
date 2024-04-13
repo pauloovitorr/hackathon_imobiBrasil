@@ -348,6 +348,10 @@
   font-size: 15px;
  }
 
+ .dadosficha p{
+  text-align: center;
+ }
+
  .menu_ficha{
     width: 60%;
     margin: 0 auto;

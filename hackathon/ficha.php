@@ -3831,17 +3831,17 @@ $(document).ready(function(){
                 <div class="dadosficha">
 
                     <div>
-                        <p>Imóvel</p>
+                        <p> <i class="fa-solid fa-key" style="color: #28cc44;"></i> Imóvel</p>
                         <p> <strong> <?php echo $dados_contrato['tipo'] ?>  </strong> </p>
                     </div>
 
                     <div>
-                        <p>Localização</p>
+                        <p><i class="fa-solid fa-location-dot" style="color: #28cc44;" ></i> Localização</p>
                         <p> <strong> <?php echo $dados_contrato['rua'] ?> / <?php echo $dados_contrato['cidade'] ?> </strong> </p>
                     </div>
 
                     <div>
-                        <p>Início do contrato</p>
+                        <p><i class="fa-solid fa-pen" style="color: #28cc44;"></i> Início do contrato</p>
                         <p> <strong> <?php echo  $dados_contrato['dt_criacao_formatada'] ?> </strong> </p>
                     </div>
 
@@ -3851,12 +3851,12 @@ $(document).ready(function(){
                 <div class="dadosficha">
 
                     <div>
-                        <p>Proprietário</p>
+                        <p> <i class="fa-solid fa-person" style="color: #28cc44;"></i> Proprietário</p>
                         <p> <strong> <?php echo $dados_contrato['nome_proprietario'] ?> - CPF: <?php echo $dados_contrato['cpf_proprietario'] ?> </strong> </p>
                     </div>
 
                     <div>
-                        <p>Corretor</p>
+                        <p> <i class="fa-solid fa-people-arrows"style="color: #28cc44;"></i> Corretor</p>
                         <p> <strong> <?php echo $dados_contrato['nome_corretor'] ?> - CPF: <?php echo $dados_contrato['cpf_corretor'] ?> </strong> </p>
                     </div>
 
@@ -3868,17 +3868,22 @@ $(document).ready(function(){
                             $porcentagem = (int)$dados_contrato['honorarios'];
 
                             $valorReal = $valor_negociado * ($porcentagem / 100);
+                            
+                            
                         
 
                         if($dados_compradores->num_rows > 1){
-                          echo '<p>'. 'Compradores' .'</p>';
+                          echo '<p style="text-align: center;">'. '<i class="fa-solid fa-person" style="color: #28cc44;"></i> '. 'Compradores' .'</p>';
                           
                         }else{
-                          echo '<p>'. 'Comprador' .'</p>';
+                          echo '<p style="text-align: center;">'. '<i class="fa-solid fa-person" style="color: #28cc44;"></i> '.'Comprador' .'</p>';
                         }
                         
                         while ($comprador = $dados_compradores->fetch_assoc()) {
-                          echo '<p><strong>' . $comprador['nome'] . ' - CPF: ' . $comprador['cpf'] . ' / ' . $comprador['porcentagem'] .'%' . '</strong></p>';
+
+                          $valorReal_compradores = $valor_negociado * ($comprador['porcentagem'] / 100);
+
+                          echo '<p><strong>' . $comprador['nome'] . ' - ' . $comprador['porcentagem'] .'%' . "   |   R$ ". number_format($valorReal_compradores, 2, ',', '.') . '</strong></p>';
                       }
 
                         ?>
@@ -3888,22 +3893,22 @@ $(document).ready(function(){
 
                 <div class="dadosficha">
                     <div>
-                        <p>Valor negociado</p>
+                        <p><i class="fa-regular fa-money-bill-1" style="color: #28cc44;"></i> Valor negociado</p>
                         <p> <strong> R$ <?php echo number_format($dados_contrato["valor_negociado"], 2, ',', '.') ?></strong> </p>
                     </div>
 
                     <div>
-                        <p>Forma de pagamento</p>
+                        <p> <i class="fa-solid fa-landmark" style="color: #28cc44;"></i> Forma de pagamento</p>
                         <p> <strong> <?php echo $dados_contrato['forma_pagamento'] ?></strong> </p>
                     </div>
 
                     <div>
-                        <p>Comissão</p>
+                        <p> <i class="fa-solid fa-dollar-sign" style="color: #28cc44;" ></i> Comissão</p>
                         <p style="text-align: center;"> <strong> <?php echo $dados_contrato['honorarios'] ?>%</strong> </p>
                     </div>
 
                     <div>
-                        <p>Valor real</p>
+                        <p><i class="fa-regular fa-money-bill-1" style="color: #28cc44;"></i> Valor real</p>
                         <p style="text-align: center;"> <strong>R$ <?php echo number_format($valorReal, 2, ',', '.') ?></strong> </p>
                     </div>
 
@@ -3914,7 +3919,7 @@ $(document).ready(function(){
                   if($dados_contrato['obs'] !== '' ){
                     echo '<div class="dadosficha">';
                     echo '<div>';
-                    echo '<p style="text-align: center;" >'. ' Obeservação '  .'</p>';
+                    echo '<p style="text-align: center;" >'. '<i class="fa-regular fa-file-lines" style="color: #28cc44;"></i>' .' Obeservação '  .'</p>';
                     echo '<p>'. '<strong>'.  $dados_contrato['obs'] . '</strong>'  .'</p>';
                     echo '</div>';
                     echo '</div>';
