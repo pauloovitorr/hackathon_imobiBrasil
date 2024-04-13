@@ -16,94 +16,36 @@ if(empty($_GET['contrato'])){
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
     $cod_contrato = $_GET['contrato'];
 
-    $sql = "SELECT 
-	
-    contrato.codigo_contrato,
-    contrato.referencia,
-    DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
-    contrato.tipo,
-    contrato.titulo,
-    contrato.imoveis_codigo,
-    contrato.valor_negociado,
-    contrato.honorarios,
-    contrato.obs,
-    contrato.forma_pagamento,
-    contrato.etiquetas_codigo,
+    $sql = "SELECT
+      p.codigo_passo,
+      p.titulo AS titulo_passo,
+      p.descricao AS descricao_passo,
+      p.codigo_check,
 
-    etiquetas.codigo_etiquetas,
-    etiquetas.cor,
+      c.codigo_contrato,
+      c.checklist_codigo,
 
+      ck.codigo_check,
+      ck.tipo,
+      ck.descricao
+
+    FROM 
+      passo AS p
+    INNER JOIN
+        contrato AS c ON c.codigo_contrato = $cod_contrato
+    INNER JOIN
+        checklist AS ck ON c.checklist_codigo = ck.codigo_check
     
-    imoveis.codigo_imovel,
-    imoveis.rua,
-    imoveis.cidade,
-    imoveis.estado,
-    imoveis.tipo,
-    imoveis.cod_proprietario,
-    imoveis.cod_corretor,
+    WHERE p.codigo_check = c.checklist_codigo ";
 
-
-    grupo_compradores.codigo_contrato,
-    grupo_compradores.codigo_clientes,
-    grupo_compradores.porcentagem,
-    
-    
-    proprietario.codigo_clientes AS cod_proprietario,
-    proprietario.nome  AS nome_proprietario,
-    proprietario.cpf  AS cpf_proprietario,
-
-
-    -- comprador.codigo_clientes AS cod_comprador,
-    -- comprador.nome  AS nome_comprador,
-    -- comprador.cpf  AS cpf_comprador,
-     
-    corretorimovel.codigo_clientes AS cod_corretor,
-    corretorimovel.nome AS nome_corretor,
-    corretorimovel.cpf AS cpf_corretor,
-    corretor.creci,
-    corretor.id_cliente_corretor
-    
-FROM 
-    contrato
-INNER JOIN
-	imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
-INNER JOIN
-	clientes AS proprietario ON imoveis.cod_proprietario = proprietario.codigo_clientes
-INNER JOIN
-	corretor ON imoveis.cod_corretor = corretor.codigo_corretor
-INNER JOIN
-	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
-INNER JOIN 
-    grupo_compradores ON grupo_compradores.codigo_contrato = grupo_compradores.codigo_contrato
-INNER JOIN 
-    etiquetas ON etiquetas.codigo_etiquetas = contrato.etiquetas_codigo
-WHERE
-	contrato.codigo_contrato = $cod_contrato";
 
 // Paulo
 
-$dados_contrato = $connexao->query($sql);
-
-$dados_contrato = $dados_contrato->fetch_assoc();
-
-
-$sql2 = "SELECT 
-g.codigo_clientes, 
-g.codigo_contrato, 
-g.porcentagem, 
-compradores.codigo_clientes, 
-compradores.nome, 
-compradores.cpf FROM grupo_compradores g 
-INNER JOIN 
-    clientes AS compradores ON compradores.codigo_clientes = g.codigo_clientes and g.codigo_contrato = $cod_contrato
-where g.codigo_contrato = $cod_contrato";
-
-$dados_compradores = $connexao->query($sql2);
-
+$dados_passos = $connexao->query($sql);
 
 }
 
-//print_r($dados_contrato)
+//print_r($dados_passoa)
 
 
 
@@ -3787,6 +3729,30 @@ font-weight: 700;
 <script>
 
 $(document).ready(function(){
+ $('.checkbox_input').on('change', function(){
+    let check = $(this)[0]
+    let cod = $(this).closest('.linha_pas').find('.cod_input_passo').val()
+
+    let obj_passos_status = {
+      finalizado: check.checked,
+      codigo_passo: cod
+    }
+
+    $.ajax({
+
+      url:'index.php',
+      type: 'POST',
+      dataType: 'json',
+      data: obj_passos_status,
+
+      success: function(response){
+        console.log('oi: '+ response)
+      }
+
+    })
+
+    
+ })
 
    
 })
@@ -3824,9 +3790,59 @@ $(document).ready(function(){
 
 
             <div class="revisa">
-                <h3 style="text-align: center;margin-bottom: 20px;"> Em construção </h3>
 
-               
+                <h3 style="text-align: center;margin-bottom: 20px;">Checklist do contrato </h3>
+
+            <div class="tabela_passos">
+
+                <table class="tabela_contratos">
+
+                <thead>
+                  <tr >
+                    <th>#</th>
+                    <th>Titulo</th>
+                    <th>Descrição</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                <?php 
+
+                    if($dados_passos->num_rows>0){
+                      while($passo = $dados_passos->fetch_assoc()){
+                        echo '<tr class="linha_passo">';
+
+                        echo    '<td class="linha_pas">';
+                        echo      '<input class="checkbox_input" type="checkbox">';
+                        echo      '<input type="hidden" class="cod_input_passo" value="' . $passo['codigo_passo'] . '">';
+                        echo    '</td>';
+
+                        echo    '<td>';
+                        echo      '<strong>'. $passo['titulo_passo'] .'</strong>';
+                        echo    '</td>';
+                
+                        echo    '<td>';
+                        echo      '<strong>'. $passo['descricao_passo'] .'</strong>';
+                        echo    '</td>';
+
+                        echo '</tr>';
+                      }
+                    }
+
+                    ?>
+
+                
+                </tbody>
+
+                </table>
+
+            </div>
+
+                <div>
+                  
+                  
+                </div>
 
             </div>
 

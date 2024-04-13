@@ -31,6 +31,34 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     $lista_contratos = $connexao->query($sql);
 }
 
+if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['finalizado'])  && !empty($_POST['codigo_passo'])){
+
+    $status_passo     = $connexao->escape_string($_POST['finalizado']);
+    $cod_passo_status = $connexao->escape_string($_POST['codigo_passo']);
+
+    $sql = "UPDATE passo SET finalizado = ? WHERE codigo_passo = ?";
+
+    $stmt = $connexao->prepare($sql);
+
+    $stmt->bind_param('si', $status_passo, $cod_passo_status);
+
+    $stmt->execute();
+
+
+    $retorno = array();
+
+    if($stmt->affected_rows>0){
+      array_push($retorno, ['Sucesso' => 'status atualizado com sucesso']);
+    }
+    else{
+      array_push($retorno, ['Falha' => 'status não foi atualizado']);
+    }
+
+    echo json_encode($retorno);
+    
+    exit;
+}
+
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) && !empty($_POST['cor']) && !empty($_POST['tipo'])){
   
