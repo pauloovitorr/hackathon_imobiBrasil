@@ -45,16 +45,13 @@ if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['finalizado'])  && !emp
     $stmt->execute();
 
 
-    $retorno = array();
-
-    if($stmt->affected_rows>0){
-      array_push($retorno, ['Sucesso' => 'status atualizado com sucesso']);
-    }
-    else{
-      array_push($retorno, ['Falha' => 'status não foi atualizado']);
-    }
-
-    echo json_encode($retorno);
+    if ($stmt->affected_rows > 0) {
+      
+      echo json_encode(['retorno' => true, 'mensagem' => 'Status atualizado com sucesso']);
+  } else {
+     
+      echo json_encode(['retorno' => false, 'mensagem' => 'Status não foi atualizado']);
+  }
     
     exit;
 }

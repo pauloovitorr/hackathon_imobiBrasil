@@ -21,6 +21,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
       p.titulo AS titulo_passo,
       p.descricao AS descricao_passo,
       p.codigo_check,
+      p.finalizado,
 
       c.codigo_contrato,
       c.checklist_codigo,
@@ -3728,10 +3729,13 @@ font-weight: 700;
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 
+  // Ajax Paulo
+
 $(document).ready(function(){
  $('.checkbox_input').on('change', function(){
     let check = $(this)[0]
     let cod = $(this).closest('.linha_pas').find('.cod_input_passo').val()
+    //let tr = $(this).closest('.linha_passo')
 
     let obj_passos_status = {
       finalizado: check.checked,
@@ -3746,13 +3750,31 @@ $(document).ready(function(){
       data: obj_passos_status,
 
       success: function(response){
-        console.log('oi: '+ response)
+        //console.log(response.retorno)
+        //tr.css('text-decoration', 'line-through');
+        verifica_Passos()
       }
 
     })
-
     
  })
+
+ function verifica_Passos() {
+    
+    let valor = document.querySelectorAll('.finalizado');
+   
+    valor.forEach((item) => {
+       
+        let elementoCheckboxInput = item.closest('.linha_passo').querySelector('.checkbox_input');
+
+        elementoCheckboxInput.checked = true
+        item.style.textDecoration = 'line-through';
+        item.style.color = 'green';
+    });
+}
+
+// Chama a função para verificar os passos
+verifica_Passos();
 
    
 })
@@ -3811,7 +3833,7 @@ $(document).ready(function(){
 
                     if($dados_passos->num_rows>0){
                       while($passo = $dados_passos->fetch_assoc()){
-                        echo '<tr class="linha_passo">';
+                        echo "<tr class='linha_passo " . ($passo['finalizado']=== 'true' ? 'finalizado' : '') . "'>";
 
                         echo    '<td class="linha_pas">';
                         echo      '<input class="checkbox_input" type="checkbox">';
@@ -3825,6 +3847,8 @@ $(document).ready(function(){
                         echo    '<td>';
                         echo      '<strong>'. $passo['descricao_passo'] .'</strong>';
                         echo    '</td>';
+
+                        
 
                         echo '</tr>';
                       }
