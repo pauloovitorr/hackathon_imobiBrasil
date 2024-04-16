@@ -61,35 +61,94 @@ $dados_contrato = $dados_contrato->fetch_assoc();
 // Paulo
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-  
+
+ 
   $cod_adm = $_SESSION['codigo_adm'];
   $cod_contrato = $_GET['contrato'];
-  $arquivo  = $_FILES['contratoPrincipal'];
-  $nome     = $arquivo['name'];
-  $tmp      = $arquivo['tmp_name'];
+  $pasta = 'documentos/';
+
+  $connexao->begin_transaction();
+
+  try{
+    foreach($_FILES as $chaveCampo => $arquivos){
+
+      $nome_original     = $arquivos['name'][0];
+      $tmp      = $arquivos['tmp_name'][0];
+      $tamanho  = $arquivos['size'][0];
+
+      if($tamanho > 3845728){
+
+           throw new Exception('Uma condição inválida ocorreu.');
+    
+          die("Arquivo $nome_original é muito grande !! Máximo 3 MB");
+  
+      }
+      else{
+
+        $novo_nome3 = uniqid() . uniqid();
+        $extensao3 = strtolower(pathinfo($nome_original , PATHINFO_EXTENSION));
+        $caminho = $pasta.$novo_nome3.'.'. $extensao3;
+    
+        $resposta = move_uploaded_file( $tmp, $caminho );
+    
+        if($resposta){
+      
+          $sql ="INSERT INTO documentos (dt_criacao, dt_atualizacao, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), NOW(), $cod_adm,'$caminho','$nome_original', $cod_contrato  ) ";
+          $connexao->query($sql);
+        }else{
+          echo "<p>". 'Deu ruim 222222222222222222' ."</p>";
+           throw new Exception('Uma condição inválida ocorreu.');
+        }
+    
+      }
+
+  }
 
 
-  if($arquivo['size'] > 4194304){
-    die('Arquivo muito grande !! Máximo 4 MB');
+  $file3 = $_FILES['documentos_pessoas3'];
+
+  for ($indice = 1; $indice < count($file3['name']); $indice++) {
+
+    $nomeArquivo = $file3['name'][$indice];
+    $tmpArquivo = $file3['tmp_name'][$indice];
+    $tamanhoArquivo = $file3['size'][$indice];
+ 
+    if($tamanhoArquivo > 3845728){
+
+         throw new Exception('Uma condição inválida ocorreu.');
+  
+        die("Arquivo $nomeArquivo é muito grande !! Máximo 3 MB");
+
+    }
+    else{
+
+      $novo_nome3 = uniqid() . uniqid();
+      $extensao3 = strtolower(pathinfo($nomeArquivo , PATHINFO_EXTENSION));
+      $caminho3 = $pasta.$novo_nome3.'.'. $extensao3;
+  
+      $resposta = move_uploaded_file( $tmpArquivo, $caminho3 );
+  
+      if($resposta){
+    
+        $sql2 ="INSERT INTO documentos (dt_criacao, dt_atualizacao, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), NOW(), $cod_adm,'$caminho3','$nomeArquivo', $cod_contrato  ) ";
+
+        $connexao->query($sql2);
+
+      }
+      else{
+        echo "<p>". 'Deu ruim' ."</p>";
+         throw new Exception('Uma condição inválida ocorreu.');
+      }
+  
+    }
 }
 
-
-  $pasta = 'documentos/';
-  $novo_nome = uniqid() . uniqid();
-  $exntensao = strtolower(pathinfo($nome , PATHINFO_EXTENSION));
-
-  $resposta = move_uploaded_file($tmp, $pasta . $novo_nome .'.' . $exntensao );
-
-  $caminho = $pasta.$novo_nome.'.'. $exntensao;
-
-  if($resposta){
-
-    $sql ="INSERT INTO documentos (dt_criacao, dt_atualizacao, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), NOW(), $cod_adm,'$caminho','$nome', $cod_contrato  ) ";
-    $connexao->query($sql);
-  }else{
-    echo "<p>". 'Deu ruim' ."</p>";
+    $connexao->commit();
   }
-  
+
+  catch( Exception $err){
+    $connexao->rollback();
+  }
 
 }
 
@@ -3842,7 +3901,7 @@ $(document).ready(function(){
     </div>
 
     <div class="pai_inputfile">
-        <input type="file" class="custom-file-input" accept=".pdf" id="fileInput1"  name="contratoPrincipal">
+        <input type="file" class="custom-file-input" accept=".pdf" id="fileInput1"  name="contratoPrincipal[]">
         <p class="custom-button" style="background-color:#0b5dd9;" onclick="document.getElementById('fileInput1').click()">Selecionar Arquivos</p>
     </div>
 </div>
