@@ -3750,9 +3750,8 @@ $(document).ready(function(){
       data: obj_passos_status,
 
       success: function(response){
-        //console.log(response.retorno)
-        //tr.css('text-decoration', 'line-through');
-        verifica_Passos()
+        window.location.reload()
+        
       }
 
     })
@@ -3773,7 +3772,6 @@ $(document).ready(function(){
     });
 }
 
-// Chama a função para verificar os passos
 verifica_Passos();
 
    

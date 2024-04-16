@@ -58,8 +58,39 @@ $dados_contrato = $connexao->query($sql);
 $dados_contrato = $dados_contrato->fetch_assoc();
 }
 
+// Paulo
+
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-  print_r($_FILES);
+  
+  $cod_adm = $_SESSION['codigo_adm'];
+  $cod_contrato = $_GET['contrato'];
+  $arquivo  = $_FILES['contratoPrincipal'];
+  $nome     = $arquivo['name'];
+  $tmp      = $arquivo['tmp_name'];
+
+
+  if($arquivo['size'] > 4194304){
+    die('Arquivo muito grande !! Máximo 4 MB');
+}
+
+
+  $pasta = 'documentos/';
+  $novo_nome = uniqid() . uniqid();
+  $exntensao = strtolower(pathinfo($nome , PATHINFO_EXTENSION));
+
+  $resposta = move_uploaded_file($tmp, $pasta . $novo_nome .'.' . $exntensao );
+
+  $caminho = $pasta.$novo_nome.'.'. $exntensao;
+
+  if($resposta){
+
+    $sql ="INSERT INTO documentos (dt_criacao, dt_atualizacao, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), NOW(), $cod_adm,'$caminho','$nome', $cod_contrato  ) ";
+    $connexao->query($sql);
+  }else{
+    echo "<p>". 'Deu ruim' ."</p>";
+  }
+  
+
 }
 
 
@@ -3811,7 +3842,7 @@ $(document).ready(function(){
     </div>
 
     <div class="pai_inputfile">
-        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput1" multiple name="documentos_pessoas[]">
+        <input type="file" class="custom-file-input" accept=".pdf" id="fileInput1"  name="contratoPrincipal">
         <p class="custom-button" style="background-color:#0b5dd9;" onclick="document.getElementById('fileInput1').click()">Selecionar Arquivos</p>
     </div>
 </div>
