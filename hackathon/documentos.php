@@ -62,7 +62,6 @@ $dados_contrato = $dados_contrato->fetch_assoc();
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
- 
   $cod_adm = $_SESSION['codigo_adm'];
   $cod_contrato = $_GET['contrato'];
   $pasta = 'documentos/';
@@ -70,6 +69,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
   $connexao->begin_transaction();
 
   try{
+
     foreach($_FILES as $chaveCampo => $arquivos){
 
       $nome_original     = $arquivos['name'][0];
@@ -78,26 +78,30 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
       if($tamanho > 3845728){
 
-           throw new Exception('Uma condição inválida ocorreu.');
-    
-          die("Arquivo $nome_original é muito grande !! Máximo 3 MB");
-  
+           throw new Exception("Arquivo $nome_original é muito grande !! Máximo 3 MB");  
       }
       else{
 
-        $novo_nome3 = uniqid() . uniqid();
-        $extensao3 = strtolower(pathinfo($nome_original , PATHINFO_EXTENSION));
-        $caminho = $pasta.$novo_nome3.'.'. $extensao3;
-    
-        $resposta = move_uploaded_file( $tmp, $caminho );
-    
-        if($resposta){
-      
-          $sql ="INSERT INTO documentos (dt_criacao, dt_atualizacao, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), NOW(), $cod_adm,'$caminho','$nome_original', $cod_contrato  ) ";
-          $connexao->query($sql);
-        }else{
-          echo "<p>". 'Deu ruim 222222222222222222' ."</p>";
-           throw new Exception('Uma condição inválida ocorreu.');
+        if($nome_original !== ''){
+
+            $novo_nome3 = uniqid() . uniqid();
+            $extensao3 = strtolower(pathinfo($nome_original , PATHINFO_EXTENSION));
+            $caminho = $pasta.$novo_nome3.'.'. $extensao3;
+        
+            $resposta = move_uploaded_file( $tmp, $caminho );
+            
+            if($resposta){
+          
+              $sql ="INSERT INTO documentos (dt_criacao, dt_atualizacao, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), NOW(), $cod_adm,'$caminho','$nome_original', $cod_contrato ) ";
+
+              $connexao->query($sql);
+            }
+            else{
+              echo '<p> Deu ruim </p>';
+              
+              throw new Exception('Uma condição inválida ocorreu.');
+            }
+
         }
     
       }
@@ -115,9 +119,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
  
     if($tamanhoArquivo > 3845728){
 
-         throw new Exception('Uma condição inválida ocorreu.');
-  
-        die("Arquivo $nomeArquivo é muito grande !! Máximo 3 MB");
+         throw new Exception("Arquivo $nomeArquivo é muito grande !! Máximo 3 MB");
+
 
     }
     else{
@@ -3901,7 +3904,7 @@ $(document).ready(function(){
     </div>
 
     <div class="pai_inputfile">
-        <input type="file" class="custom-file-input" accept=".pdf" id="fileInput1"  name="contratoPrincipal[]">
+        <input type="file" class="custom-file-input" accept=".pdf, .doc, .docx" id="fileInput1"  name="contratoPrincipal[]">
         <p class="custom-button" style="background-color:#0b5dd9;" onclick="document.getElementById('fileInput1').click()">Selecionar Arquivos</p>
     </div>
 </div>
@@ -3916,7 +3919,7 @@ $(document).ready(function(){
     </div>
 
     <div class="pai_inputfile">
-        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png,.pdf" id="fileInput2" name="documentos_pessoas2[]" multiple >
+        <input type="file" class="custom-file-input" accept=".pdf, .doc, .docx" id="fileInput2" name="documentos_pessoas2[]" >
         <p class="custom-button" style="background-color:#68a378;" onclick="document.getElementById('fileInput2').click()">Selecionar Arquivos</p>
     </div>
 </div>
