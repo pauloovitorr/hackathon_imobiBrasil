@@ -4,6 +4,7 @@ session_start();
 
 include_once('../conexao.php');
 
+$cod_administrador = $_SESSION['codigo_adm'];
 
 if(empty($_SESSION['codigo_adm'])){
   header('location:index.php');
@@ -56,6 +57,21 @@ WHERE
 $dados_contrato = $connexao->query($sql);
 
 $dados_contrato = $dados_contrato->fetch_assoc();
+
+
+$sql2 = "SELECT 
+          
+          codigo_documento, 
+          DATE_FORMAT(dt_criacao,'%d/%m/%Y %H:%i:%s') AS dt_formatada,
+          nome
+
+          FROM documentos 
+
+        WHERE cod_adm = $cod_administrador AND codigo_contrato = $cod_contrato";
+
+$dd = $connexao->query($sql2);
+
+//print_r($dd);
 }
 
 // Paulo
@@ -3865,7 +3881,9 @@ $(document).ready(function(){
 
 
                     </div>
-              </div>
+    </div>
+
+
 
 <div class='dados_contratoo'>
   <p>Código do contrato: <strong><?php echo $dados_contrato['referencia'] ?></strong></p>
@@ -3885,6 +3903,40 @@ $(document).ready(function(){
 </div>
 
 </div>
+
+
+<div class="revisa">
+      
+      <table class="tabela_contratos">
+          
+      <h2 style='text-align: center;'>Lista de documentos</h2>
+
+        <tr>
+          <th>Código</th>
+          <th>Nome</th>
+          <th>Data de inserção</th>
+        </tr>
+
+       </tr>
+
+        <?php 
+
+          if($dd->num_rows > 0){
+            while($documento = $dd->fetch_assoc()){
+              echo '<tr>';
+              echo      '<td>'. $documento['codigo_documento'] .'</td>';
+              echo      '<td>'. $documento['nome'] .'</td>';
+              echo      '<td>'. $documento['dt_formatada'] .'</td>';
+              echo '</tr>';
+            }
+          }
+
+        ?>
+
+      </table>
+
+
+    </div>
 
 
           <h1 style="text-align: center;margin-top:50px">Adicionar documentos</h1>
