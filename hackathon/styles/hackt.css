@@ -371,6 +371,30 @@
   width: 100%;
  }
 
+ .remover{
+  display: none;
+ }
+
+ .ativ{
+  width: 250px;
+  margin: 0 auto;
+ }
+
+ .ativ img{
+  width: 100%;
+ }
+
+ .ilista{
+  font-size: 1.6rem;
+  font-weight: 800;
+  color:#007FE2 ;
+  cursor: pointer;
+  width: 50px;
+
+  position: relative;
+  left: 90%;
+ }
+
  
 
 

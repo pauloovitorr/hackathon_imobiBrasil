@@ -63,6 +63,7 @@ $sql2 = "SELECT
           
           codigo_documento, 
           DATE_FORMAT(dt_criacao,'%d/%m/%Y %H:%i:%s') AS dt_formatada,
+          tipo_doc,
           nome
 
           FROM documentos 
@@ -78,6 +79,9 @@ $dd = $connexao->query($sql2);
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
+  $count = 1;
+
+
   $cod_adm = $_SESSION['codigo_adm'];
   $cod_contrato = $_GET['contrato'];
   $pasta = 'documentos/';
@@ -91,6 +95,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       $nome_original     = $arquivos['name'][0];
       $tmp      = $arquivos['tmp_name'][0];
       $tamanho  = $arquivos['size'][0];
+
+      
+
+      if($count == 1){
+        $tipooo = 'Contrato Principal';
+
+        $count += 1;
+      }
+      else{
+        $tipooo = 'Contrato de intermediação';
+      }
+
 
       if($tamanho > 3845728){
 
@@ -108,7 +124,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             
             if($resposta){
           
-              $sql ="INSERT INTO documentos (dt_criacao, dt_atualizacao, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), NOW(), $cod_adm,'$caminho','$nome_original', $cod_contrato ) ";
+              $sql ="INSERT INTO documentos (dt_criacao, tipo_doc , cod_adm, path, nome, codigo_contrato) VALUES (NOW(),'$tipooo' , $cod_adm,'$caminho','$nome_original', $cod_contrato ) ";
 
               $connexao->query($sql);
             }
@@ -137,7 +153,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
          throw new Exception("Arquivo $nomeArquivo é muito grande !! Máximo 3 MB");
 
-
     }
     else{
 
@@ -149,7 +164,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
   
       if($resposta){
     
-        $sql2 ="INSERT INTO documentos (dt_criacao, dt_atualizacao, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), NOW(), $cod_adm,'$caminho3','$nomeArquivo', $cod_contrato  ) ";
+        $sql2 ="INSERT INTO documentos (dt_criacao, tipo_doc, cod_adm, path, nome, codigo_contrato) VALUES (NOW(), 'Documentos gerais', $cod_adm,'$caminho3','$nomeArquivo', $cod_contrato  ) ";
 
         $connexao->query($sql2);
 
@@ -163,11 +178,16 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 }
 
     $connexao->commit();
+
+    header('Location: ' . "documentos.php?contrato=$cod_contrato");
   }
 
   catch( Exception $err){
     $connexao->rollback();
   }
+
+
+
 
 }
 
@@ -3846,6 +3866,25 @@ $(document).ready(function(){
       }
 
     })
+
+
+    $('#btn_docs').click(function(){
+
+      $(this).css('display', 'none')
+      $('#btn_docs_abrir').css('display', 'block')
+
+      $('#lista_docs').addClass('remover')
+    })
+
+
+
+    $('#btn_docs_abrir').click(function(){
+      $(this).css('display', 'none')
+      $('#btn_docs').css('display', 'block')
+
+      $('#lista_docs').removeClass('remover')
+    })
+
 })
 
 </script>
@@ -3855,9 +3894,6 @@ $(document).ready(function(){
 
       <section class="corpo">
         <div class="container">
-
-
- 
 
         <!-- Paulo -->
         
@@ -3906,37 +3942,60 @@ $(document).ready(function(){
 
 
 <div class="revisa">
+
+
+
+
+<div class="ilista" >
+    <i id="btn_docs" style="display: none;" class="icon-chevron fa corpo-interno__categoria__cabecalho__titulo__icone fa-chevron-up"></i>
+    <i id="btn_docs_abrir"  class="icon-chevron fa corpo-interno__categoria__cabecalho__titulo__icone fa-chevron-down"></i>
+</div>
+
+<h2 style='text-align: center;'><i class="fa fa-clone corpo-interno__categoria__cabecalho__titulo__icone"></i>  Lista de documentos</h2>
+
+
+<div id="lista_docs" class="remover">
+
+
+
       
+      <div class="<?php echo $dd->num_rows > 0 ? '':'remover'  ?>" >
+
       <table class="tabela_contratos">
           
-      <h2 style='text-align: center;'>Lista de documentos</h2>
+          <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Data de inserção</th>
+          </tr>
+  
+         </tr>
+  
+          <?php 
+              while($documento = $dd->fetch_assoc()){
 
-        <tr>
-          <th>Código</th>
-          <th>Nome</th>
-          <th>Data de inserção</th>
-        </tr>
+                echo '<tr>';
+                echo      '<td>'. $documento['codigo_documento'] .'</td>';
+                echo      '<td>'. $documento['nome'] .'</td>';
+                echo      '<td>'. $documento['tipo_doc'] .'</td>';
+                echo      '<td>'. $documento['dt_formatada'] .'</td>';
+                echo '</tr>';
+              }
+          ?>
+  
+        </table>
 
-       </tr>
+      </div>
 
-        <?php 
-
-          if($dd->num_rows > 0){
-            while($documento = $dd->fetch_assoc()){
-              echo '<tr>';
-              echo      '<td>'. $documento['codigo_documento'] .'</td>';
-              echo      '<td>'. $documento['nome'] .'</td>';
-              echo      '<td>'. $documento['dt_formatada'] .'</td>';
-              echo '</tr>';
-            }
-          }
-
-        ?>
-
-      </table>
+      <div class="<?php echo $dd->num_rows > 0 ? 'remover':'ativ'?>" >
+        <h4 style='text-align: center;'>Sem documentos</h4>
+        <img src="./img/sem_contr.png" alt="">
+      </div>
 
 
     </div>
+</div>
 
 
           <h1 style="text-align: center;margin-top:50px">Adicionar documentos</h1>
