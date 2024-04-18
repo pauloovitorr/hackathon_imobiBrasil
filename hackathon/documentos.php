@@ -68,7 +68,7 @@ $sql2 = "SELECT
 
           FROM documentos 
 
-        WHERE cod_adm = $cod_administrador AND codigo_contrato = $cod_contrato";
+        WHERE cod_adm = $cod_administrador AND codigo_contrato = $cod_contrato ORDER BY tipo_doc";
 
 $dd = $connexao->query($sql2);
 
@@ -105,7 +105,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $count += 1;
       }
       elseif($count == 2){
-        $tipooo = 'Contrato de intermediação';
+        $tipooo = 'Contrato secundário (intermédio)';
         $count += 1;
       }
       elseif($count == 3){
@@ -3865,13 +3865,18 @@ button {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 
+
+
 $(document).ready(function(){
     $('#formdocumentos').submit(function(e){
-     let file_contrato = $('#fileInput1').val()
-     console.log(file_contrato)
-      if(file_contrato === ''){
+
+     let file_contrato1 = $('#fileInput1').val()
+     let file_contrato2 = $('#fileInput2').val()
+     let file_contrato3 = $('#fileInput3').val()
+     
+      if(file_contrato1 == '' &&  file_contrato2 == '' && file_contrato3 == '' ){
         e.preventDefault()
-        Swal.fire("O campo de adicionar contrato é obrigatório !");
+        Swal.fire("Adicione pelo menos um documento !");
       }
 
     })
@@ -4012,7 +4017,7 @@ $(document).ready(function(){
           <div class="revisa">
              <br>
 
-             <form method="post" enctype="multipart/form-data" id="formdocumentos">
+  <form method="post" enctype="multipart/form-data" id="formdocumentos">
 
 <div class="inputfile">
     <div class="pular" style="background-color:#0b5dd9;">
