@@ -81,6 +81,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
   $count = 1;
 
+ 
+
 
   $cod_adm = $_SESSION['codigo_adm'];
   $cod_contrato = $_GET['contrato'];
@@ -100,12 +102,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
       if($count == 1){
         $tipooo = 'Contrato Principal';
-
         $count += 1;
       }
-      else{
+      elseif($count == 2){
         $tipooo = 'Contrato de intermediação';
+        $count += 1;
       }
+      elseif($count == 3){
+        $tipooo = 'Documentos gerais';
+        $count += 1;
+      }
+      
 
 
       if($tamanho > 3845728){
@@ -140,6 +147,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
   }
 
+
+  $tipooo = '';
 
   $file3 = $_FILES['documentos_pessoas3'];
 
