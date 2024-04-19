@@ -64,7 +64,8 @@ $sql2 = "SELECT
           codigo_documento, 
           DATE_FORMAT(dt_criacao,'%d/%m/%Y %H:%i:%s') AS dt_formatada,
           tipo_doc,
-          nome
+          nome,
+          path
 
           FROM documentos 
 
@@ -3899,6 +3900,41 @@ $(document).ready(function(){
       $('#lista_docs').removeClass('remover')
     })
 
+
+    $('.del').click(function(){
+      let codd = $(this).closest('.linha_docs').find('.linha_cod_doc').text()
+      let path_doc = $(this).closest('.linha_docs').find('.path_doc').val()
+
+      let obj_excluir_doc = {
+        codigo_doc_del : codd, 
+        cod_contrato: <?php echo $_GET['contrato'] ?>,
+        pathh: path_doc
+      }
+
+
+      $.ajax({
+        method: 'POST',
+        url: 'index.php',
+        data: obj_excluir_doc,
+
+        success: function(res){
+          Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Documento excluído com sucesso",
+              showConfirmButton: false,
+              timer: 1500
+            });
+        },
+        error: function(err){
+          console.log('deu ruim')
+        }
+      })
+
+
+
+    })
+
 })
 
 </script>
@@ -3989,11 +4025,13 @@ $(document).ready(function(){
           <?php 
               while($documento = $dd->fetch_assoc()){
 
-                echo '<tr>';
-                echo      '<td>'. $documento['codigo_documento'] .'</td>';
+                echo '<tr class="linha_docs">';
+                echo      '<td class="linha_cod_doc" >'. $documento['codigo_documento'] .'</td>';
                 echo      '<td>'. $documento['nome'] .'</td>';
                 echo      '<td>'. $documento['tipo_doc'] .'</td>';
                 echo      '<td>'. $documento['dt_formatada'] .'</td>';
+                echo      '<input class="path_doc" type="hidden" value="' . $documento['path'] . '">';
+                echo      '<td>'. '<i class="fa-solid fa-trash del">' .'</i>' .'</td>';
                 echo '</tr>';
               }
           ?>

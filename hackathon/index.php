@@ -93,6 +93,31 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
 }
 
 
+if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && !empty($_POST['cod_contrato']) && !empty($_POST['pathh']) ){
+
+  $cod_documento = $connexao->escape_string($_POST['codigo_doc_del']);
+
+  $cod_contrato  = $connexao->escape_string($_POST['cod_contrato']);
+
+  $caminho       = $connexao->escape_string($_POST['pathh']);
+
+  $sql2 = "DELETE FROM documentos WHERE codigo_documento = ? AND codigo_contrato = ?";
+
+  echo $caminho;
+
+  $stmt = $connexao->prepare($sql2);
+
+  $stmt->bind_param('ii', $cod_documento,$cod_contrato );
+
+
+  if($stmt->execute()){
+      unlink($caminho);
+  }
+
+  exit;
+}
+
+
 
 ?>
 

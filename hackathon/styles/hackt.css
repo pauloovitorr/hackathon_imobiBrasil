@@ -395,6 +395,12 @@
   left: 90%;
  }
 
+
+ .del{
+  color: rgb(202, 6, 6);
+  cursor: pointer;
+ }
+
  
 
 
