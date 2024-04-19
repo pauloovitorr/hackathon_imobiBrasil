@@ -3925,6 +3925,14 @@ $(document).ready(function(){
               showConfirmButton: false,
               timer: 1500
             });
+
+            setTimeout(()=>{
+
+              window.location.reload()
+
+            },1700)
+
+
         },
         error: function(err){
           console.log('deu ruim')
