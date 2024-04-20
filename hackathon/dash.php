@@ -3451,18 +3451,12 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+
+        <!-- Paulojs -->
+
         <script>
 
-            $(document).ready(function(){
-               
-                let dados = <?php echo $dados_mjson; ?>
-
-                let qtd_imovel = dados.length
-
-                $('#qtd_imovel').text(qtd_imovel)
-
-
-            })
+            
 
         </script>
 
@@ -4002,16 +3996,62 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
 <script>
-            
-            const ctx = document.getElementById('myChart');
+
+$(document).ready(function(){
+               
+               let dados = <?php echo $dados_mjson; ?>
+
+               let qtd_imovel = dados.length
+
+               let tipo_imoveis = []
+
+               $('#qtd_imovel').text(qtd_imovel)
+
+               for(let i = 0; i < dados.length; i++){
+                   
+                   tipo_imoveis.push(dados[i][0].tipo)
+
+               }
+
+
+               let nome_qtd = []
+
+               for (let i = 0; i < tipo_imoveis.length; i++) {
+
+
+                   let contagem = tipo_imoveis.reduce((total, nome) => {
+                       return total + ((nome === tipo_imoveis[i]) ? 1 : 0);
+                   }, 0);
+
+                   nome_qtd.push([tipo_imoveis[i], contagem]);
+               }
+
+
+               let tipo_imov = []
+               let qtd_imov  = []
+               
+               for(let i = 0; i < nome_qtd.length ; i++ ){
+
+                
+
+                    if( !tipo_imov.includes(nome_qtd[i][0])){
+                        tipo_imov.push(nome_qtd[i][0])
+                        qtd_imov.push(nome_qtd[i][1])
+                    }
+
+               }
+
+
+               // grafico1
+               const ctx = document.getElementById('myChart');
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange','p','d','df','s'],
+                    labels: tipo_imov ,
                     datasets: [{
                         label: '# Tipos de imóveis',
-                        data: [12, 19,10,10,10,5,5,8,7,8,5],
+                        data: qtd_imov ,
                         backgroundColor: [
                             'rgba(255, 0, 0, 0.5)', // Red com 50% de transparência
                             'rgba(0, 0, 255, 0.5)', // Blue com 50% de transparência
@@ -4031,6 +4071,14 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                     }
                 }
             });
+
+
+
+           })
+           
+           
+
+            
 
 
 
