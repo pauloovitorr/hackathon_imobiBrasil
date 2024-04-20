@@ -11,6 +11,37 @@ if (empty($_SESSION['codigo_adm'])) {
     header('location:index.php');
 }
 
+if($_SERVER['REQUEST_METHOD'] === 'GET'){
+    $sql= "SELECT
+
+        m.codigo_imovel,
+        m.finalidade,
+        m.tipo
+
+        from imoveis AS m
+
+        WHERE finalidade = 'Venda'
+    
+    ";
+
+   $dd_im = $connexao->query($sql);
+
+   $lista_dados_imoveis = array();
+
+   if($dd_im->num_rows>0){
+    while($dados_convertidos = $dd_im->fetch_assoc()){
+        array_push($lista_dados_imoveis,[$dados_convertidos]);
+    }
+   }
+
+
+  $dados_mjson = json_encode($lista_dados_imoveis);
+
+}
+
+
+//print_r(count($lista_dados_imoveis));
+
 
 ?>
 
@@ -3420,7 +3451,20 @@ if (empty($_SESSION['codigo_adm'])) {
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+        <script>
 
+            $(document).ready(function(){
+               
+                let dados = <?php echo $dados_mjson; ?>
+
+                let qtd_imovel = dados.length
+
+                $('#qtd_imovel').text(qtd_imovel)
+
+
+            })
+
+        </script>
 
        
 
@@ -3438,6 +3482,7 @@ if (empty($_SESSION['codigo_adm'])) {
                     <div class="pai_graf">
 
                         <div class="revisa graf">
+                            <h3><strong id="qtd_imovel"></strong> imóveis para venda  </h3> <br>
                             <canvas id="myChart"></canvas>
                         </div>
 
@@ -3963,10 +4008,10 @@ if (empty($_SESSION['codigo_adm'])) {
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange','p','d','df','s'],
                     datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
+                        label: '# Tipos de imóveis',
+                        data: [12, 19,10,10,10,5,5,8,7,8,5],
                         backgroundColor: [
                             'rgba(255, 0, 0, 0.5)', // Red com 50% de transparência
                             'rgba(0, 0, 255, 0.5)', // Blue com 50% de transparência
@@ -3975,7 +4020,7 @@ if (empty($_SESSION['codigo_adm'])) {
                             'rgba(128, 0, 128, 0.5)', // Purple com 50% de transparência
                             'rgba(255, 165, 0, 0.5)' // Orange com 50% de transparência
                         ],
-                        borderWidth: 1
+                        borderWidth: 2
                     }]
                 },
                 options: {
@@ -4000,7 +4045,6 @@ if (empty($_SESSION['codigo_adm'])) {
                 data: {
                     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                     datasets: [{
-                        label: '# of Votes',
                         data: [12, 19, 3, 5, 2, 3],
                         borderWidth: 1
                     }]
