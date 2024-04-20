@@ -82,11 +82,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
   $count = 1;
 
- 
+  $lista_mover = array();
 
 
-  $cod_adm = $_SESSION['codigo_adm'];
-  $cod_contrato = $_GET['contrato'];
+  $cod_adm = $connexao->escape_string($_SESSION['codigo_adm']);
+  $cod_contrato = $connexao->escape_string($_GET['contrato']);
   $pasta = 'documentos/';
 
   $connexao->begin_transaction();
@@ -108,13 +108,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       elseif($count == 2){
         $tipooo = 'Contrato secundário (intermédio)';
         $count += 1;
+    
       }
       elseif($count == 3){
         $tipooo = 'Documentos gerais';
         $count += 1;
       }
       
-
 
       if($tamanho > 3845728){
 
@@ -127,8 +127,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $novo_nome3 = uniqid() . uniqid();
             $extensao3 = strtolower(pathinfo($nome_original , PATHINFO_EXTENSION));
             $caminho = $pasta.$novo_nome3.'.'. $extensao3;
-        
-            $resposta = move_uploaded_file( $tmp, $caminho );
+
+            $dadosmover = array();
+
+            array_push($dadosmover, [$tmp, $caminho]);
+
+            $resposta = array_push($lista_mover,$dadosmover);
+      
             
             if($resposta){
           
@@ -147,6 +152,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       }
 
   }
+
 
 
   $tipooo = '';
@@ -169,8 +175,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       $novo_nome3 = uniqid() . uniqid();
       $extensao3 = strtolower(pathinfo($nomeArquivo , PATHINFO_EXTENSION));
       $caminho3 = $pasta.$novo_nome3.'.'. $extensao3;
-  
-      $resposta = move_uploaded_file( $tmpArquivo, $caminho3 );
+
+      $dadosmover2 = array();
+
+      array_push($dadosmover2, [$tmpArquivo,$caminho3]);
+
+      $resposta = array_push($lista_mover,$dadosmover2);
   
       if($resposta){
     
@@ -187,7 +197,21 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     }
 }
 
-    $connexao->commit();
+   $res_bb = $connexao->commit();
+
+
+    if($res_bb){
+
+      for($i=0; $i <count($lista_mover); $i++){
+        $temporarios = $lista_mover[$i][0][0];
+        $caminho_fixo = $lista_mover[$i][0][1];
+    
+        move_uploaded_file($temporarios, $caminho_fixo);
+      }
+    }
+    else{
+
+    }
 
     header('Location: ' . "documentos.php?contrato=$cod_contrato");
   }
