@@ -1748,6 +1748,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
                   </li>
                   <li>
                     <a
+                      href="./dash.php"
+                      >Dashboard de vendas</a
+                    >
+                  </li>
+                  <li>
+                    <a
                       href="./index.php"
                       >Gestão de vendas</a
                     >

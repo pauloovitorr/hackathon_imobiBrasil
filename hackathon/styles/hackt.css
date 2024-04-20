@@ -401,6 +401,23 @@
   cursor: pointer;
  }
 
+ .graf{
+  width: 550px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+
+ .pai_graf{
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  
+ }
+
  
 
 

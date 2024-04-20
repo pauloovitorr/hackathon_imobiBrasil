@@ -1867,6 +1867,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrar_compradores
                   <a href="https://admin01.imobibrasil.net/imobiliarias/negocios_listar.php">Negócios</a>
                 </li>
                 <li>
+                    <a
+                      href="./dash.php"
+                      >Dashboard de vendas</a
+                    >
+                  </li>
+                <li>
                   <a href="./index.php">Gestão de contratos</a>
                 </li>
                 <li>

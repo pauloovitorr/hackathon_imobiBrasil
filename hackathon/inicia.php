@@ -1680,6 +1680,12 @@ INNER JOIN
                   </li>
                   <li>
                     <a
+                      href="./dash.php"
+                      >Dashboard de vendas</a
+                    >
+                  </li>
+                  <li>
+                    <a
                       href="./index.php"
                       >Gestão de contratos</a
                     >
