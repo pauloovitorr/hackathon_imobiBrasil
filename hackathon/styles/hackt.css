@@ -419,6 +419,27 @@
   flex-wrap: wrap;
  }
 
+ .dd_geral_dash{
+
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+ }
+
+ .dd_geral_dash > div{
+  width: 45%;
+  margin-top: 10px;
+  text-align: center;
+  padding: 10px;
+ }
+
+ .dd_geral_dash > div > p{
+ font-size: 1.1rem;
+ font-weight: 400;
+ }
+
  
 
 

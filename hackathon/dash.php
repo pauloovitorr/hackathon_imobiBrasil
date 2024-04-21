@@ -12,6 +12,11 @@ if (empty($_SESSION['codigo_adm'])) {
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
+
+    $cod_adm = $_SESSION['codigo_adm'];
+
+    // Lógica para alimentar o grafico de imóveis e seus tipo
+
     $sql= "SELECT
 
         m.codigo_imovel,
@@ -34,13 +39,61 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     }
    }
 
-
   $dados_mjson = json_encode($lista_dados_imoveis);
 
+  // Dados gerais
+
+  $sql2 = "SELECT 
+	
+    contrato.codigo_contrato,
+    DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
+    contrato.tipo AS tipo_contrato,
+    contrato.imoveis_codigo,
+    contrato.valor_negociado,
+    contrato.honorarios,
+    contrato.forma_pagamento,
+    contrato.status_contrato,
+
+    imoveis.codigo_imovel,
+    imoveis.cidade,
+    imoveis.tipo,
+    imoveis.cod_proprietario,
+    imoveis.cod_corretor,
+     
+    corretorimovel.codigo_clientes AS cod_corretor,
+    corretorimovel.nome AS nome_corretor,
+    corretorimovel.cpf AS cpf_corretor,
+    corretor.creci,
+    corretor.id_cliente_corretor
+    
+FROM 
+    contrato
+INNER JOIN
+	imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
+INNER JOIN
+	corretor ON imoveis.cod_corretor = corretor.codigo_corretor
+INNER JOIN
+	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+    
+    WHERE codigo_adm = $cod_adm AND contrato.tipo = 'Venda' AND contrato.status_contrato = 'ativo' ";
+
+
+$lista_dash = $connexao->query($sql2);
+
+//print_r($lista_dash);
+
+$dados_contrato = array();
+
+if($lista_dash->num_rows > 0){
+    while($dd_c = $lista_dash->fetch_assoc() ){
+        array_push($dados_contrato, $dd_c);
+    }
 }
 
 
-//print_r(count($lista_dados_imoveis));
+$dados_dash = json_encode($dados_contrato);
+
+}
 
 
 ?>
@@ -3451,8 +3504,66 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-       
+       <!-- Paulo -->
+        <script>
+            $(document).ready(function(){
 
+                // arrays
+                let valores = []
+                let comissoes = []
+               
+                let dados_dash = <?php echo $dados_dash ?>;
+
+                let qtd_vendido = dados_dash.length
+                $('#qtd_venda').text(qtd_vendido)
+
+                for(let dado of dados_dash){
+
+                    //console.log(dado)
+
+                    let valor_nego = parseFloat(dado.valor_negociado)
+                    let honorario =  parseFloat(dado.honorarios)
+
+                    let valor_comi = valor_nego * (honorario/100)
+
+                    valores.push(valor_nego)
+                    comissoes.push(valor_comi)
+                }
+
+                let venda_total = 0
+                let comissao_total = 0
+                let contador = 0
+
+                for(let valor of valores){
+                    venda_total += valor
+                    contador++
+                }
+
+                for(let comissao of comissoes){
+                    comissao_total += comissao
+                }
+
+                let ticket  = venda_total / contador
+                let honorario_media  = comissao_total / contador
+
+
+                ticket          = ticket.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
+                venda_total     = venda_total.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
+
+                comissao_total  = comissao_total.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
+                honorario_media = honorario_media.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
+
+                $('#vgv').text(venda_total)
+                $('#tick_m').text(ticket)
+                $('#comiss_tt').text(comissao_total)
+                $('#honorarios_med').text(honorario_media)
+
+                // console.log(venda_total)
+                // console.log(comissao_total)
+
+            })
+
+        </script>
 
 
 
@@ -3467,8 +3578,46 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                     <div class="pai_graf">
 
                         <div class="revisa graf">
-                            <!-- <h3><strong id="qtd_imovel"></strong> imóveis para venda  </h3> <br>
-                            <canvas id="myChart"></canvas> -->
+                            <div class="dd_geral_dash">
+
+                                <div>
+                                    <h2 id="qtd_venda"></h2>
+                                </div>
+
+                                <div>
+                                    <p> <?php echo count($dados_contrato) > 1 ? 'Vendas':'Venda' ?> </p>
+                                </div>
+                                
+                            </div>
+
+                            <div class="dd_geral_dash">
+
+                                <div style="border-right: 1px solid  #a7b0a8; width:55%">
+                                    <h2 id="vgv"></h2>
+                                    <p>Valor Geral de Vendas</p>
+                                </div>
+
+                                <div>
+                                    <h2 id="tick_m"></h2>
+                                    <p>Ticket Médio</p>
+                                </div>
+                            
+                            </div>
+
+                            <div class="dd_geral_dash">
+
+                            <div style="border-right: 1px solid  #a7b0a8;width:55%">
+                                <h2 id="comiss_tt"></h2>
+                                <p>Total de honorários</p>
+                            </div>
+
+                            <div>
+                                <h2 id="honorarios_med"></h2>
+                                <p>Média honorários</p>
+                            </div>
+
+                            </div>
+                            
                         </div>
 
                         <div class="revisa graf">
