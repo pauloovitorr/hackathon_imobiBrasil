@@ -25,10 +25,11 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
 
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
-  $cod_adm = $_SESSION['codigo_adm'];
+    $cod_adm = $_SESSION['codigo_adm'];
 
     $sql = "SELECT * FROM contrato where codigo_adm = $cod_adm order by status_contrato DESC";
     $lista_contratos = $connexao->query($sql);
+
 }
 
 if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['finalizado'])  && !empty($_POST['codigo_passo'])){
@@ -4041,7 +4042,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
                             echo '<td class="ativo">' .$contato["status_contrato"] .'</td>';
                             echo '<td>' .$contato["desc_status"] . '</td>';
                             echo '<td>' .date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
-                            echo '<td><a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check ativo_icon"></i></a></td>';
+                            echo '<td> <a href="ficha.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check ativo_icon"></i></a></td>';
 
                         echo '</tr>';
                       }

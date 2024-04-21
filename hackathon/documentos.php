@@ -73,7 +73,25 @@ $sql2 = "SELECT
 
 $dd = $connexao->query($sql2);
 
-//print_r($dd);
+
+
+
+$sql22 = "SELECT * FROM documentos WHERE codigo_contrato = $cod_contrato ";
+    $re = $connexao->query($sql22);
+
+    if($re-> num_rows > 0){
+      
+      $sql3 = "UPDATE contrato SET status_contrato = 'ativo', desc_status = 'Contrato ativo, confirme todos os dados' WHERE codigo_contrato = $cod_contrato ";
+
+      $connexao->query($sql3);
+    }
+    else{
+      $sql33 = "UPDATE contrato SET status_contrato = 'execução', desc_status = 'Contrato pendente de vincular documentos' WHERE codigo_contrato = $cod_contrato ";
+
+      $connexao->query($sql33);
+    }
+
+
 }
 
 // Paulo
@@ -197,6 +215,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     }
 }
 
+  
+
    $res_bb = $connexao->commit();
 
 
@@ -209,10 +229,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         move_uploaded_file($temporarios, $caminho_fixo);
       }
     }
-    else{
 
-    }
+    $sql3 = "UPDATE contrato SET status_contrato = 'ativo', desc_status = 'Contrato ativo, confirme todos os dados' WHERE codigo_contrato = $cod_contrato ";
 
+    $connexao->query($sql3);
+    
     header('Location: ' . "documentos.php?contrato=$cod_contrato");
   }
 

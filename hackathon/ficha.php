@@ -98,6 +98,7 @@ where g.codigo_contrato = $cod_contrato";
 $dados_compradores = $connexao->query($sql2);
 
 
+
 }
 
 //print_r($dados_contrato)

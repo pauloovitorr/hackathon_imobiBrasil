@@ -3451,15 +3451,6 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-
-        <!-- Paulojs -->
-
-        <script>
-
-            
-
-        </script>
-
        
 
 
@@ -3474,6 +3465,11 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                 <h1 style="text-align: center;margin:15px">Acompanhe os seus dados</h1>
 
                     <div class="pai_graf">
+
+                        <div class="revisa graf">
+                            <!-- <h3><strong id="qtd_imovel"></strong> imóveis para venda  </h3> <br>
+                            <canvas id="myChart"></canvas> -->
+                        </div>
 
                         <div class="revisa graf">
                             <h3><strong id="qtd_imovel"></strong> imóveis para venda  </h3> <br>
