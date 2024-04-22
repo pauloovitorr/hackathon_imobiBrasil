@@ -6,6 +6,8 @@ session_start();
 
 include_once('../conexao.php');
 
+date_default_timezone_set('America/Sao_Paulo');
+
 
 if (empty($_SESSION['codigo_adm'])) {
     header('location:index.php');
@@ -165,8 +167,19 @@ if($lista_dash->num_rows > 0){
 
 $dados_dash = json_encode($dados_contrato);
 
+$inicio = DateTime::createFromFormat('Y-m-d', $_GET['inicio']);
+$final = DateTime::createFromFormat('Y-m-d', $_GET['final']);
     
 }
+
+$data_atual = new DateTime();
+$dt_formatada = $data_atual->format('d/m');
+
+$primeiroDiaDoMes = new DateTime('first day of this month');
+$primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
+
+
+
 
 
 ?>
@@ -3587,6 +3600,82 @@ $dados_dash = json_encode($dados_contrato);
                
                 let dados_dash = <?php echo $dados_dash ?>;
 
+                let corretores_vendas = []
+
+                let qtd_vendas_corretor = []
+                let nome_corretor_venda = []
+
+
+                // For para pegar os corretores e suas quantidades de vendas
+                for(let corretor of dados_dash){
+                    corretores_vendas.push(corretor.nome_corretor)
+                }
+
+
+                for (let i = 0; i < corretores_vendas.length; i++) {
+
+                let contagem = corretores_vendas.reduce((total, nome) => {
+                    return total + ((nome === corretores_vendas[i]) ? 1 : 0);
+                }, 0);
+
+                if(!nome_corretor_venda.includes(corretores_vendas[i])){
+
+                    nome_corretor_venda.push(corretores_vendas[i])
+
+                }
+                qtd_vendas_corretor.push(contagem);
+
+                }
+
+                //console.log(qtd_vendas_corretor)
+
+
+// Inicio gráfico 2
+
+            const ctx2 = document.getElementById('myChart2');
+
+new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: nome_corretor_venda,
+        datasets: [{
+            label: 'Vendas',
+            data: qtd_vendas_corretor,
+            backgroundColor: [ // Definindo cores diferentes para cada barra
+                'rgba(255, 99, 132, 0.7)', // Red
+                'rgba(54, 162, 235, 0.7)', // Blue
+                'rgba(255, 206, 86, 0.7)', // Yellow
+                'rgba(75, 192, 192, 0.7)', // Green
+                'rgba(153, 102, 255, 0.7)', // Purple
+                'rgba(255, 159, 64, 0.7)' // Orange
+            ],
+            borderColor: [ // Cor das bordas das barras
+                'rgba(255, 99, 132, 1)', // Red
+                'rgba(54, 162, 235, 1)', // Blue
+                'rgba(255, 206, 86, 1)', // Yellow
+                'rgba(75, 192, 192, 1)', // Green
+                'rgba(153, 102, 255, 1)', // Purple
+                'rgba(255, 159, 64, 1)' // Orange
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// fim gráfico 2
+
+
+
                 let qtd_vendido = dados_dash.length
                 $('#qtd_venda').text(qtd_vendido)
 
@@ -3626,6 +3715,16 @@ $dados_dash = json_encode($dados_contrato);
                 comissao_total  = comissao_total.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
                 honorario_media = honorario_media.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
 
+
+                if(ticket == 'R$ NaN' ){
+                    ticket = 'R$ 0,00'
+                }
+
+                if(honorario_media == 'R$ NaN' ){
+                    honorario_media = 'R$ 0,00'
+                }
+                
+
                 $('#vgv').text(venda_total)
                 $('#tick_m').text(ticket)
                 $('#comiss_tt').text(comissao_total)
@@ -3657,8 +3756,22 @@ $dados_dash = json_encode($dados_contrato);
                                     <h2 style="font-size: 2.1rem;" id="qtd_venda"></h2>
                                 </div>
 
+                                <!-- Paulo -->
                                 <div style="text-align: start;">
                                     <p> <?php echo count($dados_contrato) > 1 ? 'Vendas':'Venda' ?> </p>
+                                    
+                                    <?php 
+                                    
+                                    if (!empty($_GET['inicio']) && !empty($_GET['final'])){
+                                         echo '<p>'. $inicio->format('d/m') . '  -  '. $final->format('d/m'). '</p>' ;
+                                    }
+                                    else{
+                                        echo '<p>'. $primeiroDiaFormatado . '  -  '.$dt_formatada . '</p>' ;
+                                    }
+                                    
+                                    ?>
+
+
                                 </div>
                                 
                             </div>
@@ -3696,12 +3809,12 @@ $dados_dash = json_encode($dados_contrato);
                                 <div class="form_busca_dt">
                                     <div>
                                         <label for="inicio">Início</label><br>
-                                        <input type="date" id="inicio" name="inicio"> 
+                                        <input type="date" id="inicio" name="inicio" required> 
                                     </div>
 
                                     <div>
                                         <label for="final">Final</label><br>
-                                        <input type="date" id="final" name="final"> <br>
+                                        <input type="date" id="final" name="final" required> <br>
                                     </div>
 
                                     <div style="width: 17%;margin:0 auto; margin-top: 10px; ; "><button type="submit">Pesquisar</button></div>
@@ -3713,13 +3826,16 @@ $dados_dash = json_encode($dados_contrato);
                         </div>
 
                         <div class="revisa graf">
+                            <h3> Vendas por corretor  </h3> <br>
+                            <canvas id="myChart2"></canvas>
+                        </div>
+
+                        <div class="revisa graf">
                             <h3><strong id="qtd_imovel"></strong> imóveis para venda  </h3> <br>
                             <canvas id="myChart"></canvas>
                         </div>
 
-                        <div class="revisa graf">
-                            <canvas id="myChart2"></canvas>
-                        </div>
+                       
 
                     </div>
 
@@ -4242,12 +4358,12 @@ $(document).ready(function(){
 
                let tipo_imoveis = []
 
+
                $('#qtd_imovel').text(qtd_imovel)
 
                for(let i = 0; i < dados.length; i++){
                    
                    tipo_imoveis.push(dados[i][0].tipo)
-
                }
 
 
@@ -4268,21 +4384,17 @@ $(document).ready(function(){
                let qtd_imov  = []
                
                for(let i = 0; i < nome_qtd.length ; i++ ){
-
-                
-
                     if( !tipo_imov.includes(nome_qtd[i][0])){
                         tipo_imov.push(nome_qtd[i][0])
                         qtd_imov.push(nome_qtd[i][1])
                     }
-
                }
 
 
                // grafico1
                const ctx = document.getElementById('myChart');
 
-               new Chart(ctx, {
+    new Chart(ctx, {
     type: 'bar',
     data: {
         labels: tipo_imov,
@@ -4313,9 +4425,7 @@ $(document).ready(function(){
 });
 
 
-
-
-           })
+})
            
            
 
@@ -4323,29 +4433,6 @@ $(document).ready(function(){
 
 
 
-
-            // 2 
-
-            const ctx2 = document.getElementById('myChart2');
-
-
-            new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                    datasets: [{
-                        data: [12, 19, 3, 5, 2, 3],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
         </script>
 
 

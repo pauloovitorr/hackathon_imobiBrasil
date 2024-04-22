@@ -81,7 +81,7 @@ $sql22 = "SELECT * FROM documentos WHERE codigo_contrato = $cod_contrato ";
 
     if($re-> num_rows > 0){
       
-      $sql3 = "UPDATE contrato SET status_contrato = 'ativo', desc_status = 'Contrato ativo, confirme todos os dados' WHERE codigo_contrato = $cod_contrato ";
+      $sql3 = "UPDATE contrato SET status_contrato = 'ativo', dt_atualizacao = NOW() ,desc_status = 'Contrato ativo, confirme todos os dados' WHERE codigo_contrato = $cod_contrato ";
 
       $connexao->query($sql3);
     }

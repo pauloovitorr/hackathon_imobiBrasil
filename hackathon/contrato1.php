@@ -4,6 +4,8 @@ session_start();
 
 include_once('../conexao.php');
 
+date_default_timezone_set('America/Sao_Paulo');
+
 
 
 if(empty($_SESSION['codigo_adm'])){
