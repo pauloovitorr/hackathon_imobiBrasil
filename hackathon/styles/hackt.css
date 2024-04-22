@@ -435,9 +435,42 @@
   padding: 10px;
  }
 
+ .dd_geral_dash > div > h2{
+  color: #0daf16;
+  }
+
  .dd_geral_dash > div > p{
  font-size: 1.1rem;
  font-weight: 400;
+ }
+
+ .qtd_imol{
+  width: 53% !important;
+  height: 50px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+ }
+
+ .form_busca_dt{
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  justify-content: space-between;
+
+ }
+
+ .form_busca_dt > div{
+  width: 45%;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ }
+
+ .form_busca_dt > div > input{
+  width: 70%;
  }
 
  

@@ -44,38 +44,43 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
   // Dados gerais
 
   $sql2 = "SELECT 
-	
-    contrato.codigo_contrato,
-    DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
-    contrato.tipo AS tipo_contrato,
-    contrato.imoveis_codigo,
-    contrato.valor_negociado,
-    contrato.honorarios,
-    contrato.forma_pagamento,
-    contrato.status_contrato,
+  contrato.codigo_contrato,
+  DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
+  contrato.tipo AS tipo_contrato,
+  contrato.imoveis_codigo,
+  contrato.valor_negociado,
+  contrato.honorarios,
+  contrato.forma_pagamento,
+  contrato.status_contrato,
 
-    imoveis.codigo_imovel,
-    imoveis.cidade,
-    imoveis.tipo,
-    imoveis.cod_proprietario,
-    imoveis.cod_corretor,
-     
-    corretorimovel.codigo_clientes AS cod_corretor,
-    corretorimovel.nome AS nome_corretor,
-    corretorimovel.cpf AS cpf_corretor,
-    corretor.creci,
-    corretor.id_cliente_corretor
-    
+  imoveis.codigo_imovel,
+  imoveis.cidade,
+  imoveis.tipo,
+  imoveis.cod_proprietario,
+  imoveis.cod_corretor,
+   
+  corretorimovel.codigo_clientes AS cod_corretor,
+  corretorimovel.nome AS nome_corretor,
+  corretorimovel.cpf AS cpf_corretor,
+  corretor.creci,
+  corretor.id_cliente_corretor
+  
 FROM 
-    contrato
+  contrato
 INNER JOIN
-	imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
+  imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
 INNER JOIN
-	corretor ON imoveis.cod_corretor = corretor.codigo_corretor
+  corretor ON imoveis.cod_corretor = corretor.codigo_corretor
 INNER JOIN
-	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
-    
-    WHERE codigo_adm = $cod_adm AND contrato.tipo = 'Venda' AND contrato.status_contrato = 'ativo' ";
+  clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+  
+WHERE 
+  codigo_adm = $cod_adm 
+  AND contrato.tipo = 'Venda' 
+  AND contrato.status_contrato = 'ativo'
+  AND contrato.dt_criacao >= DATE_FORMAT(NOW(), '%Y-%m-01')
+  AND contrato.dt_criacao <= NOW()
+";
 
 
 $lista_dash = $connexao->query($sql2);
@@ -93,6 +98,74 @@ if($lista_dash->num_rows > 0){
 
 $dados_dash = json_encode($dados_contrato);
 
+}
+
+
+
+if($_SERVER['REQUEST_METHOD']  === 'GET' && !empty($_GET['inicio']) && !empty($_GET['final'])  ){
+
+
+    $inicio = $connexao->escape_string($_GET['inicio']);
+    $final = $connexao->escape_string($_GET['final']);
+
+
+
+    $sql2 = "SELECT 
+  contrato.codigo_contrato,
+  DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
+  contrato.tipo AS tipo_contrato,
+  contrato.imoveis_codigo,
+  contrato.valor_negociado,
+  contrato.honorarios,
+  contrato.forma_pagamento,
+  contrato.status_contrato,
+
+  imoveis.codigo_imovel,
+  imoveis.cidade,
+  imoveis.tipo,
+  imoveis.cod_proprietario,
+  imoveis.cod_corretor,
+   
+  corretorimovel.codigo_clientes AS cod_corretor,
+  corretorimovel.nome AS nome_corretor,
+  corretorimovel.cpf AS cpf_corretor,
+  corretor.creci,
+  corretor.id_cliente_corretor
+  
+FROM 
+  contrato
+INNER JOIN
+  imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
+INNER JOIN
+  corretor ON imoveis.cod_corretor = corretor.codigo_corretor
+INNER JOIN
+  clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+  
+WHERE 
+  codigo_adm = $cod_adm 
+  AND contrato.tipo = 'Venda' 
+  AND contrato.status_contrato = 'ativo'
+  AND contrato.dt_criacao >= '$inicio'
+AND contrato.dt_criacao <= '$final'
+";
+
+
+$lista_dash = $connexao->query($sql2);
+
+//print_r($lista_dash);
+
+$dados_contrato = array();
+
+if($lista_dash->num_rows > 0){
+    while($dd_c = $lista_dash->fetch_assoc() ){
+        array_push($dados_contrato, $dd_c);
+    }
+}
+
+
+$dados_dash = json_encode($dados_contrato);
+
+    
 }
 
 
@@ -3580,11 +3653,11 @@ $dados_dash = json_encode($dados_contrato);
                         <div class="revisa graf">
                             <div class="dd_geral_dash">
 
-                                <div>
-                                    <h2 id="qtd_venda"></h2>
+                                <div class="qtd_imol">
+                                    <h2 style="font-size: 2.1rem;" id="qtd_venda"></h2>
                                 </div>
 
-                                <div>
+                                <div style="text-align: start;">
                                     <p> <?php echo count($dados_contrato) > 1 ? 'Vendas':'Venda' ?> </p>
                                 </div>
                                 
@@ -3617,6 +3690,25 @@ $dados_dash = json_encode($dados_contrato);
                             </div>
 
                             </div>
+
+                            <form method="get">
+
+                                <div class="form_busca_dt">
+                                    <div>
+                                        <label for="inicio">Início</label><br>
+                                        <input type="date" id="inicio" name="inicio"> 
+                                    </div>
+
+                                    <div>
+                                        <label for="final">Final</label><br>
+                                        <input type="date" id="final" name="final"> <br>
+                                    </div>
+
+                                    <div style="width: 17%;margin:0 auto; margin-top: 10px; ; "><button type="submit">Pesquisar</button></div>
+                                </div>
+
+                            </form>
+
                             
                         </div>
 
@@ -4190,32 +4282,36 @@ $(document).ready(function(){
                // grafico1
                const ctx = document.getElementById('myChart');
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: tipo_imov ,
-                    datasets: [{
-                        label: '# Tipos de imóveis',
-                        data: qtd_imov ,
-                        backgroundColor: [
-                            'rgba(255, 0, 0, 0.5)', // Red com 50% de transparência
-                            'rgba(0, 0, 255, 0.5)', // Blue com 50% de transparência
-                            'rgba(255, 255, 0, 0.5)', // Yellow com 50% de transparência
-                            'rgba(0, 255, 0, 0.5)', // Green com 50% de transparência
-                            'rgba(128, 0, 128, 0.5)', // Purple com 50% de transparência
-                            'rgba(255, 165, 0, 0.5)' // Orange com 50% de transparência
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+               new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: tipo_imov,
+        datasets: [{
+            label: '# Tipos de imóveis',
+            data: qtd_imov,
+            backgroundColor: [
+                'rgba(255, 0, 0, 0.5)',  
+                'rgba(0, 0, 255, 0.5)',   
+                'rgba(255, 255, 0, 0.5)', 
+                'rgba(0, 255, 0, 0.5)',   
+                'rgba(128, 0, 128, 0.5)', 
+                'rgba(255, 165, 0, 0.5)' 
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
                 }
-            });
+            }
+        }
+    }
+});
+
 
 
 
