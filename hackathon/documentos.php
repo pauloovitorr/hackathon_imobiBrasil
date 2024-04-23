@@ -59,6 +59,9 @@ $dados_contrato = $connexao->query($sql);
 $dados_contrato = $dados_contrato->fetch_assoc();
 
 
+$cod_imov_contrato = $dados_contrato['imoveis_codigo'];
+
+
 $sql2 = "SELECT 
           
           codigo_documento, 
@@ -84,11 +87,19 @@ $sql22 = "SELECT * FROM documentos WHERE codigo_contrato = $cod_contrato ";
       $sql3 = "UPDATE contrato SET status_contrato = 'ativo', dt_atualizacao = NOW() ,desc_status = 'Contrato ativo, confirme todos os dados' WHERE codigo_contrato = $cod_contrato ";
 
       $connexao->query($sql3);
+
+      $sql4 = "UPDATE imoveis SET status_imovel = 'vendido' WHERE codigo_imovel = $cod_imov_contrato";
+
+      $connexao->query($sql4);
     }
     else{
       $sql33 = "UPDATE contrato SET status_contrato = 'execução', desc_status = 'Contrato pendente de vincular documentos' WHERE codigo_contrato = $cod_contrato ";
 
       $connexao->query($sql33);
+
+      $sql4 = "UPDATE imoveis SET status_imovel = 'disponivel' WHERE codigo_imovel = $cod_imov_contrato";
+
+      $connexao->query($sql4);
     }
 
 

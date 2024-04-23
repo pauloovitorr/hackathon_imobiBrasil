@@ -27,7 +27,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
         from imoveis AS m
 
-        WHERE finalidade = 'Venda'
+        WHERE finalidade = 'Venda' and status_imovel = 'disponivel'
     
     ";
 
@@ -3597,6 +3597,7 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 // arrays
                 let valores = []
                 let comissoes = []
+                let tipo_imoveis = []
                
                 let dados_dash = <?php echo $dados_dash ?>;
 
@@ -3609,6 +3610,7 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 // For para pegar os corretores e suas quantidades de vendas
                 for(let corretor of dados_dash){
                     corretores_vendas.push(corretor.nome_corretor)
+                    tipo_imoveis.push(corretor.tipo)
                 }
 
 
@@ -3627,61 +3629,11 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
 
                 }
 
-                //console.log(qtd_vendas_corretor)
-
-
-// Inicio gráfico 2
-
-            const ctx2 = document.getElementById('myChart2');
-
-new Chart(ctx2, {
-    type: 'bar',
-    data: {
-        labels: nome_corretor_venda,
-        datasets: [{
-            label: 'Vendas',
-            data: qtd_vendas_corretor,
-            backgroundColor: [ // Definindo cores diferentes para cada barra
-                'rgba(255, 99, 132, 0.7)', // Red
-                'rgba(54, 162, 235, 0.7)', // Blue
-                'rgba(255, 206, 86, 0.7)', // Yellow
-                'rgba(75, 192, 192, 0.7)', // Green
-                'rgba(153, 102, 255, 0.7)', // Purple
-                'rgba(255, 159, 64, 0.7)' // Orange
-            ],
-            borderColor: [ // Cor das bordas das barras
-                'rgba(255, 99, 132, 1)', // Red
-                'rgba(54, 162, 235, 1)', // Blue
-                'rgba(255, 206, 86, 1)', // Yellow
-                'rgba(75, 192, 192, 1)', // Green
-                'rgba(153, 102, 255, 1)', // Purple
-                'rgba(255, 159, 64, 1)' // Orange
-            ],
-            borderWidth: 0
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    precision: 0
-                }
-            }
-        }
-    }
-});
-
-// fim gráfico 2
-
-
 
                 let qtd_vendido = dados_dash.length
                 $('#qtd_venda').text(qtd_vendido)
 
                 for(let dado of dados_dash){
-
-                    //console.log(dado)
 
                     let valor_nego = parseFloat(dado.valor_negociado)
                     let honorario =  parseFloat(dado.honorarios)
@@ -3730,8 +3682,80 @@ new Chart(ctx2, {
                 $('#comiss_tt').text(comissao_total)
                 $('#honorarios_med').text(honorario_media)
 
-                // console.log(venda_total)
-                // console.log(comissao_total)
+
+
+                // Inicio gráfico 2
+
+            const ctx2 = document.getElementById('myChart2');
+
+new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: nome_corretor_venda,
+        datasets: [{
+            label: 'Vendas',
+            data: qtd_vendas_corretor,
+            backgroundColor: [ // Definindo cores diferentes para cada barra
+                'rgba(255, 99, 132, 0.7)', // Red
+                'rgba(54, 162, 235, 0.7)', // Blue
+                'rgba(255, 206, 86, 0.7)', // Yellow
+                'rgba(75, 192, 192, 0.7)', // Green
+                'rgba(153, 102, 255, 0.7)', // Purple
+                'rgba(255, 159, 64, 0.7)' // Orange
+            ],
+            borderColor: [ // Cor das bordas das barras
+                'rgba(255, 99, 132, 1)', // Red
+                'rgba(54, 162, 235, 1)', // Blue
+                'rgba(255, 206, 86, 1)', // Yellow
+                'rgba(75, 192, 192, 1)', // Green
+                'rgba(153, 102, 255, 1)', // Purple
+                'rgba(255, 159, 64, 1)' // Orange
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// fim gráfico 2
+
+
+// grafico3
+const ctx3 = document.getElementById('myChart3');
+
+new Chart(ctx3, {
+    type: 'line', // Alterando o tipo de gráfico para 'line'
+    data: {
+        labels: tipo_imoveis,
+        datasets: [{
+            label: '# Tipos de imóveis',
+            data: valores,
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// fim gráfico 3
+
 
             })
 
@@ -3826,14 +3850,21 @@ new Chart(ctx2, {
                         </div>
 
                         <div class="revisa graf">
+                            <h3><strong id="qtd_imovel"></strong> imóveis para venda  </h3> <br>
+                            <canvas id="myChart"></canvas>
+                        </div>
+
+                        <div class="revisa graf">
                             <h3> Vendas por corretor  </h3> <br>
                             <canvas id="myChart2"></canvas>
                         </div>
 
                         <div class="revisa graf">
-                            <h3><strong id="qtd_imovel"></strong> imóveis para venda  </h3> <br>
-                            <canvas id="myChart"></canvas>
+                            <h3> Valores das vendas </h3> <br>
+                            <canvas id="myChart3"></canvas>
                         </div>
+
+                        
 
                        
 
@@ -4358,12 +4389,12 @@ $(document).ready(function(){
 
                let tipo_imoveis = []
 
-
                $('#qtd_imovel').text(qtd_imovel)
 
                for(let i = 0; i < dados.length; i++){
                    
                    tipo_imoveis.push(dados[i][0].tipo)
+    
                }
 
 
@@ -4423,6 +4454,11 @@ $(document).ready(function(){
         }
     }
 });
+
+
+
+
+
 
 
 })
