@@ -147,8 +147,8 @@ WHERE
   codigo_adm = $cod_adm 
   AND contrato.tipo = 'Venda' 
   AND contrato.status_contrato = 'ativo'
-  AND contrato.dt_criacao >= '$inicio'
-AND contrato.dt_criacao <= '$final'
+  AND DATE(contrato.dt_criacao) >= '$inicio'
+AND DATE(contrato.dt_criacao)  <= '$final'
 ";
 
 
