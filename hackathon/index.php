@@ -4017,6 +4017,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
                             echo '<td>' .$contato["desc_status"] . '</td>';
                             echo '<td>' . date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
                             echo '<td>' . '<a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check pendente_icon"></i></a>' .'</td>';
+                            echo '<td>' . '<a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"> <i class="fa-regular fa-pen-to-square pendente_icon"></i> </a>' .'</td>';
                         echo '</tr>';
                       }
                       else if($contato['status_contrato'] === 'execução'){
@@ -4030,6 +4031,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
                             echo '<td>' .$contato["desc_status"] . '</td>';
                             echo '<td>' . date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
                             echo '<td>' . '<a href="ficha.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check documentos_icon"></i></a>' .'</td>';
+                            echo '<td>' . '<a href="editar.php?contrato=' . $contato['codigo_contrato'] . '"><i class="fa-regular fa-pen-to-square edit_icon documentos_icon"></i></a>' .'</td>';
                         echo '</tr>';
                       }
                       else{
@@ -4043,6 +4045,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
                             echo '<td>' .$contato["desc_status"] . '</td>';
                             echo '<td>' .date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
                             echo '<td> <a href="ficha.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check ativo_icon"></i></a></td>';
+                            echo '<td> <a href="editar.php?contrato=' . $contato['codigo_contrato'] . '"> <i class="fa-regular fa-pen-to-square ativo_icon"></i> </a></td>';
 
                         echo '</tr>';
                       }
