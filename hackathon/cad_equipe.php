@@ -6,176 +6,40 @@ session_start();
 
 include_once('../conexao.php');
 
-date_default_timezone_set('America/Sao_Paulo');
-
 
 if (empty($_SESSION['codigo_adm'])) {
     header('location:index.php');
 }
 
+
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
-
-    $cod_adm = $_SESSION['codigo_adm'];
-
-    // Lógica para alimentar o grafico de imóveis e seus tipo
-
-    $sql= "SELECT
-
-        m.codigo_imovel,
-        m.finalidade,
-        m.tipo
-
-        from imoveis AS m
-
-        WHERE finalidade = 'Venda' and status_imovel = 'disponivel'
+    $sql = "SELECT 
     
+    c.nome,
+    c.codigo_clientes,
+    c.cpf,
+
+    corr.creci,
+    corr.codigo_equipe,
+    corr.id_cliente_corretor
+
+    from clientes AS c
+
+    INNER JOIN
+        corretor as corr ON  c.codigo_clientes = corr.id_cliente_corretor AND corr.codigo_equipe  IS NULL
     ";
 
-   $dd_im = $connexao->query($sql);
-
-   $lista_dados_imoveis = array();
-
-   if($dd_im->num_rows>0){
-    while($dados_convertidos = $dd_im->fetch_assoc()){
-        array_push($lista_dados_imoveis,[$dados_convertidos]);
-    }
-   }
-
-  $dados_mjson = json_encode($lista_dados_imoveis);
-
-  // Dados gerais
-
-  $sql2 = "SELECT 
-  contrato.codigo_contrato,
-  DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
-  contrato.tipo AS tipo_contrato,
-  contrato.imoveis_codigo,
-  contrato.valor_negociado,
-  contrato.honorarios,
-  contrato.forma_pagamento,
-  contrato.status_contrato,
-
-  imoveis.codigo_imovel,
-  imoveis.cidade,
-  imoveis.tipo,
-  imoveis.cod_proprietario,
-  imoveis.cod_corretor,
-   
-  corretorimovel.codigo_clientes AS cod_corretor,
-  corretorimovel.nome AS nome_corretor,
-  corretorimovel.cpf AS cpf_corretor,
-  corretor.creci,
-  corretor.id_cliente_corretor
-  
-FROM 
-  contrato
-INNER JOIN
-  imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
-INNER JOIN
-  corretor ON imoveis.cod_corretor = corretor.codigo_corretor
-INNER JOIN
-  clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
-  
-WHERE 
-  codigo_adm = $cod_adm 
-  AND contrato.tipo = 'Venda' 
-  AND contrato.status_contrato = 'ativo'
-  AND contrato.dt_criacao >= DATE_FORMAT(NOW(), '%Y-%m-01')
-  AND contrato.dt_criacao <= NOW()
-";
-
-
-$lista_dash = $connexao->query($sql2);
-
-//print_r($lista_dash);
-
-$dados_contrato = array();
-
-if($lista_dash->num_rows > 0){
-    while($dd_c = $lista_dash->fetch_assoc() ){
-        array_push($dados_contrato, $dd_c);
-    }
-}
-
-
-$dados_dash = json_encode($dados_contrato);
+   $res = $connexao->query($sql);
 
 }
 
-
-
-if($_SERVER['REQUEST_METHOD']  === 'GET' && !empty($_GET['inicio']) && !empty($_GET['final'])  ){
-
-
-    $inicio = $connexao->escape_string($_GET['inicio']);
-    $final = $connexao->escape_string($_GET['final']);
-
-    $sql2 = "SELECT 
-  contrato.codigo_contrato,
-  DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
-  contrato.tipo AS tipo_contrato,
-  contrato.imoveis_codigo,
-  contrato.valor_negociado,
-  contrato.honorarios,
-  contrato.forma_pagamento,
-  contrato.status_contrato,
-
-  imoveis.codigo_imovel,
-  imoveis.cidade,
-  imoveis.tipo,
-  imoveis.cod_proprietario,
-  imoveis.cod_corretor,
-   
-  corretorimovel.codigo_clientes AS cod_corretor,
-  corretorimovel.nome AS nome_corretor,
-  corretorimovel.cpf AS cpf_corretor,
-  corretor.creci,
-  corretor.id_cliente_corretor
-  
-FROM 
-  contrato
-INNER JOIN
-  imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
-INNER JOIN
-  corretor ON imoveis.cod_corretor = corretor.codigo_corretor
-INNER JOIN
-  clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
-  
-WHERE 
-  codigo_adm = $cod_adm 
-  AND contrato.tipo = 'Venda' 
-  AND contrato.status_contrato = 'ativo'
-  AND DATE(contrato.dt_criacao) >= '$inicio'
-AND DATE(contrato.dt_criacao)  <= '$final'
-";
-
-
-$lista_dash = $connexao->query($sql2);
-
-//print_r($lista_dash);
-
-$dados_contrato = array();
-
-if($lista_dash->num_rows > 0){
-    while($dd_c = $lista_dash->fetch_assoc() ){
-        array_push($dados_contrato, $dd_c);
-    }
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    print_r($_POST);
+    //die;
 }
 
 
-$dados_dash = json_encode($dados_contrato);
-
-$inicio = DateTime::createFromFormat('Y-m-d', $_GET['inicio']);
-$final = DateTime::createFromFormat('Y-m-d', $_GET['final']);
-    
-}
-
-$data_atual = new DateTime();
-$dt_formatada = $data_atual->format('d/m');
-
-$primeiroDiaDoMes = new DateTime('first day of this month');
-$primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
-
+//print_r($res);
 
 ?>
 
@@ -3586,175 +3450,7 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
        <!-- Paulo -->
-        <script>
-            $(document).ready(function(){
-
-                // arrays
-                let valores = []
-                let comissoes = []
-                let tipo_imoveis = []
-               
-                let dados_dash = <?php echo $dados_dash ?>;
-
-                let corretores_vendas = []
-
-                let qtd_vendas_corretor = []
-                let nome_corretor_venda = []
-
-
-                // For para pegar os corretores e suas quantidades de vendas
-                for(let corretor of dados_dash){
-                    corretores_vendas.push(corretor.nome_corretor)
-                    tipo_imoveis.push(corretor.tipo)
-                }
-
-
-                for (let i = 0; i < corretores_vendas.length; i++) {
-
-                let contagem = corretores_vendas.reduce((total, nome) => {
-                    return total + ((nome === corretores_vendas[i]) ? 1 : 0);
-                }, 0);
-
-                if(!nome_corretor_venda.includes(corretores_vendas[i])){
-
-                    nome_corretor_venda.push(corretores_vendas[i])
-
-                }
-                qtd_vendas_corretor.push(contagem);
-
-                }
-
-
-                let qtd_vendido = dados_dash.length
-                $('#qtd_venda').text(qtd_vendido)
-
-                for(let dado of dados_dash){
-
-                    let valor_nego = parseFloat(dado.valor_negociado)
-                    let honorario =  parseFloat(dado.honorarios)
-
-                    let valor_comi = valor_nego * (honorario/100)
-
-                    valores.push(valor_nego)
-                    comissoes.push(valor_comi)
-                }
-
-                let venda_total = 0
-                let comissao_total = 0
-                let contador = 0
-
-                for(let valor of valores){
-                    venda_total += valor
-                    contador++
-                }
-
-                for(let comissao of comissoes){
-                    comissao_total += comissao
-                }
-
-                let ticket  = venda_total / contador
-                let honorario_media  = comissao_total / contador
-
-
-                ticket          = ticket.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
-                venda_total     = venda_total.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
-
-                comissao_total  = comissao_total.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
-                honorario_media = honorario_media.toLocaleString('pt-BR', { style:'currency', currency: 'BRL' } )
-
-
-                if(ticket == 'R$ NaN' ){
-                    ticket = 'R$ 0,00'
-                }
-
-                if(honorario_media == 'R$ NaN' ){
-                    honorario_media = 'R$ 0,00'
-                }
-                
-
-                $('#vgv').text(venda_total)
-                $('#tick_m').text(ticket)
-                $('#comiss_tt').text(comissao_total)
-                $('#honorarios_med').text(honorario_media)
-
-
-
-                // Inicio gráfico 2
-
-            const ctx2 = document.getElementById('myChart2');
-
-new Chart(ctx2, {
-    type: 'bar',
-    data: {
-        labels: nome_corretor_venda,
-        datasets: [{
-            label: 'Vendas',
-            data: qtd_vendas_corretor,
-            backgroundColor: [ // Definindo cores diferentes para cada barra
-                'rgba(255, 99, 132, 0.7)', // Red
-                'rgba(54, 162, 235, 0.7)', // Blue
-                'rgba(255, 206, 86, 0.7)', // Yellow
-                'rgba(75, 192, 192, 0.7)', // Green
-                'rgba(153, 102, 255, 0.7)', // Purple
-                'rgba(255, 159, 64, 0.7)' // Orange
-            ],
-            borderColor: [ // Cor das bordas das barras
-                'rgba(255, 99, 132, 1)', // Red
-                'rgba(54, 162, 235, 1)', // Blue
-                'rgba(255, 206, 86, 1)', // Yellow
-                'rgba(75, 192, 192, 1)', // Green
-                'rgba(153, 102, 255, 1)', // Purple
-                'rgba(255, 159, 64, 1)' // Orange
-            ],
-            borderWidth: 0
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    precision: 0
-                }
-            }
-        }
-    }
-});
-
-// fim gráfico 2
-
-
-// grafico3
-const ctx3 = document.getElementById('myChart3');
-
-new Chart(ctx3, {
-    type: 'line', // Alterando o tipo de gráfico para 'line'
-    data: {
-        labels: tipo_imoveis,
-        datasets: [{
-            label: '# Tipos de imóveis',
-            data: valores,
-            borderWidth: 2
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    precision: 0
-                }
-            }
-        }
-    }
-});
-
-// fim gráfico 3
-
-
-            })
-
-        </script>
+        
 
 
 
@@ -3765,110 +3461,60 @@ new Chart(ctx3, {
 
                 <div class="conteudo">
 
-                <div style="text-align:end; width: 80%; margin:0 auto" class="addCheck">
-                    <a style="color: #007fe2;" href="./cad_equipe.php">Cadastrar equipe</a>
+                
+
+               
+                <div class="revisa">
+
+                    <h1 style="text-align: center;">Cadastrar equipe</h1>
+
+                    <form method="post">
+
+                        <div>
+                            <label for="nome_equipe">Nome da equipe</label>
+                            <input type="text" id="nome_equipe" name="nome_equipe" placeholder="Nome da equipe">
+                        </div>
+
+                        <div>
+
+                            <h3 style="text-align: center; margin:25px"> Corretores disponíveis </h3>
+
+                            <table class="tabela_contratos">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nome</th>
+                                    <th>CPF</th>
+                                    <th>Creci</th>
+                                </tr>
+                           
+
+                            <?php 
+
+                                if($res->num_rows > 0){
+                                    $count = 0;
+                                    while( $corretores = $res->fetch_assoc()){
+                                        echo "<tr>";
+                                        echo "<td>"."<input type='checkbox' name='check". $count . "' value='" . $corretores['codigo_clientes'] . "'>" . "</td>";
+                                        echo "<td>". $corretores['nome'] ."</td>";
+                                        echo "<td>". $corretores['cpf'] ."</td>";
+                                        echo "<td>". $corretores['creci'] ."</td>";
+                                        echo "<tr>";
+
+                                        $count++;
+                                    }
+                                }
+                            
+                            ?>
+                             </table>
+                        </div>
+
+                        <div style="width: 15%; margin:0 auto; margin-top:25px">
+                            <button type="submit">Cadastrar</button>
+                        </div>
+
+                    </form>
+
                 </div>
-
-                <h1 style="text-align: center;margin:15px">Acompanhe os seus dados</h1>
-
-                    <div class="pai_graf">
-
-                        <div class="revisa graf">
-                            <div class="dd_geral_dash">
-
-                                <div class="qtd_imol">
-                                    <h2 style="font-size: 2.1rem;" id="qtd_venda"></h2>
-                                </div>
-
-                                <!-- Paulo -->
-                                <div style="text-align: start;">
-                                    <p> <?php echo count($dados_contrato) > 1 ? 'Vendas':'Venda' ?> </p>
-                                    
-                                    <?php 
-                                    
-                                    if (!empty($_GET['inicio']) && !empty($_GET['final'])){
-                                         echo '<p>'. $inicio->format('d/m') . '  -  '. $final->format('d/m'). '</p>' ;
-                                    }
-                                    else{
-                                        echo '<p>'. $primeiroDiaFormatado . '  -  '.$dt_formatada . '</p>' ;
-                                    }
-                                    
-                                    ?>
-
-
-                                </div>
-                                
-                            </div>
-
-                            <div class="dd_geral_dash">
-
-                                <div style="border-right: 1px solid  #a7b0a8; width:55%">
-                                    <h2 id="vgv"></h2>
-                                    <p>Valor Geral de Vendas</p>
-                                </div>
-
-                                <div>
-                                    <h2 id="tick_m"></h2>
-                                    <p>Ticket Médio</p>
-                                </div>
-                            
-                            </div>
-
-                            <div class="dd_geral_dash">
-
-                            <div style="border-right: 1px solid  #a7b0a8;width:55%">
-                                <h2 id="comiss_tt"></h2>
-                                <p>Total de honorários</p>
-                            </div>
-
-                            <div>
-                                <h2 id="honorarios_med"></h2>
-                                <p>Média honorários</p>
-                            </div>
-
-                            </div>
-
-                            <form method="get">
-
-                                <div class="form_busca_dt">
-                                    <div>
-                                        <label for="inicio">Início</label><br>
-                                        <input type="date" id="inicio" name="inicio" required> 
-                                    </div>
-
-                                    <div>
-                                        <label for="final">Final</label><br>
-                                        <input type="date" id="final" name="final" required> <br>
-                                    </div>
-
-                                    <div style="width: 17%;margin:0 auto; margin-top: 10px; ; "><button type="submit">Pesquisar</button></div>
-                                </div>
-
-                            </form>
-
-                            
-                        </div>
-
-                        <div class="revisa graf">
-                            <h3><strong id="qtd_imovel"></strong> imóveis para venda  </h3> <br>
-                            <canvas id="myChart"></canvas>
-                        </div>
-
-                        <div class="revisa graf">
-                            <h3> Vendas por corretor  </h3> <br>
-                            <canvas id="myChart2"></canvas>
-                        </div>
-
-                        <div class="revisa graf">
-                            <h3> Valores das vendas </h3> <br>
-                            <canvas id="myChart3"></canvas>
-                        </div>
-
-                        
-
-                       
-
-                    </div>
 
                     
 
@@ -4379,97 +4025,7 @@ new Chart(ctx3, {
 <!-- // Paulo Grafico -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
-<script>
 
-$(document).ready(function(){
-               
-               let dados = <?php echo $dados_mjson; ?>
-
-               let qtd_imovel = dados.length
-
-               let tipo_imoveis = []
-
-               $('#qtd_imovel').text(qtd_imovel)
-
-               for(let i = 0; i < dados.length; i++){
-                   
-                   tipo_imoveis.push(dados[i][0].tipo)
-    
-               }
-
-
-               let nome_qtd = []
-
-               for (let i = 0; i < tipo_imoveis.length; i++) {
-
-
-                   let contagem = tipo_imoveis.reduce((total, nome) => {
-                       return total + ((nome === tipo_imoveis[i]) ? 1 : 0);
-                   }, 0);
-
-                   nome_qtd.push([tipo_imoveis[i], contagem]);
-               }
-
-
-               let tipo_imov = []
-               let qtd_imov  = []
-               
-               for(let i = 0; i < nome_qtd.length ; i++ ){
-                    if( !tipo_imov.includes(nome_qtd[i][0])){
-                        tipo_imov.push(nome_qtd[i][0])
-                        qtd_imov.push(nome_qtd[i][1])
-                    }
-               }
-
-
-               // grafico1
-               const ctx = document.getElementById('myChart');
-
-    new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: tipo_imov,
-        datasets: [{
-            label: '# Tipos de imóveis',
-            data: qtd_imov,
-            backgroundColor: [
-                'rgba(255, 0, 0, 0.5)',  
-                'rgba(0, 0, 255, 0.5)',   
-                'rgba(255, 255, 0, 0.5)', 
-                'rgba(0, 255, 0, 0.5)',   
-                'rgba(128, 0, 128, 0.5)', 
-                'rgba(255, 165, 0, 0.5)' 
-            ],
-            borderWidth: 2
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    precision: 0
-                }
-            }
-        }
-    }
-});
-
-
-
-
-
-
-
-})
-           
-           
-
-            
-
-
-
-        </script>
 
 
 </body>
