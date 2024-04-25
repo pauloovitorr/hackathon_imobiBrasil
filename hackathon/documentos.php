@@ -4102,6 +4102,7 @@ $(document).ready(function(){
                 echo      '<td>'. $documento['dt_formatada'] .'</td>';
                 echo      '<input class="path_doc" type="hidden" value="' . $documento['path'] . '">';
                 echo      '<td>'. '<i class="fa-solid fa-trash del">' .'</i>' .'</td>';
+                echo '<td> <a href="' . $documento['path'] . '" target="_blank"> <i class="fa-solid fa-file ativo_icon"></i> </a></td>';            
                 echo '</tr>';
               }
           ?>
@@ -4109,6 +4110,8 @@ $(document).ready(function(){
         </table>
 
       </div>
+
+       <a href=""><i class="bi bi-clipboard-check ativo_icon"></i></a>
 
       <div class="<?php echo $dd->num_rows > 0 ? 'remover':'ativ'?>" >
         <h4 style='text-align: center;'>Sem documentos</h4>

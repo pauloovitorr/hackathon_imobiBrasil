@@ -32,6 +32,8 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
    $res = $connexao->query($sql);
 
+  $sql2 = "SELECT * FROM equipe";
+
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -60,7 +62,22 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 }
 
 
-//print_r($res);
+$sql2 = "SELECT 
+    e.codigo_equipe,
+    e.nome AS nome_equipe,
+    cor.id_cliente_corretor,
+    cor.creci,
+    cor.codigo_equipe,
+    c.nome,
+    c.cpf,
+    c.codigo_clientes
+FROM 
+    equipe AS e
+LEFT JOIN 
+    corretor AS cor ON cor.codigo_equipe = e.codigo_equipe
+LEFT JOIN
+    clientes AS c ON c.codigo_clientes = cor.id_cliente_corretor;
+";
 
 ?>
 
