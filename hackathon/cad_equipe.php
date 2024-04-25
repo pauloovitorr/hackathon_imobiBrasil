@@ -32,7 +32,36 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
    $res = $connexao->query($sql);
 
-  $sql2 = "SELECT * FROM equipe";
+  $sql2 = "SELECT 
+  e.codigo_equipe,
+  e.nome AS nome_equipe,
+  cor.id_cliente_corretor,
+  cor.creci,
+  cor.codigo_equipe,
+  c.nome,
+  c.cpf,
+  c.codigo_clientes
+FROM 
+  equipe AS e
+LEFT JOIN 
+  corretor AS cor ON cor.codigo_equipe = e.codigo_equipe
+LEFT JOIN
+  clientes AS c ON c.codigo_clientes = cor.id_cliente_corretor";
+
+  $equipe = $connexao->query($sql2);
+
+  $dados_equipe = array();
+
+  if($equipe->num_rows > 0){
+
+    while($dados_equi = $equipe->fetch_assoc()){
+        array_push($dados_equipe,$dados_equi);
+    }
+
+  }
+
+  //print_r($dados_equipe);
+
 
 }
 
@@ -62,22 +91,22 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 }
 
 
-$sql2 = "SELECT 
-    e.codigo_equipe,
-    e.nome AS nome_equipe,
-    cor.id_cliente_corretor,
-    cor.creci,
-    cor.codigo_equipe,
-    c.nome,
-    c.cpf,
-    c.codigo_clientes
-FROM 
-    equipe AS e
-LEFT JOIN 
-    corretor AS cor ON cor.codigo_equipe = e.codigo_equipe
-LEFT JOIN
-    clientes AS c ON c.codigo_clientes = cor.id_cliente_corretor;
-";
+// $sql2 = "SELECT 
+//     e.codigo_equipe,
+//     e.nome AS nome_equipe,
+//     cor.id_cliente_corretor,
+//     cor.creci,
+//     cor.codigo_equipe,
+//     c.nome,
+//     c.cpf,
+//     c.codigo_clientes
+// FROM 
+//     equipe AS e
+// LEFT JOIN 
+//     corretor AS cor ON cor.codigo_equipe = e.codigo_equipe
+// LEFT JOIN
+//     clientes AS c ON c.codigo_clientes = cor.id_cliente_corretor
+// ";
 
 ?>
 
@@ -3555,10 +3584,34 @@ LEFT JOIN
 
                 </div>
 
+                <div>
+                    <?php 
+                    
+                    if(count($dados_equipe) > 0 ){
+                        for($i = 0; $i < count($dados_equipe) ; $i+=1 ){
+
+                            $valores = $dados_equipe[$i];
+
+       
+
+                            echo "<div class='oi'>";
+
+                            foreach($valores AS $dd ){
+                                echo "<p>". $dd ."</p>";
+                            }
+
+                            echo "</div>";
+                        }
+                    }
+                    
+                    ?>
+                </div>
+
                     
 
 
                 </div>
+
 
 
 
