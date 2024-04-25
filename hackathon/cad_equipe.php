@@ -21,7 +21,8 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
     corr.creci,
     corr.codigo_equipe,
-    corr.id_cliente_corretor
+    corr.id_cliente_corretor,
+    corr.codigo_corretor
 
     from clientes AS c
 
@@ -34,8 +35,28 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    print_r($_POST);
-    //die;
+
+    $nome_equipe = $connexao->escape_string($_POST['nome_equipe']);
+
+    $sql = "INSERT INTO equipe (nome) VALUE ('$nome_equipe') ";
+
+    $connexao->query($sql);
+    $id_equipe = $connexao->insert_id;
+
+    foreach($_POST as $dado => $valor){
+        if($dado !== 'nome_equipe' && $valor !== '' ){
+
+            $sql2 = "UPDATE corretor SET codigo_equipe = $id_equipe WHERE codigo_corretor = $valor";
+
+            $connexao->query($sql2);
+        }
+    }
+
+    header('location:' .'cad_equipe.php');
+
+    $connexao->close();
+
+
 }
 
 
@@ -3493,8 +3514,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                                 if($res->num_rows > 0){
                                     $count = 0;
                                     while( $corretores = $res->fetch_assoc()){
+
                                         echo "<tr>";
-                                        echo "<td>"."<input type='checkbox' name='check". $count . "' value='" . $corretores['codigo_clientes'] . "'>" . "</td>";
+                                        echo "<td>"."<input type='checkbox' name='check". $count . "' value='" . $corretores['codigo_corretor'] . "'>" . "</td>";
                                         echo "<td>". $corretores['nome'] ."</td>";
                                         echo "<td>". $corretores['cpf'] ."</td>";
                                         echo "<td>". $corretores['creci'] ."</td>";
