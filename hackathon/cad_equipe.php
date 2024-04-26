@@ -32,35 +32,11 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
    $res = $connexao->query($sql);
 
-  $sql2 = "SELECT 
-  e.codigo_equipe,
-  e.nome AS nome_equipe,
-  cor.id_cliente_corretor,
-  cor.creci,
-  cor.codigo_equipe,
-  c.nome,
-  c.cpf,
-  c.codigo_clientes
-FROM 
-  equipe AS e
-LEFT JOIN 
-  corretor AS cor ON cor.codigo_equipe = e.codigo_equipe
-LEFT JOIN
-  clientes AS c ON c.codigo_clientes = cor.id_cliente_corretor";
+  $sql2 = "SELECT * FROM equipe";
 
   $equipe = $connexao->query($sql2);
 
-  $dados_equipe = array();
-
-  if($equipe->num_rows > 0){
-
-    while($dados_equi = $equipe->fetch_assoc()){
-        array_push($dados_equipe,$dados_equi);
-    }
-
-  }
-
-  //print_r($dados_equipe);
+ //print_r($equipe);
 
 
 }
@@ -3539,26 +3515,31 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                         <div>
                             <label for="nome_equipe">Nome da equipe</label>
-                            <input type="text" id="nome_equipe" name="nome_equipe" placeholder="Nome da equipe">
+                            <input type="text" style="outline-color: #18c721 ;" id="nome_equipe" name="nome_equipe" placeholder="Nome da equipe" required>
                         </div>
 
                         <div>
 
-                            <h3 style="text-align: center; margin:25px"> Corretores disponíveis </h3>
+                            
 
-                            <table class="tabela_contratos">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nome</th>
-                                    <th>CPF</th>
-                                    <th>Creci</th>
-                                </tr>
+                            
                            
 
                             <?php 
 
                                 if($res->num_rows > 0){
                                     $count = 0;
+
+                                    echo '<h3 style="text-align: center; margin:25px">'. 'Corretores disponíveis' .'</h3>';
+
+                                   echo '<table class="tabela_contratos">';
+                                   echo '<tr>';
+                                   echo '<th>#</th>';
+                                   echo '<th>Nome</th>';
+                                   echo '<th>CPF</th>';
+                                   echo '<th>Creci</th>';
+                                   echo '</tr>';
+
                                     while( $corretores = $res->fetch_assoc()){
 
                                         echo "<tr>";
@@ -3584,24 +3565,66 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                 </div>
 
-                <div>
+                <div class="pai_equipe revisa">
                     <?php 
-                    
-                    if(count($dados_equipe) > 0 ){
-                        for($i = 0; $i < count($dados_equipe) ; $i+=1 ){
+                    //ppp
+                    if( $equipe->num_rows> 0){
 
-                            $valores = $dados_equipe[$i];
+                        while($dd = $equipe->fetch_assoc()){
 
-       
+                            echo '<div>';
+                            echo '<h4>'. $dd['nome'] .'</h4>';
 
-                            echo "<div class='oi'>";
+                            $cod = $dd['codigo_equipe'];
 
-                            foreach($valores AS $dd ){
-                                echo "<p>". $dd ."</p>";
+                            $sql_tabela = "SELECT 
+                            e.codigo_equipe,
+                            e.nome AS nome_equipe,
+                            cor.id_cliente_corretor,
+                            cor.creci,
+                            cor.codigo_equipe,
+                            c.nome,
+                            c.cpf,
+                            c.codigo_clientes
+                          FROM 
+                            equipe AS e
+                          INNER JOIN 
+                            corretor AS cor ON cor.codigo_equipe = e.codigo_equipe
+                          INNER JOIN
+                            clientes AS c ON c.codigo_clientes = cor.id_cliente_corretor
+                            WHERE e.codigo_equipe = $cod
+                            ";
+
+                           $res = $connexao->query($sql_tabela);
+
+                            if($res->num_rows > 0){
+                                echo  '<table class="tabela_contratos">';
+                                echo '<p class="alinhar">'.  'Lista de corretores'    .'</p>';
+                                echo  '<tr>';
+                                echo  '<th>'. 'Nome' .'</th>';
+                                echo  '<th>'. 'CPF' .'</th>';
+                                echo  '<th>'. 'Creci' .'</th>';
+                                echo  '</tr>';
+                                while($corr = $res->fetch_assoc() ){
+                                 
+                                    echo  '<tr>';
+                                    echo  '<th>'. $corr['nome'] .'</th>';
+                                    echo  '<th>'. $corr['cpf'] .'</th>';
+                                    echo  '<th>'. $corr['creci'] .'</th>';
+                                    echo  '</tr>';
+                                   
+                                }
+                                echo  '</table>';
+                            }
+                            else{
+                                echo '<h4>'. "Sem corretores" .'</h4>';
                             }
 
-                            echo "</div>";
+                            
+
+                            echo '</div>';
                         }
+
                     }
                     
                     ?>
