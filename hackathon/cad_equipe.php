@@ -3493,7 +3493,62 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
        <!-- Paulo -->
-        
+        <script>
+            $(document).ready(function(){
+                $('.del').click(function(){
+                    Swal.fire({
+                    title: "Deseja remover o corretor da equipe?",
+                    text: "",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Sim, remover"
+                    }).then((result) => {
+
+                        if (result.isConfirmed){
+
+                        let cod_corretor = $(this).closest('.pai_linha').find('.cod_corr').text()
+
+                        $.ajax({
+                            url: 'index.php',
+                            method: "POST",
+                            dataType: 'json',
+                            data:{
+                                codigo_corretor: cod_corretor
+                            },
+                            success: function(retorno) {
+                            
+                                if (retorno.resposta) {
+                                    Swal.fire({
+                                        title: "Removido!",
+                                        text: "Corretor removido com sucesso.",
+                                        icon: "success"
+                                    });
+
+                                    setTimeout(()=>{
+                                        window.location.reload()
+                                    }, 1300)
+
+                                } else {
+                                    Swal.fire({
+                                        title: "Erro!",
+                                        text: "Ocorreu um erro ao remover o corretor.",
+                                        icon: "error"
+                                    });
+                                }
+                            }
+
+
+                        })
+
+                    }
+
+
+                    });
+                })
+            })
+        </script>
 
 
 
@@ -3518,12 +3573,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                             <input type="text" style="outline-color: #18c721 ;" id="nome_equipe" name="nome_equipe" placeholder="Nome da equipe" required>
                         </div>
 
-                        <div>
-
-                            
-
-                            
-                           
+                        <div>                          
 
                             <?php 
 
@@ -3534,19 +3584,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                                    echo '<table class="tabela_contratos">';
                                    echo '<tr>';
-                                   echo '<th>#</th>';
-                                   echo '<th>Nome</th>';
-                                   echo '<th>CPF</th>';
-                                   echo '<th>Creci</th>';
+                                   echo     '<th>#</th>';
+                                   echo     '<th>Nome</th>';
+                                   echo     '<th>CPF</th>';
+                                   echo     '<th>Creci</th>';
                                    echo '</tr>';
 
                                     while( $corretores = $res->fetch_assoc()){
 
                                         echo "<tr>";
-                                        echo "<td>"."<input type='checkbox' name='check". $count . "' value='" . $corretores['codigo_corretor'] . "'>" . "</td>";
-                                        echo "<td>". $corretores['nome'] ."</td>";
-                                        echo "<td>". $corretores['cpf'] ."</td>";
-                                        echo "<td>". $corretores['creci'] ."</td>";
+                                        echo    "<td>"."<input type='checkbox' name='check". $count . "' value='" . $corretores['codigo_corretor'] . "'>" . "</td>";
+                                        echo    "<td>". $corretores['nome'] ."</td>";
+                                        echo    "<td>". $corretores['cpf'] ."</td>";
+                                        echo    "<td>". $corretores['creci'] ."</td>";
                                         echo "<tr>";
 
                                         $count++;
@@ -3573,6 +3623,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         while($dd = $equipe->fetch_assoc()){
 
                             echo '<div>';
+                            echo '<i class="icone icone--atencao fa fa-times excluir_equipe"></i>';
                             echo '<h4>'. $dd['nome'] .'</h4>';
 
                             $cod = $dd['codigo_equipe'];
@@ -3601,16 +3652,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                                 echo  '<table class="tabela_contratos">';
                                 echo '<p class="alinhar">'.  'Lista de corretores'    .'</p>';
                                 echo  '<tr>';
+                                echo  '<th>'. '#' .'</th>';
                                 echo  '<th>'. 'Nome' .'</th>';
                                 echo  '<th>'. 'CPF' .'</th>';
                                 echo  '<th>'. 'Creci' .'</th>';
                                 echo  '</tr>';
                                 while($corr = $res->fetch_assoc() ){
                                  
-                                    echo  '<tr>';
-                                    echo  '<th>'. $corr['nome'] .'</th>';
-                                    echo  '<th>'. $corr['cpf'] .'</th>';
-                                    echo  '<th>'. $corr['creci'] .'</th>';
+                                    echo  '<tr class="pai_linha">';
+                                    echo  '<td class="cod_corr">'. $corr['id_cliente_corretor'] .'</td>';
+                                    echo  '<td>'. $corr['nome'] .'</td>';
+                                    echo  '<td>'. $corr['cpf'] .'</td>';
+                                    echo  '<td>'. $corr['creci'] .'</td>';
+                                    echo  '<td>'. '<i class="fa-solid fa-trash del">' .'</td>';
                                     echo  '</tr>';
                                    
                                 }
@@ -3625,6 +3679,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                             echo '</div>';
                         }
 
+                    }
+                    else{
+                        echo '<h1>'. 'Cadastre uma equipe' .'</h1>';
                     }
                     
                     ?>

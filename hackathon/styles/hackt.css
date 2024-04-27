@@ -499,3 +499,11 @@
   font-weight: 600;
   color: #0daf16;
  }
+
+ .excluir_equipe{
+  color: rgb(212, 12, 12);
+  font-size: 1.6rem;
+  font-weight: 900;
+  cursor: pointer;
+  margin-left: 94%;
+ }

@@ -57,6 +57,27 @@ if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['finalizado'])  && !emp
     exit;
 }
 
+// equipe
+if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['codigo_corretor']) ){
+
+  $cod_corr = $connexao->escape_string($_POST['codigo_corretor']);
+
+  $sql_corr = "UPDATE corretor SET codigo_equipe = NULL WHERE id_cliente_corretor = $cod_corr ";
+
+ $result = $connexao->query($sql_corr);
+
+ if($result>0){
+  echo json_encode(['resposta' => true, 'msg' => 'sucesso']);
+ }
+ else{
+  echo json_encode(['resposta' => false, 'msg' => 'Falha']);
+ }
+
+  exit;
+
+}
+// fim equipe
+
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) && !empty($_POST['cor']) && !empty($_POST['tipo'])){
   
