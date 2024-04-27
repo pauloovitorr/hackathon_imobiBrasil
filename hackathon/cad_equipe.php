@@ -39,9 +39,28 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
  //print_r($equipe);
 
 
+
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['equipe_selecionada']) ){
+    $cod_equipee = $connexao->escape_string($_POST['equipe_selecionada']);
+
+    foreach($_POST as $dado => $valor){
+        
+        if( $valor !== '' ){
+
+            $sql22 = "UPDATE corretor SET codigo_equipe = $cod_equipee WHERE codigo_corretor = $valor";
+
+            $connexao->query($sql22);
+        }
+    }
+
+    header('location:' .'cad_equipe.php');
+    $connexao->close();
+
+}
+elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     $nome_equipe = $connexao->escape_string($_POST['nome_equipe']);
 
@@ -67,22 +86,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 }
 
 
-// $sql2 = "SELECT 
-//     e.codigo_equipe,
-//     e.nome AS nome_equipe,
-//     cor.id_cliente_corretor,
-//     cor.creci,
-//     cor.codigo_equipe,
-//     c.nome,
-//     c.cpf,
-//     c.codigo_clientes
-// FROM 
-//     equipe AS e
-// LEFT JOIN 
-//     corretor AS cor ON cor.codigo_equipe = e.codigo_equipe
-// LEFT JOIN
-//     clientes AS c ON c.codigo_clientes = cor.id_cliente_corretor
-// ";
+
+
 
 ?>
 
@@ -3547,8 +3552,152 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                     });
                 })
-            })
+
+
+
+
+                
+      const openModalButton = document.querySelector("#open-modal");
+        const closeModalButton = document.querySelector("#close-modal");
+        const modal = document.querySelector("#modal");
+        const fade = document.querySelector("#fade");
+        const abrirModal = document.querySelectorAll('.abrir_modal')
+
+        const toggleModal = () => {
+          modal.classList.toggle("hide");
+          fade.classList.toggle("hide");
+        };
+
+        
+            [openModalButton, closeModalButton, fade].forEach((el) => {
+          el.addEventListener("click", () => toggleModal());
+        });
+
+
+
+        // ScriptModal
+        $('#vincular_corretor').submit((e)=>{
+
+        if (!$('input[type="checkbox"]:checked').length > 0) {
+            e.preventDefault(); // Impede o envio do formulário
+
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Selecione pelo menos um corretor!",
+            });
+        }
+
+
+        })
+      
+
+        
+    })
         </script>
+
+             <!-- Modal Paulo -->
+      <div id="fade" class="hide "></div>
+    <div id="modal" class="hide">
+      <div class="modal-header">
+        <h2>Adicionar etiqueta</h2>
+        <button id="close-modal">Fechar</button>
+      </div>
+      <div class="modal-body">
+
+
+        <form action="" method="post" id="vincular_corretor">
+
+            <div>
+                <label for="equipe_selecionada">Selecione a equipe</label>
+                <select name="equipe_selecionada" id="equipe_selecionada" required>
+                    <option value=""></option>
+                    <?php 
+                    $sql_equi = "SELECT * FROM equipe";
+
+                   $resultadoo = $connexao->query($sql_equi);
+
+                   if($resultadoo->num_rows>0){
+
+
+                    while($equi = $resultadoo->fetch_assoc()){
+                        echo '<option value="'. $equi['codigo_equipe'] .'">'. $equi['nome'] .'</option>';
+                    }
+
+                   }
+
+                    ?>
+                </select>
+            </div>
+
+            <div>
+
+            <?php 
+
+                        $sql_corr_dis = "SELECT 
+                            
+                        c.nome,
+                        c.codigo_clientes,
+                        c.cpf,
+
+                        corr.creci,
+                        corr.codigo_equipe,
+                        corr.id_cliente_corretor,
+                        corr.codigo_corretor
+
+                        from clientes AS c
+
+                        INNER JOIN
+                            corretor as corr ON  c.codigo_clientes = corr.id_cliente_corretor AND corr.codigo_equipe  IS NULL";
+
+                            $ress = $connexao->query($sql_corr_dis);
+
+                        if($ress->num_rows > 0){
+                            $count = 10;
+
+                            echo '<h3 style="text-align: center; margin:25px">'. 'Corretores disponíveis' .'</h3>';
+
+                        echo '<table class="tabela_contratos">';
+                        echo '<tr>';
+                        echo     '<th>#</th>';
+                        echo     '<th>Nome</th>';
+                        echo     '<th>CPF</th>';
+                        echo     '<th>Creci</th>';
+                        echo '</tr>';
+
+                            while( $corretoress = $ress->fetch_assoc()){
+
+                                echo "<tr>";
+                                echo    "<td>"."<input type='checkbox' name='check". $count . "' value='" . $corretoress['codigo_corretor'] . "'>" . "</td>";
+                                echo    "<td>". $corretoress['nome'] ."</td>";
+                                echo    "<td>". $corretoress['cpf'] ."</td>";
+                                echo    "<td>". $corretoress['creci'] ."</td>";
+                                echo "<tr>";
+
+                                $count++;
+                            }
+                        }
+                        else{
+                            echo '<h3 style="text-align: center; margin:25px">'. 'Sem corretores disponíveis' .'</h3>';
+                        }
+
+                        ?>
+                        </table>
+
+            </div>
+
+                <div style="width: 15%; margin:0 auto; margin-top:25px">
+                        <button style="background-color: #007fe2;" type="submit">Cadastrar</button>
+                </div>
+
+           
+
+        </form>
+
+
+      </div>
+    </div>
+<!-- Modal -->
 
 
 
@@ -3576,6 +3725,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         <div>                          
 
                             <?php 
+
+                           
 
                                 if($res->num_rows > 0){
                                     $count = 0;
@@ -3615,8 +3766,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                 </div>
 
+
+
+ 
+
+
+
                 <div class="pai_equipe revisa">
-                    <?php 
+
+
+                <p id="open-modal" class="abrir_modal" style="color: #007fe2;"><i class="fa-solid fa-circle-plus"></i>  Vincular corretor a equipe</p>
+               
+               <div>
+               <?php 
                     //ppp
                     if( $equipe->num_rows> 0){
 
@@ -3624,7 +3786,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                             echo '<div>';
                             echo '<i class="icone icone--atencao fa fa-times excluir_equipe"></i>';
-                            echo '<h4>'. $dd['nome'] .'</h4>';
+                            echo '<h3>'. $dd['nome'] .'</h3>';     
 
                             $cod = $dd['codigo_equipe'];
 
@@ -3671,7 +3833,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                                 echo  '</table>';
                             }
                             else{
-                                echo '<h4>'. "Sem corretores" .'</h4>';
+                                echo '<h3>'. "Vincule um corretor" .'</h3>';
                             }
 
                             
@@ -3685,6 +3847,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     }
                     
                     ?>
+                
+               </div>
+
+
+                  
                 </div>
 
                     

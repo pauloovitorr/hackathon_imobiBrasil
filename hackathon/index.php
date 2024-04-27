@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
 
     $buscar = '%' .$connexao->escape_string($_GET['buscar']) . '%' ;
 
-    $sql = "SELECT * FROM imoveis WHERE referencia LIKE ? or rua LIKE ?";
+    $sql = "SELECT * FROM imoveis WHERE referencia LIKE ? or rua LIKE ? and status_imovel = 'disponivel'";
 
 
     $acao = $connexao->prepare($sql);
@@ -53,6 +53,7 @@ if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['finalizado'])  && !emp
      
       echo json_encode(['retorno' => false, 'mensagem' => 'Status não foi atualizado']);
   }
+  $connexao->close();
     
     exit;
 }
@@ -72,6 +73,8 @@ if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['codigo_corretor']) ){
  else{
   echo json_encode(['resposta' => false, 'msg' => 'Falha']);
  }
+
+ $connexao->close();
 
   exit;
 
@@ -111,6 +114,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
   }
 
   echo json_encode($resposta);
+  $connexao->close();
   exit;
 }
 
