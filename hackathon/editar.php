@@ -110,7 +110,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['tipo_contrato']) && !
 
         $connexao->commit();
 
-        header('location index.php');
+        header('location:' . "index.php" );
     }
     catch (Exception) {
         $connexao->rollback();
