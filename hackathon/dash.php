@@ -3719,8 +3719,6 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 let valor_equipe = []
                 if(valor_vendas_equipe.length !== 0){
 
-                    
-
                     let nome_referencia = valor_vendas_equipe[0][0]
                    
                     let conta_venda = 0
@@ -3745,7 +3743,7 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 // Adicionar o último valor no array de vendas
                 valor_equipe.push(conta_venda)
 
-                console.log(valor_equipe)
+                //console.log(valor_equipe)
 
             }
 
@@ -3784,7 +3782,8 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                     // FIM Gráfico4 Equipe 
                 
 
-
+                // Mudança no grafico venda por corretor
+                let dados_venda_corr = []
 
 
                 let qtd_vendido = dados_dash.length
@@ -3797,9 +3796,44 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
 
                     let valor_comi = valor_nego * (honorario/100)
 
+                    let v_c = [dado.nome_corretor, dado.valor_negociado]
+
+                    dados_venda_corr.push(v_c)
+
                     valores.push(valor_nego)
                     comissoes.push(valor_comi)
                 }
+
+                let conta_vd_corretor = 0
+                let valor_corr = []
+
+               if(dados_venda_corr.length > 0){
+
+                let = nome_refe = dados_venda_corr[0][0]
+
+                for(let i=0; i < dados_venda_corr.length; i++){
+
+                    if(nome_refe === dados_venda_corr[i][0]){
+                        conta_vd_corretor += parseFloat(dados_venda_corr[i][1])
+                        
+                    }
+                    else{
+                        
+                        valor_corr.push(conta_vd_corretor)
+                        conta_vd_corretor = 0
+                        conta_vd_corretor += parseFloat(dados_venda_corr[i][1])
+                        
+                    }
+                    nome_refe = dados_venda_corr[i][0]
+                }
+
+                valor_corr.push(conta_vd_corretor)
+
+                //console.log(valor_corr)
+
+               }
+
+
 
                 let venda_total = 0
                 let comissao_total = 0
@@ -3853,16 +3887,16 @@ new Chart(ctx2, {
             label: 'Vendas',
             data: qtd_vendas_corretor,
             backgroundColor: [ // Definindo cores diferentes para cada barra
-                'rgba(255, 99, 132, 0.7)', // Red
                 'rgba(54, 162, 235, 0.7)', // Blue
+                'rgba(255, 99, 132, 0.7)', // Red
                 'rgba(255, 206, 86, 0.7)', // Yellow
                 'rgba(75, 192, 192, 0.7)', // Green
                 'rgba(153, 102, 255, 0.7)', // Purple
                 'rgba(255, 159, 64, 0.7)' // Orange
             ],
             borderColor: [ // Cor das bordas das barras
-                'rgba(255, 99, 132, 1)', // Red
                 'rgba(54, 162, 235, 1)', // Blue
+                'rgba(255, 99, 132, 1)', // Red
                 'rgba(255, 206, 86, 1)', // Yellow
                 'rgba(75, 192, 192, 1)', // Green
                 'rgba(153, 102, 255, 1)', // Purple
@@ -3890,13 +3924,21 @@ new Chart(ctx2, {
 const ctx3 = document.getElementById('myChart3');
 
 new Chart(ctx3, {
-    type: 'line', 
+    type: 'polarArea', 
     data: {
-        labels: tipo_imoveis,
+        labels: nome_corretor_venda,
         datasets: [{
-            label: '# Tipos de imóveis',
-            data: valores,
-            borderWidth: 2
+            data: valor_corr,
+            borderWidth: 2,
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.7)', // Blue
+                'rgba(255, 99, 132, 0.7)', // Red
+                'rgba(255, 206, 86, 0.7)', // Yellow
+                'rgba(75, 192, 192, 0.7)', // Green
+                'rgba(153, 102, 255, 0.7)', // Purple
+                'rgba(255, 159, 64, 0.7)' // Orange
+                
+            ]
         }]
     },
     options: {
@@ -3924,8 +3966,7 @@ new Chart(ctx4, {
             data: vendas_equipe,
             borderWidth: 2,
             backgroundColor: [
-                'rgba(255, 99, 132, 0.8)', // Vermelho
-                'rgba(54, 162, 235, 0.8)', // Azul
+
                 'rgba(255, 205, 86, 0.8)', // Amarelo
                 'rgba(75, 192, 192, 0.8)', // Verde
                 'rgba(153, 102, 255, 0.8)', // Roxo
@@ -3962,8 +4003,7 @@ new Chart(ctx5, {
             data: valor_equipe,
             borderWidth: 2,
             backgroundColor: [
-                'rgba(255, 99, 132, 0.8)', // Vermelho
-                'rgba(54, 162, 235, 0.8)', // Azul
+
                 'rgba(255, 205, 86, 0.8)', // Amarelo
                 'rgba(75, 192, 192, 0.8)', // Verde
                 'rgba(153, 102, 255, 0.8)', // Roxo
