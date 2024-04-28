@@ -66,11 +66,8 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
   corretorimovel.cpf AS cpf_corretor,
   corretor.creci,
   corretor.codigo_equipe,
-  corretor.id_cliente_corretor,
+  corretor.id_cliente_corretor
 
-  equi.nome AS nome_equipe,
-  equi.codigo_equipe
-  
 FROM 
   contrato
 INNER JOIN
@@ -79,9 +76,8 @@ INNER JOIN
   corretor ON imoveis.cod_corretor = corretor.codigo_corretor
 INNER JOIN
   clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
-INNER JOIN
-   equipe AS equi ON corretor.codigo_equipe = equi.codigo_equipe
-  
+
+
 WHERE 
   codigo_adm = $cod_adm 
   AND contrato.tipo = 'Venda' 
@@ -105,6 +101,68 @@ if($lista_dash->num_rows > 0){
 
 
 $dados_dash = json_encode($dados_contrato);
+
+
+
+//Grafico4
+
+$sql_grafico4 ="SELECT 
+contrato.codigo_contrato,
+DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
+contrato.tipo AS tipo_contrato,
+contrato.imoveis_codigo,
+contrato.valor_negociado,
+
+
+imoveis.codigo_imovel,
+imoveis.cod_proprietario,
+imoveis.cod_corretor,
+ 
+corretorimovel.codigo_clientes AS cod_corretor,
+corretorimovel.nome AS nome_corretor,
+
+corretor.codigo_equipe,
+corretor.id_cliente_corretor,
+
+ equi.codigo_equipe,
+ equi.nome
+
+
+FROM 
+contrato
+INNER JOIN
+imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
+INNER JOIN
+corretor ON imoveis.cod_corretor = corretor.codigo_corretor
+INNER JOIN
+clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+INNER JOIN
+ equipe AS equi ON equi.codigo_equipe = corretor.codigo_equipe
+
+WHERE 
+codigo_adm = 2
+AND contrato.tipo = 'Venda' 
+AND contrato.status_contrato = 'ativo'
+AND contrato.dt_criacao >= DATE_FORMAT(NOW(), '%Y-%m-01')
+AND contrato.dt_criacao <= NOW()";
+
+
+$res_graf4 = $connexao->query($sql_grafico4);
+
+
+$dados_grafi4 = array();
+
+if($res_graf4->num_rows > 0){
+    while($dd_graf4 = $res_graf4->fetch_assoc() ){
+        array_push($dados_grafi4, $dd_graf4);
+    }
+}
+
+
+$dados_dash4 = json_encode($dados_grafi4);
+
+//print_r($dados_dash4);
+
 
 }
 
@@ -3603,6 +3661,9 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 let qtd_equipe = []
                
                 let dados_dash = <?php echo $dados_dash ?>;
+                
+
+               // console.log(dados_dash4)
 
                 let corretores_vendas = []
 
@@ -3612,7 +3673,7 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
 
                 // For para pegar os corretores e suas quantidades de vendas
                 for(let corretor of dados_dash){
-                    equipe.push(corretor.nome_equipe)
+                    //equipe.push(corretor.nome_equipe)
 
                     corretores_vendas.push(corretor.nome_corretor)
                     tipo_imoveis.push(corretor.tipo)
@@ -3636,11 +3697,17 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 }
 
 
-                console.log(qtd_vendas_corretor)
 
 
+                // Gráfico4 Equipe 
 
-                // Gráfico Equipe 
+                let dados_dash4 = <?php echo $dados_dash4 ?>;
+
+                for(let equi of dados_dash4 ){
+                    equipe.push(equi.nome)
+                }
+
+
                 for (let i = 0; i < equipe.length; i++) {
 
             
@@ -3666,11 +3733,9 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                         vendas_equipe.push(qtd_equipe[i][0][1])
 
                         }
-
-                  
                 }
 
-
+                
 
 
 

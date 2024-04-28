@@ -73,6 +73,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_equipe_remover
 
     foreach($codigo_remover as $valor){
 
+     if($valor !== 0){
+      
       $sql_corr = "UPDATE corretor SET codigo_equipe = NULL WHERE id_cliente_corretor = $valor ";
 
       $ress = $connexao->query($sql_corr);
@@ -80,6 +82,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_equipe_remover
       if($ress < 1 ){
         throw new Exception();
       }
+
+     }
 
     }
 

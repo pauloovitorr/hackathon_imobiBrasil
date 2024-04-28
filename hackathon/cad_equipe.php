@@ -3601,10 +3601,16 @@ elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
             codigos_corretores.push(dados)
            }
 
+           if(codigos_corretores.length === 0){
+            codigos_corretores.push(0)
+           }
+
            let remover_equipe = {
             codigo_equipe_remover: codigo_equi,
             codigo_corretores: codigos_corretores
            }
+
+          // console.log(remover_equipe)
 
            $.ajax({
             url: 'index.php',
