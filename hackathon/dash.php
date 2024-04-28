@@ -65,7 +65,11 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
   corretorimovel.nome AS nome_corretor,
   corretorimovel.cpf AS cpf_corretor,
   corretor.creci,
-  corretor.id_cliente_corretor
+  corretor.codigo_equipe,
+  corretor.id_cliente_corretor,
+
+  equi.nome AS nome_equipe,
+  equi.codigo_equipe
   
 FROM 
   contrato
@@ -75,6 +79,8 @@ INNER JOIN
   corretor ON imoveis.cod_corretor = corretor.codigo_corretor
 INNER JOIN
   clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+INNER JOIN
+   equipe AS equi ON corretor.codigo_equipe = equi.codigo_equipe
   
 WHERE 
   codigo_adm = $cod_adm 
@@ -3593,6 +3599,8 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 let valores = []
                 let comissoes = []
                 let tipo_imoveis = []
+                let equipe = []
+                let qtd_equipe = []
                
                 let dados_dash = <?php echo $dados_dash ?>;
 
@@ -3604,6 +3612,8 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
 
                 // For para pegar os corretores e suas quantidades de vendas
                 for(let corretor of dados_dash){
+                    equipe.push(corretor.nome_equipe)
+
                     corretores_vendas.push(corretor.nome_corretor)
                     tipo_imoveis.push(corretor.tipo)
                 }
@@ -3618,11 +3628,51 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 if(!nome_corretor_venda.includes(corretores_vendas[i])){
 
                     nome_corretor_venda.push(corretores_vendas[i])
+                    qtd_vendas_corretor.push(contagem);
 
                 }
-                qtd_vendas_corretor.push(contagem);
+                
 
                 }
+
+
+                console.log(qtd_vendas_corretor)
+
+
+
+                // Gráfico Equipe 
+                for (let i = 0; i < equipe.length; i++) {
+
+            
+                        let contagem = equipe.reduce((total, nome) => {
+                            return total + ((nome === equipe[i]) ? 1 : 0);
+                        }, 0);
+
+                        let dd = [equipe[i], contagem]
+
+                        qtd_equipe.push([dd])
+                    }
+
+                    let nomes_equipe = []
+                    let vendas_equipe = []
+
+               
+
+                for(let i = 0; i <qtd_equipe.length; i++ ){
+
+                    if(!nomes_equipe.includes(qtd_equipe[i][0][0])){
+
+                        nomes_equipe.push(qtd_equipe[i][0][0])
+                        vendas_equipe.push(qtd_equipe[i][0][1])
+
+                        }
+
+                  
+                }
+
+
+
+
 
 
                 let qtd_vendido = dados_dash.length
@@ -3751,6 +3801,46 @@ new Chart(ctx3, {
 
 // fim gráfico 3
 
+// gráfico 4
+const ctx4 = document.getElementById('myChart4');
+
+new Chart(ctx4, {
+    type: 'doughnut',
+    data: {
+        labels: nomes_equipe,
+        datasets: [{
+            label: '# Tipos de imóveis',
+            data: vendas_equipe,
+            borderWidth: 2,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.8)', // Vermelho
+                'rgba(54, 162, 235, 0.8)', // Azul
+                'rgba(255, 205, 86, 0.8)', // Amarelo
+                'rgba(75, 192, 192, 0.8)', // Verde
+                'rgba(153, 102, 255, 0.8)', // Roxo
+                'rgba(255, 159, 64, 0.8)', // Laranja
+                'rgba(205, 86, 255, 0.8)', // Rosa
+                'rgba(50, 205, 50, 0.8)', // Verde Claro
+                'rgba(220, 20, 60, 0.8)', // Vermelho Escuro
+                'rgba(0, 191, 255, 0.8)' // Azul Claro
+                // Adicione mais cores conforme necessário
+            ]
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+
+
 
             })
 
@@ -3862,6 +3952,12 @@ new Chart(ctx3, {
                         <div class="revisa graf">
                             <h3> Valores das vendas </h3> <br>
                             <canvas id="myChart3"></canvas>
+                        </div>
+
+
+                        <div class="revisa graf">
+                            <h3> Vendas por equipe </h3> <br>
+                            <canvas id="myChart4"></canvas>
                         </div>
 
                         
