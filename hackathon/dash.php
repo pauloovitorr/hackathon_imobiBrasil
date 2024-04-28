@@ -226,6 +226,63 @@ if($lista_dash->num_rows > 0){
     }
 }
 
+//Grafico4
+
+$sql_grafico4 ="SELECT 
+contrato.codigo_contrato,
+DATE_FORMAT(contrato.dt_criacao, '%d/%m/%Y') AS dt_criacao_formatada,
+contrato.tipo AS tipo_contrato,
+contrato.imoveis_codigo,
+contrato.valor_negociado,
+
+
+imoveis.codigo_imovel,
+imoveis.cod_proprietario,
+imoveis.cod_corretor,
+ 
+corretorimovel.codigo_clientes AS cod_corretor,
+corretorimovel.nome AS nome_corretor,
+
+corretor.codigo_equipe,
+corretor.id_cliente_corretor,
+
+ equi.codigo_equipe,
+ equi.nome
+
+
+FROM 
+contrato
+INNER JOIN
+imoveis ON imoveis.codigo_imovel = contrato.imoveis_codigo
+INNER JOIN
+corretor ON imoveis.cod_corretor = corretor.codigo_corretor
+INNER JOIN
+clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+INNER JOIN
+ equipe AS equi ON equi.codigo_equipe = corretor.codigo_equipe
+
+WHERE 
+codigo_adm = $cod_adm 
+AND contrato.tipo = 'Venda' 
+AND contrato.status_contrato = 'ativo'
+AND DATE(contrato.dt_criacao) >= '$inicio'
+AND DATE(contrato.dt_criacao)  <= '$final'";
+
+
+$res_graf4 = $connexao->query($sql_grafico4);
+
+
+$dados_grafi4 = array();
+
+if($res_graf4->num_rows > 0){
+    while($dd_graf4 = $res_graf4->fetch_assoc() ){
+        array_push($dados_grafi4, $dd_graf4);
+    }
+}
+
+
+$dados_dash4 = json_encode($dados_grafi4);
+
 
 $dados_dash = json_encode($dados_contrato);
 
