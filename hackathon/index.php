@@ -32,6 +32,9 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
 }
 
+
+
+
 if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['finalizado'])  && !empty($_POST['codigo_passo'])){
 
     $status_passo     = $connexao->escape_string($_POST['finalizado']);
@@ -57,6 +60,59 @@ if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['finalizado'])  && !emp
     
     exit;
 }
+
+
+// Remover equipe e seus corretores
+if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_equipe_remover'])  && !empty($_POST['codigo_corretores']) ){
+  $codigo_equipe_remover = $connexao->escape_string($_POST['codigo_equipe_remover']);
+  $codigo_remover = $_POST['codigo_corretores'];
+
+  $connexao->begin_transaction();
+
+ try{
+
+    foreach($codigo_remover as $valor){
+
+      $sql_corr = "UPDATE corretor SET codigo_equipe = NULL WHERE id_cliente_corretor = $valor ";
+
+      $ress = $connexao->query($sql_corr);
+
+      if($ress < 1 ){
+        throw new Exception();
+      }
+
+    }
+
+     $sql_remover_equipe = "DELETE FROM equipe WHERE codigo_equipe = $codigo_equipe_remover";
+
+     $res_remover_equi = $connexao->query($sql_remover_equipe);
+
+    if($res_remover_equi < 1){
+      throw new Exception();
+    }
+    
+
+    $connexao->commit();
+    $connexao->close();
+    exit;
+ }
+
+ catch (Exception){
+
+  $connexao->rollback();
+  $connexao->close();
+  exit;
+
+ }
+
+
+  $connexao->close();
+  exit;
+}
+
+
+// FIM Remover equipe e seus corretores
+
 
 // equipe
 if($_SERVER['REQUEST_METHOD']=== 'POST' && !empty($_POST['codigo_corretor']) ){

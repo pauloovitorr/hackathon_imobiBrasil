@@ -3590,6 +3590,34 @@ elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
 
 
         })
+
+        // Excluir equipe
+        $('.excluir_equipe').click(function(){
+           let codigo_equi   = $(this).closest('.div_equi').find('.cod_equii').val()
+           let codigo_equiii = $(this).closest('.div_equi').find('.cod_corr').text()
+           let codigos_corretores = []
+
+           for(let dados of codigo_equiii){
+            codigos_corretores.push(dados)
+           }
+
+           let remover_equipe = {
+            codigo_equipe_remover: codigo_equi,
+            codigo_corretores: codigos_corretores
+           }
+
+           $.ajax({
+            url: 'index.php',
+            method: 'POST',
+            dataType: 'json',
+            data: remover_equipe,
+            success: function(res){
+                console.log(res)
+            }
+
+           })
+           
+        })
       
 
         
@@ -3784,11 +3812,14 @@ elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                         while($dd = $equipe->fetch_assoc()){
 
-                            echo '<div>';
+                            $cod = $dd['codigo_equipe'];
+
+                            echo '<div class="div_equi">';
                             echo '<i class="icone icone--atencao fa fa-times excluir_equipe"></i>';
+                            echo "<input class='cod_equii' type='hidden' value='$cod'>";     
                             echo '<h3>'. $dd['nome'] .'</h3>';     
 
-                            $cod = $dd['codigo_equipe'];
+                            
 
                             $sql_tabela = "SELECT 
                             e.codigo_equipe,

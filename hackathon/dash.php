@@ -3809,7 +3809,6 @@ new Chart(ctx4, {
     data: {
         labels: nomes_equipe,
         datasets: [{
-            label: '# Tipos de imóveis',
             data: vendas_equipe,
             borderWidth: 2,
             backgroundColor: [
@@ -3823,7 +3822,7 @@ new Chart(ctx4, {
                 'rgba(50, 205, 50, 0.8)', // Verde Claro
                 'rgba(220, 20, 60, 0.8)', // Vermelho Escuro
                 'rgba(0, 191, 255, 0.8)' // Azul Claro
-                // Adicione mais cores conforme necessário
+                
             ]
         }]
     },
