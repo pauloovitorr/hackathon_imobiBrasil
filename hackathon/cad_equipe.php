@@ -3593,36 +3593,63 @@ elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
 
         // Excluir equipe
         $('.excluir_equipe').click(function(){
-           let codigo_equi   = $(this).closest('.div_equi').find('.cod_equii').val()
-           let codigo_equiii = $(this).closest('.div_equi').find('.cod_corr').text()
-           let codigos_corretores = []
-
-           for(let dados of codigo_equiii){
-            codigos_corretores.push(dados)
-           }
-
-           if(codigos_corretores.length === 0){
-            codigos_corretores.push(0)
-           }
-
-           let remover_equipe = {
-            codigo_equipe_remover: codigo_equi,
-            codigo_corretores: codigos_corretores
-           }
-
-          // console.log(remover_equipe)
-
-           $.ajax({
-            url: 'index.php',
-            method: 'POST',
-            dataType: 'json',
-            data: remover_equipe,
-            success: function(res){
-                console.log(res)
-            }
-
-           })
            
+            Swal.fire({
+            title: "Deseja realmente excluir a equipe selecionada?",
+            text: "Após a exclusão, os dados da equipe serão perdidos ",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sim, excluir!"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                
+                let codigo_equi   = $(this).closest('.div_equi').find('.cod_equii').val()
+                let codigo_equiii = $(this).closest('.div_equi').find('.cod_corr').text()
+                let codigos_corretores = []
+
+                for(let dados of codigo_equiii){
+                    codigos_corretores.push(dados)
+                }
+
+                if(codigos_corretores.length === 0){
+                    codigos_corretores.push(0)
+                }
+
+                let remover_equipe = {
+                    codigo_equipe_remover: codigo_equi,
+                    codigo_corretores: codigos_corretores
+                }
+
+                // console.log(remover_equipe)
+
+                $.ajax({
+                    url: 'index.php',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: remover_equipe,
+                    success: function(res){
+                        if(res.retorno == true){
+
+                            Swal.fire({
+                            title: "Equipe excluida com sucesso!",
+                            icon: "success"
+                            });
+
+                            setTimeout(()=>{
+                                window.location.reload()
+                            },1200)
+
+
+                        }
+                    }
+
+                })
+
+
+            }
+            });
         })
       
 
