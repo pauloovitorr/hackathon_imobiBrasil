@@ -140,11 +140,11 @@ INNER JOIN
  equipe AS equi ON equi.codigo_equipe = corretor.codigo_equipe
 
 WHERE 
-codigo_adm = 2
+codigo_adm = $cod_adm 
 AND contrato.tipo = 'Venda' 
 AND contrato.status_contrato = 'ativo'
 AND contrato.dt_criacao >= DATE_FORMAT(NOW(), '%Y-%m-01')
-AND contrato.dt_criacao <= NOW()";
+AND contrato.dt_criacao <= NOW() order by equi.nome";
 
 
 $res_graf4 = $connexao->query($sql_grafico4);
@@ -3702,10 +3702,52 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                 // Gráfico4 Equipe 
 
                 let dados_dash4 = <?php echo $dados_dash4 ?>;
+                let valor_vendas_equipe = []
+
+                if(dados_dash4.length < 1){
+                    $('.equi_p').css('display', 'none')
+                }
 
                 for(let equi of dados_dash4 ){
                     equipe.push(equi.nome)
+                    let graf5 = [equi.nome, equi.valor_negociado]
+
+                    valor_vendas_equipe.push(graf5)
                 }
+
+                
+                let valor_equipe = []
+                if(valor_vendas_equipe.length !== 0){
+
+                    
+
+                    let nome_referencia = valor_vendas_equipe[0][0]
+                   
+                    let conta_venda = 0
+
+
+
+                for(let i = 0; i < valor_vendas_equipe.length; i++){
+
+                    if(nome_referencia === valor_vendas_equipe[i][0]){
+                        conta_venda += parseFloat(valor_vendas_equipe[i][1])
+                        
+                    }
+                    else{
+                        
+                        valor_equipe.push(conta_venda)
+                        conta_venda = 0
+                        conta_venda += parseFloat(valor_vendas_equipe[i][1])
+                        
+                    }
+                    nome_referencia = valor_vendas_equipe[i][0]
+                }
+                // Adicionar o último valor no array de vendas
+                valor_equipe.push(conta_venda)
+
+                console.log(valor_equipe)
+
+            }
 
 
                 for (let i = 0; i < equipe.length; i++) {
@@ -3722,10 +3764,13 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
 
                     let nomes_equipe = []
                     let vendas_equipe = []
+                    
 
                
 
                 for(let i = 0; i <qtd_equipe.length; i++ ){
+
+
 
                     if(!nomes_equipe.includes(qtd_equipe[i][0][0])){
 
@@ -3735,6 +3780,8 @@ $primeiroDiaFormatado = $primeiroDiaDoMes->format('d/m');
                         }
                 }
 
+
+                    // FIM Gráfico4 Equipe 
                 
 
 
@@ -3843,7 +3890,7 @@ new Chart(ctx2, {
 const ctx3 = document.getElementById('myChart3');
 
 new Chart(ctx3, {
-    type: 'line', // Alterando o tipo de gráfico para 'line'
+    type: 'line', 
     data: {
         labels: tipo_imoveis,
         datasets: [{
@@ -3902,6 +3949,46 @@ new Chart(ctx4, {
         }
     }
 });
+
+
+// gráfico 5
+const ctx5 = document.getElementById('myChart5');
+
+new Chart(ctx5, {
+    type: 'polarArea',
+    data: {
+        labels: nomes_equipe,
+        datasets: [{
+            data: valor_equipe,
+            borderWidth: 2,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.8)', // Vermelho
+                'rgba(54, 162, 235, 0.8)', // Azul
+                'rgba(255, 205, 86, 0.8)', // Amarelo
+                'rgba(75, 192, 192, 0.8)', // Verde
+                'rgba(153, 102, 255, 0.8)', // Roxo
+                'rgba(255, 159, 64, 0.8)', // Laranja
+                'rgba(205, 86, 255, 0.8)', // Rosa
+                'rgba(50, 205, 50, 0.8)', // Verde Claro
+                'rgba(220, 20, 60, 0.8)', // Vermelho Escuro
+                'rgba(0, 191, 255, 0.8)' // Azul Claro
+                
+            ]
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// final gráfico 5
 
 
 
@@ -4019,9 +4106,14 @@ new Chart(ctx4, {
                         </div>
 
 
-                        <div class="revisa graf">
-                            <h3> Vendas por equipe </h3> <br>
+                        <div class="revisa graf equi_p">
+                            <h3> Quantidade de vendas por equipe </h3> <br>
                             <canvas id="myChart4"></canvas>
+                        </div>
+
+                        <div class="revisa graf equi_p">
+                            <h3> Valor de vendas por equipe </h3> <br>
+                            <canvas id="myChart5"></canvas>
                         </div>
 
                         
