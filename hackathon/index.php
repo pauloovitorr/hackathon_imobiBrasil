@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
 
     $buscar = '%' .$connexao->escape_string($_GET['buscar']) . '%' ;
 
-    $sql = "SELECT * FROM imoveis WHERE referencia LIKE ? or rua LIKE ? and status_imovel = 'disponivel'";
+    $sql = "SELECT * FROM imoveis WHERE (referencia LIKE ? OR rua LIKE ?) AND status_imovel = 'disponivel'";
 
 
     $acao = $connexao->prepare($sql);
@@ -21,6 +21,8 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
     $acao->execute();
 
     $result = $acao->get_result();
+
+
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
@@ -200,6 +202,50 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
 
   if($stmt->execute()){
       unlink($caminho);
+  }
+
+  exit;
+}
+
+// Excluir equipe
+if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cod_contratoo']) && !empty($_POST['cod_imovell']) ){
+
+  $cod_contratoo = $connexao->escape_string($_POST['cod_contratoo']);
+  $cod_imovell = $connexao->escape_string($_POST['cod_imovell']);
+
+  $connexao->begin_transaction();
+
+  try{
+
+    $sql1 = "DELETE FROM grupo_compradores WHERE codigo_contrato = $cod_contratoo";
+    $connexao->query($sql1);
+
+    $sql2 = "DELETE FROM documentos WHERE codigo_contrato = $cod_contratoo";
+    $connexao->query($sql2);
+
+    $sql3 = "DELETE FROM contrato WHERE codigo_contrato = $cod_contratoo";
+    $connexao->query($sql3);
+
+    if($sql3){
+
+      $sql4 = "UPDATE imoveis SET status_imovel = 'disponivel' WHERE codigo_imovel = $cod_imovell";
+      $connexao->query($sql4);
+
+    }else{
+      throw new Exception();
+    }
+
+    echo json_encode(['retorno' => true ]);
+
+    $connexao->commit();
+
+  }
+  catch (Exception){
+
+    echo json_encode(['retorno' => false ]);
+
+    $connexao->rollback();
+
   }
 
   exit;
@@ -4017,12 +4063,39 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
       }).then((result) => {
         if (result.isConfirmed) {
 
+          let codigo_contratoo = $(this).closest('.linha_dd_contrato').find('.cod_contratoo').val()
+          let codigo_imovell = $(this).closest('.linha_dd_contrato').find('.cod_imovell').val()
 
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success"
-          });
+          let excluir_contrato = {
+            cod_contratoo: codigo_contratoo,
+            cod_imovell: codigo_imovell
+          }
+          
+
+          $.ajax({
+            url: 'index.php',
+            method: 'POST',
+            dataType: 'json',
+            data: excluir_contrato,
+            success: function(resp){
+
+              if(resp.retorno == true){
+                Swal.fire({
+                title: "Excluido!",
+                text: "Contrato excluido com sucesso.",
+                icon: "success"
+            });
+              }
+
+              setTimeout(()=>{
+                window.location.reload()
+              },1200)
+
+            }
+
+          })
+
+          
 
 
         }
@@ -4125,10 +4198,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
                   if($lista_contratos->num_rows > 0){
                     while($contato = $lista_contratos->fetch_array()){
 
+                     // print_r($contato);
+
                     
                       if($contato['status_contrato'] === 'pendente'){
 
-                        echo '<tr>';
+                        echo '<tr class="linha_dd_contrato">';
+                            echo "<input type='hidden' class='cod_contratoo' value='".$contato['codigo_contrato']."' >" ;
+                            echo "<input type='hidden' class='cod_imovell' value='".$contato['imoveis_codigo']."' >" ;
                             echo '<td>' .$contato["referencia"]. '</td>';
                             echo '<td>' .$contato["tipo"] .'</td>';
                             echo '<td>' .$contato["titulo"]  .'</td>';
@@ -4143,7 +4220,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
                         echo '</tr>';
                       }
                       else if($contato['status_contrato'] === 'execução'){
-                        echo '<tr>';
+                        echo '<tr class="linha_dd_contrato">';
+                            echo "<input type='hidden' class='cod_contratoo' value='".$contato['codigo_contrato']."' >" ;
+                            echo "<input type='hidden' class='cod_imovell' value='".$contato['imoveis_codigo']."' >" ;
                             echo '<td>' .$contato["referencia"]. '</td>';
                             echo '<td>' .$contato["tipo"] .'</td>';
                             echo '<td>' .$contato["titulo"]  .'</td>';
@@ -4158,7 +4237,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['codigo_doc_del']) && 
                         echo '</tr>';
                       }
                       else{
-                        echo '<tr>';
+                        echo '<tr class="linha_dd_contrato">';
+                            echo "<input type='hidden' class='cod_contratoo' value='".$contato['codigo_contrato']."' >" ;
+                            echo "<input type='hidden' class='cod_imovell' value='".$contato['imoveis_codigo']."' >" ;
                             echo '<td>' .$contato["referencia"]. '</td>';
                             echo '<td>' .$contato["tipo"] .'</td>';
                             echo '<td>' .$contato["titulo"]  .'</td>';
