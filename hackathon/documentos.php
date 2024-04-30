@@ -4107,8 +4107,9 @@ $(document).ready(function(){
                 echo      '<td>'. $documento['tipo_doc'] .'</td>';
                 echo      '<td>'. $documento['dt_formatada'] .'</td>';
                 echo      '<input class="path_doc" type="hidden" value="' . $documento['path'] . '">';
-                echo      '<td>'. '<i class="fa-solid fa-trash del">' .'</i>' .'</td>';
-                echo '<td> <a href="' . $documento['path'] . '" target="_blank"> <i class="fa-solid fa-file ativo_icon"></i> </a></td>';            
+                
+                echo '<td> <a href="' . $documento['path'] . '" target="_blank"> <i class="fa-solid fa-file ativo_icon"></i> </a></td>';  
+                echo      '<td>'. '<i class="fa-solid fa-trash del">' .'</i>' .'</td>';          
                 echo '</tr>';
               }
           ?>

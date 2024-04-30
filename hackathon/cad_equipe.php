@@ -3820,7 +3820,7 @@ elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
                         </div>
 
                         <div style="width: 15%; margin:0 auto; margin-top:25px">
-                            <button type="submit">Cadastrar</button>
+                            <button style="background-color: #007fe2;" type="submit">Cadastrar</button>
                         </div>
 
                     </form>
