@@ -220,8 +220,23 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cod_contratoo']) && !
     $sql1 = "DELETE FROM grupo_compradores WHERE codigo_contrato = $cod_contratoo";
     $connexao->query($sql1);
 
-    $sql2 = "DELETE FROM documentos WHERE codigo_contrato = $cod_contratoo";
-    $connexao->query($sql2);
+
+    $sql11 = "SELECT path, codigo_contrato FROM documentos WHERE codigo_contrato = $cod_contratoo";
+    $docs = $connexao->query($sql11);
+
+    if($docs->num_rows>0){
+
+      while($doc = $docs->fetch_assoc()){
+
+        unlink($doc['path']);
+
+      }
+
+      $sql2 = "DELETE FROM documentos WHERE codigo_contrato = $cod_contratoo";
+      $connexao->query($sql2);
+
+    } 
+  
 
     $sql3 = "DELETE FROM contrato WHERE codigo_contrato = $cod_contratoo";
     $connexao->query($sql3);
@@ -4084,6 +4099,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cod_contratoo']) && !
                 title: "Excluido!",
                 text: "Contrato excluido com sucesso.",
                 icon: "success"
+            });
+              }else{
+               
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Tente novamente!",
+              footer: '<a href="#">Why do I have this issue?</a>'
             });
               }
 
