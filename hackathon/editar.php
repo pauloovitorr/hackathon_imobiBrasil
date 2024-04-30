@@ -87,6 +87,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['tipo_contrato']) && !
     $nome ='';
     $tmp = '';
 
+    
+
     foreach($_FILES as $dado){
         $nome = $dado['name'];
         $tmp = $dado['tmp_name'];
@@ -107,6 +109,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['tipo_contrato']) && !
         $res = $connexao->query($sql);
 
         if($res){
+
+          if($tipo_contrato != 'Venda'){
+            $codd = $dados_contrato['codigo_imovel'];
+
+            $sql11 = "UPDATE imoveis SET status_imovel = 'disponivel'  WHERE codigo_imovel =  $codd";
+            $connexao->query($sql11);
+            
+          }else{
+            $codd = $dados_contrato['codigo_imovel'];
+
+            $sql11 = "UPDATE imoveis SET status_imovel = 'vendido'  WHERE codigo_imovel =  $codd";
+            $connexao->query($sql11);
+          }
             
             if($nome != '' && $tmp !=''){
                 move_uploaded_file($tmp , $caminho);

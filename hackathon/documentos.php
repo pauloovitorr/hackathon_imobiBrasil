@@ -88,9 +88,15 @@ $sql22 = "SELECT * FROM documentos WHERE codigo_contrato = $cod_contrato ";
 
       $connexao->query($sql3);
 
-      $sql4 = "UPDATE imoveis SET status_imovel = 'vendido' WHERE codigo_imovel = $cod_imov_contrato";
+      if($dados_contrato['tipo'] == 'Venda' ){
 
-      $connexao->query($sql4);
+        $sql4 = "UPDATE imoveis SET status_imovel = 'vendido' WHERE codigo_imovel = $cod_imov_contrato";
+
+        $connexao->query($sql4);
+
+      }
+
+
     }
     else{
       $sql33 = "UPDATE contrato SET status_contrato = 'execução', desc_status = 'Contrato pendente de vincular documentos' WHERE codigo_contrato = $cod_contrato ";
