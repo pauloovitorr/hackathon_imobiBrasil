@@ -25,6 +25,7 @@ if (empty($_GET['contrato'])) {
     contrato.titulo,
     contrato.referencia,
     contrato.imoveis_codigo,
+    contrato.checklist_codigo,
     imoveis.cidade,
     imoveis.estado,
     imoveis.cod_proprietario,
@@ -40,7 +41,11 @@ if (empty($_GET['contrato'])) {
     corretorimovel.nome AS nome_corretor,
     corretorimovel.cpf AS cpf_corretor,
     corretor.creci,
-    corretor.id_cliente_corretor
+    corretor.id_cliente_corretor,
+
+    ck.tipo AS tp_check,
+    ck.descricao,
+    ck.codigo_check
     
 FROM 
     contrato
@@ -52,6 +57,8 @@ INNER JOIN
 	corretor ON imoveis.cod_corretor = corretor.codigo_corretor
 INNER JOIN
 	clientes AS corretorimovel ON corretor.id_cliente_corretor = corretorimovel.codigo_clientes
+INNER JOIN
+  checklist AS ck ON ck.codigo_check = contrato.checklist_codigo
 WHERE
 	contrato.codigo_contrato = $cod_contrato";
 
@@ -61,15 +68,21 @@ $dados_contrato = $connexao->query($sql);
 
 $dados_contrato = $dados_contrato->fetch_assoc();
 
-$sql2 = 'SELECT * FROM clientes WHERE perfil = "comprador" ';
+// editar checklist
 
-$dados_comprador = $connexao->query($sql2);
+$sql2 = 'SELECT * FROM checklist';
+
+$checklistt = $connexao->query($sql2);
+
+
+
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['tipo_contrato']) && !empty($_POST['obs'])     ){
+if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['tipo_contrato']) && !empty($_POST['obs'])  && !empty($_POST['tipo_check']) ){
     
     $tipo_contrato = $connexao->escape_string($_POST['tipo_contrato']);
     $obs = $connexao->escape_string($_POST['obs']);
+    $cod_check = $connexao->escape_string($_POST['tipo_check']);
 
     $nome ='';
     $tmp = '';
@@ -89,7 +102,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['tipo_contrato']) && !
 
     try{
 
-        $sql = "UPDATE contrato SET tipo = '$tipo_contrato', obs = '$obs', dt_atualizacao = NOW() WHERE codigo_contrato =  $cod_contrato ";
+        $sql = "UPDATE contrato SET tipo = '$tipo_contrato', checklist_codigo = $cod_check , obs = '$obs', dt_atualizacao = NOW() WHERE codigo_contrato =  $cod_contrato ";
 
         $res = $connexao->query($sql);
 
@@ -3623,6 +3636,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['tipo_contrato']) && !
           <div class='pessoas'>
 
             <div class='dados_contratoo'>
+
+
               <p>Código do contrato: <strong><?php echo $dados_contrato['referencia'] ?></strong></p>
               <p>Título: <strong><?php echo $dados_contrato['titulo'] ?></strong></p>
               <p>Tipo de contrato: <strong><?php echo $dados_contrato['tipo'] ?></strong></p>
@@ -3677,6 +3692,36 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['tipo_contrato']) && !
                     </select>
 
               </div>
+
+
+<!-- Pauloo -->
+              <div style='display: flex; justify-content:space-between; border:none'>
+                    <label style="font-size: 1.0rem;" for="tipo_contrato">Checklist Contrato</label> <br>
+
+                    <select name="tipo_check" id="tipo_check" style='font-size: 1.0rem;' required>
+                    <option value="<?php echo $dados_contrato['checklist_codigo'] ?>"> <?php  echo $dados_contrato['tp_check'] .  '  ('.$dados_contrato['descricao'] .')  '  ?> </option>
+
+                        <?php 
+
+                          while($dd = $checklistt->fetch_assoc()){
+                           if($dd['codigo_check'] !== $dados_contrato['checklist_codigo']){
+                            echo "<option value='".$dd['codigo_check']."' >". $dd['tipo'] .  '  ('.$dd['descricao'] .')  ' . '</option>';
+                           }
+                          }
+                        
+                        ?>
+
+                        
+                    </select>
+
+              </div>
+
+
+
+
+
+
+
 
               <div class="inputfile">
 

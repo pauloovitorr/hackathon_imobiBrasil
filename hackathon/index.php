@@ -4237,7 +4237,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cod_contratoo']) && !
                             echo '<td>' .$contato["desc_status"] . '</td>';
                             echo '<td>' . date('d/m/Y', strtotime($contato["dt_criacao"])) .'</td>';
                             echo '<td>' . '<a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"><i class="bi bi-clipboard-check pendente_icon"></i></a>' .'</td>';
-                            echo '<td>' . '<a href="pessoas.php?contrato=' . $contato['codigo_contrato'] . '"> <i class="fa-regular fa-pen-to-square pendente_icon"></i> </a>' .'</td>';
+                            echo '<td>' . '<a href="editar.php?contrato=' . $contato['codigo_contrato'] . '"> <i class="fa-regular fa-pen-to-square pendente_icon"></i> </a>' .'</td>';
                             echo '<td>'. '<i class="fa-solid fa-trash del del_contrato">' .'</i>' .'</td>';
                         echo '</tr>';
                       }
