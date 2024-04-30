@@ -22,7 +22,6 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' &&  !empty($_GET['buscar'])){
 
     $result = $acao->get_result();
 
-
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
