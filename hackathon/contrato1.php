@@ -3779,15 +3779,29 @@ switch(tipo_pagamento){
         cadastrarEtiqueta: $('#hidden_cad_eti').val()
        }
 
-       console.log(objEtiqueta)
+       //console.log(objEtiqueta)
 
         $.ajax({
             url: 'index.php', 
             method: 'POST',
+            dataType: 'json',
             data: objEtiqueta,
             
             success: function(response){
-                window.location.href = "contrato1.php?cod=" + <?php echo $_GET['cod'] ?>
+
+              if(response.retorno === true){
+
+                Swal.fire({
+                title: "Etiqueta criada com sucesso!",
+                icon: "success"
+              });
+
+                setTimeout(()=>{
+                  window.location.reload()
+                },1200)
+
+              }
+                
             },
             error: function(xhr, status, error){
                

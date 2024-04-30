@@ -152,7 +152,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
   $tipo = $connexao->escape_string($_POST['tipo']);
 
   
-  $sql = "INSERT INTO etiquetas (cor, tipo) VALUES (?, ?)";
+  $sql = "UPDATE etiquetas SET cor = ? WHERE tipo = ?";
 
   
   $stmt = $connexao->prepare($sql);
@@ -164,20 +164,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cadastrarEtiqueta']) 
       $stmt->bind_param("ss", $cor, $tipo);
 
       if($stmt->execute()){
-        array_push($resposta, ['sucesso' => 'Etiqueta cadastrada com sucesso']);
+        echo json_encode(['retorno' => true])  ;
         
       } else {
           
-        array_push($resposta, ['falha' => 'Erro ao cadastrar etiqueta, tente novamente']);
+        echo json_encode(['retorno' => false])  ;
       }
 
      
       $stmt->close();
   } else {
-    array_push($resposta, ['falha' => "$connexao->error"]);
+    echo json_encode(['retorno' => false]) ;
   }
 
-  echo json_encode($resposta);
   $connexao->close();
   exit;
 }

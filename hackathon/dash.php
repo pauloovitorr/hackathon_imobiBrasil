@@ -4104,7 +4104,7 @@ new Chart(ctx5, {
                 <div class="conteudo">
 
                 <div style="text-align:end; width: 80%; margin:0 auto" class="addCheck">
-                    <a style="color: #007fe2;" href="./cad_equipe.php">Cadastrar equipe</a>
+                    <a style="color: #007fe2;" href="./cad_equipe.php">Gestão de equipe</a>
                 </div>
 
                 <h1 style="text-align: center;margin:15px">Acompanhe os seus dados</h1>
