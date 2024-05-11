@@ -4,6 +4,10 @@ session_start();
 
 include_once('../conexao.php');
 
+require_once '../vendor/autoload.php';
+
+
+
 $_SESSION['codigo_adm'] = 2;
 
 
@@ -264,6 +268,27 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cod_contratoo']) && !
   exit;
 }
 
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['text_pesquisa'])){
+
+  $busca = $connexao->escape_string($_POST['text_pesquisa']);
+
+  $client = OpenAI::client('');
+
+
+  $result = $client->chat()->create([
+      'model' => 'gpt-3.5-turbo',
+      'max_tokens' => 250,
+      'messages' => [
+          ['role' => 'user', 'content' => "$busca"],
+      ],
+  ]);
+
+  echo json_encode(['retorno' => $result->choices[0]->message->content ]);
+
+  exit;
+
+}
 
 
 ?>
@@ -4063,6 +4088,93 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cod_contratoo']) && !
 
   // Excluir contrato Paulo
     $(document).ready(function(){
+
+
+      $('.lg').click(function(){
+        $('.div_pai_gpt').toggleClass('remover')
+      })
+
+
+      $('.pesqui_gpt').click(function(){
+
+        let conta = 0
+
+        let texto_pesquisa = $('.texto_gpt').val()
+
+        let div_pai_chat = $('.texto_gpt_res')
+
+        if(texto_pesquisa == ''){
+          
+        Swal.fire("Digite algo para a IA");
+        return
+        }
+
+
+        let divv = document.createElement('div')
+        divv.classList = 'usuario'
+        divv.innerHTML = texto_pesquisa
+
+        div_pai_chat.append(divv)
+      
+
+
+        if(conta==0){
+          texto_pesquisa = `Você é um atendente da empresa ImobiBrasil, uma empresa onde desenvolve sites para corretores e imobiliárias junto com CRM.
+
+                  Você é um atendente com muito conhecimento na área de sites e imobiliarias. 
+
+                  Caso tenha dúvidas, recomende entrar em contato por meio de um dos telefones citados no rodapé: 
+
+                  (18) 3222-0557 - PRESIDENTE PRUDENTE / SP
+                  (11) 4063-6343 - SÃO PAULO / SP
+                  (48) 4052-9233 - FLORIANÓPOLIS / SC
+                  (18) 98822-7436 ( whatsapp Comercial) 
+                  (18) 99164-3479 ( whatsapp Suporte) 
+
+                  nosso e-mail: contato@imobibrasil.com.br
+
+                  Link da nossa página de central de ajuda, serve como se fosse uma FAQ: https://ajuda.imobibrasil.com.br/
+
+                  A partir de agora você irá responder nossos clientes,seja simpático. Apenas lembrando, dependendo da demanda informe nosso whatsapp ou e-mail (escreva)
+
+                  Pergunta,( ${texto_pesquisa} )
+                  `
+
+                  conta++
+        }
+
+
+       
+
+        $.ajax({
+          url: 'index.php',
+          dataType: 'json',
+          method: 'POST',
+          data:{ text_pesquisa : texto_pesquisa },
+          success: function(res){
+            
+            let divv = document.createElement('div')
+            divv.classList = 'gtp'
+            divv.innerHTML = res.retorno
+
+            div_pai_chat.append(divv)
+
+
+
+          }
+        })
+
+              
+
+
+
+        })
+
+
+
+
+
+
       $(".del_contrato").click(function(){
 
         Swal.fire({
@@ -4122,8 +4234,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cod_contratoo']) && !
         }
 
       });
-
-
 
 
       })
@@ -4290,6 +4400,34 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['cod_contratoo']) && !
           </div>
             
             
+
+            <div class="div_pai_gpt remover">
+                
+                  <div class="texto_gpt_res" >
+                    <div class="gtp">Olá, eu sou o Imobinho, seu assistênte virtual!  
+                        <p>Como posso lhe ajudar?</p>
+                    </div>
+
+                    
+
+              
+                  </div>
+
+
+                  <div class="texto_gpt_per">
+                      <textarea class="texto_gpt" name="pesquisa_gpt" placeholder="Como posso te ajudar?" ></textarea>
+                  </div>
+
+
+                  <button class="pesqui_gpt">Pesquisar</button>
+
+                
+            </div>
+
+            <div class="logoGPT lg">
+                <img  src="https://chatgpt.unoeste.br/img/open-ai-logo.png" alt="">
+            </div>
+
           </div>
 
           
